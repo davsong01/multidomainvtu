@@ -128,14 +128,6 @@ if (!function_exists("referralBalance")) {
     }
 }
 
-if (!function_exists("airtime2cashBalance")) {
-    function airtime2cashBalance($user)
-    {
-        $balance = new WalletController();
-        return $balance->airtime2cashBalance($user);
-    }
-}
-
 if (!function_exists("getSettings")) {
     function getSettings()
     {

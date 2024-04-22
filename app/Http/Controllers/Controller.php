@@ -175,7 +175,7 @@ class Controller extends BaseController
             <br>Warm Regards. (' . config('app.name') . ')<br/>
             </p>';
 
-            $email = $user->email ?? 'noreply@airtime2cash.com';
+            $email = $user->email;
             logEmails($email, $subject, $body);
         }
     }

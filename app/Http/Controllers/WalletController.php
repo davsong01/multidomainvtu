@@ -17,10 +17,6 @@ class WalletController extends Controller
         return $user->customer->referal_wallet ?? 0;
     }
 
-    public function airtime2cashBalance($user){
-        return $user->customer->a2cashwallet ?? 0;
-    }
-
     public function logWallet($data)
     {
         $wallet = Wallet::create([
