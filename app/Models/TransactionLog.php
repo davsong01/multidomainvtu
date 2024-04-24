@@ -6,7 +6,6 @@ use App\Models\Wallet;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Airtime2CashTransactions;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -66,7 +65,4 @@ class TransactionLog extends Model
         return $this->belongsTo(CustomerLevel::class, 'upgrade_level');
     }
 
-    public function airtime2cash(){
-        return $this->belongsTo(Airtime2CashTransactions::class, 'transaction_id', 'transaction_id');
-    }
 }

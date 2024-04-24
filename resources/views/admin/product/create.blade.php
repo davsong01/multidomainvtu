@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('airtime2cash.index') }}">Products</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a>
                                     </li>
                                     <li class="breadcrumb-item active">Add Product
                                     </li>

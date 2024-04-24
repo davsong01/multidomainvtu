@@ -63,10 +63,6 @@
                                     href="{{ route('product.index') }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item" data-i18n="Input">Products</span></a>
                             </li>
-                            <li class="{{ Route::is('airtime2cash.*') ? 'active' : '' }} svg"><a
-                                    href="{{ route('airtime2cash.index') }}"><i class="bx bx-right-arrow-alt"></i><span
-                                        class="menu-item" data-i18n="Input">Airtime to Cash</span></a>
-                            </li>
                         @endif
                     </ul>
                 </li>

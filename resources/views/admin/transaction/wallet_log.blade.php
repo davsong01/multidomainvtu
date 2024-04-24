@@ -107,15 +107,9 @@
                                                     {{ $transaction->customer->user->phone }}
                                                 </td>
                                                 <td>
-                                                    @if($transaction->reason == 'Airtime2Cash Payment')
-                                                    <a target="_blank" href="{{ route('admin.single.airtime2cash.transaction.view', $transaction->airtime2cash->id) }}">
-                                                        {{ $transaction->transaction_id }}
-                                                    </a>
-                                                    @else
                                                     <a target="_blank" href="{{ route('admin.single.transaction.view', $transaction->transaction_id) }}">
                                                         {{ $transaction->transaction_id }}
                                                     </a>
-                                                    @endif
                                                 </td>
                                                 <td style="color:{{ $transaction->type == 'credit' ? 'green' : 'red'}}">{{ ucfirst($transaction->type) }}</td>
                                                 <td>{!! getSettings()->currency. number_format($transaction->amount) !!}</td>

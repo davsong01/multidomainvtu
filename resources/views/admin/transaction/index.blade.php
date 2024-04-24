@@ -191,15 +191,9 @@
 
                                                 @if(hasAccess('admin.single.transaction.view'))
                                                 <td>
-                                                    @if($transaction->reason == 'Airtime2Cash Payment')
-                                                    <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.airtime2cash.transaction.view', $transaction->airtime2cash->id) }}">
-                                                        <i class="fa fa-eye"></i><span class="align-middle ml-25">View</span>
-                                                    </a>
-                                                    @else
                                                     <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.transaction.view', $transaction->id) }}">
                                                         <i class="fa fa-eye"></i><span class="align-middle ml-25">View</span>
                                                     </a>
-                                                    @endif
                                                 </td>
                                                 @endif
                                             </tr>

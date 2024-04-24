@@ -11,12 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_permissions', function (Blueprint $table) {
+        Schema::create('merchants', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->string('store_name')->nullable();
+            $table->string('location')->nullable();
+            $table->string('store_slug')->nullable();
+            $table->string('custom_domain')->nullable();
             $table->string('status')->default('active');
-            $table->string('route')->nullable();
-            $table->enum('type', ['menu', 'link'])->default('menu');
+            $table->timestamp('subscription_start')->nullable();
+            $table->timestamp('subscription_end')->nullable();
+            
             $table->timestamps();
         });
     }
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role_permissions');
+        Schema::dropIfExists('merchants');
     }
 };

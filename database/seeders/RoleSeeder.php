@@ -7,7 +7,11 @@ use App\Models\Role;
 use App\Models\Category;
 use App\Models\RolePermission;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class RoleSeeder extends Seeder
@@ -17,6 +21,16 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->addMerchantIdToAllTables();
+        $this->createPermissions();
+        // Create new Settings here
+        // $this->defaultSettings();
+        // Create Annoucements
+        
+        // Banks for airtime to cash
+    }
+
+    public function createPermissions(){
         $menu = [
             'Dashboard',
             'Announcement',
@@ -63,7 +77,7 @@ class RoleSeeder extends Seeder
             'role.update',
             'role.destroy',
             'role.create',
-    
+
             'category.show',
             'category.index',
             'category.edit',
@@ -86,7 +100,7 @@ class RoleSeeder extends Seeder
             'announcement.edit',
             'announcement.update',
             'announcement.destroy',
-        
+
             'api.show',
             'api.index',
             'api.edit',
@@ -159,15 +173,11 @@ class RoleSeeder extends Seeder
             'announcement.store',
             'email.setup',
             'email.setup.update',
-
             'paymentgateway.show',
             'paymentgateway.edit',
             'paymentgateway.update',
             'paymentgateway.destroy',
-            // 'paymentgateway.create',
             'paymentgateway.store',
-            // 'product.create',
-            // 'category.create',
             'category.repull',
             'category.pull',
             'product.repull',
@@ -179,18 +189,21 @@ class RoleSeeder extends Seeder
         ];
 
         // RolePermission::truncate();
-        foreach($menu as $key=>$value){
+
+        foreach ($menu as $key => $value) {
             RolePermission::updateOrCreate(
                 [
                     'name' => $value,
                     'route' => $value,
                     'type' => 'menu',
-                ],[
-                'name' => $value,
-                'route' => $value,
-                'type' => 'menu',
-                'status' => 'active',
-            ]);
+                ],
+                [
+                    'name' => $value,
+                    'route' => $value,
+                    'type' => 'menu',
+                    'status' => 'active',
+                ]
+            );
         }
 
         foreach ($permissions as $key => $value) {
@@ -199,83 +212,33 @@ class RoleSeeder extends Seeder
                     'name' => $value,
                     'route' => $value,
                     'type' => 'link',
-                ],[
-                'name' => $value,
-                'route' => $value,
-                'type' => 'link',
-                'status' => 'active',
-            ]);
+                ],
+                [
+                    'name' => $value,
+                    'route' => $value,
+                    'type' => 'link',
+                    'status' => 'active',
+                ]
+            );
         }
+    }
 
-        Role::updateOrCreate(['name' => 'Admin','status' => 'active'],[
-            'name' => 'Admin',
-            'permissions' => "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,115,116,117,118,119,120,121",
-            'status' => 'active'
-        ]);
-
-        // Airtime to cash category
-        Category::UpdateOrCreate([
-            "slug" => 'airtime2cash',
-            "type" => 'airtime2cash',
-        ],[
-            "name" => 'Airtime to Cash',
-            "icon" => '',
-            "display_name" => 'Airtime to Cash',
-            "slug" => 'airtime2cash',
-            "type" => 'airtime2cash',
-            "status" => 'active',
-            "order" => 1000,
-            "unique_element" => 'phone',
-            "discount_type" => 'percentage',
-        ]);
-
-        // Create new Settings here
-
-        // Create Annoucements
-        DB::statement("INSERT INTO `announcements` (`id`, `title`, `status`, `type`, `message`, `created_at`, `updated_at`) VALUES
-        (1, 'Pop-up Announcement', 'inactive', 'popup', '<p>sdd</p>', '2024-04-14 20:00:10', '2024-04-14 20:00:10'),
-        (2, 'Scroll Announcement', 'inactive', 'scroll', '<p>sddsds</p>', '2024-04-14 20:00:10', '2024-04-14 20:00:10');");
-        
-        // Create default user and admin
-        
-        // Banks for airtime to cash
-        $url = "https://sagecloud.ng/api/v2/merchant/authorization";
-        $payload = [
-            "email" => env('SAGECLOUD_EMAIL'),
-            "password" =>   env('SAGECLOUD_PASSWORD'),
-        ];
-        $control = new Controller();
-        $login = $control->basicApiCall($url, $payload, []);
-        
-        if(!empty($login) && $login['success'] == true){
-            $token = $login['data']['token']['access_token'] ?? null;
-        }
-
-        if(!empty($token)){
-            $url2 = "https://sagecloud.ng/api/v2/transfer/get-transfer-data";
-
-            $headers = [
-                "Content-Type: application/json",
-                "Authorization: Bearer " . $token . "",
-            ];
-
-            $callBanks = $control->basicApiCall($url2, [], $headers, 'GET');
-            
-            if (!empty($callBanks) && $callBanks['success'] == true) {
-                $banks = $callBanks['banks'] ?? null;
-                
-                if (!empty($banks)) {
-                    foreach($banks as $bank){
-                        Bank::updateOrCreate([
-                            "cbn_code" => $bank['cbn_code'],
-                        ],[
-                            "cbn_code" => $bank['cbn_code'],
-                            "bank_name" => $bank['bank_name']
-                        ]);
-                    }
-                }
+    public function addMerchantIdToAllTables(){
+        $tables = \DB::select('SHOW TABLES');
+       
+        foreach ($tables as $t) {
+            // dd($t->Tables_in_multivtu);
+            $name = $t->Tables_in_multivtu;
+            if (!Schema::hasColumn($name, 'merchant_id')) {
+                Schema::table($name, function (Blueprint $table) {
+                    $table->integer('merchant_id')->before('created_at');
+                });
             }
         }
         
+    }
+
+    public function defaultSettings(){
+
     }
 }

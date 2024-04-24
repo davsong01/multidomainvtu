@@ -3,6 +3,7 @@
 use Spatie\FlareClient\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DefaultController;
 use App\Http\Controllers\ExternalApiController;
 
 /*
@@ -16,10 +17,14 @@ use App\Http\Controllers\ExternalApiController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::controller(DefaultController::class)->prefix('v1')->group(function () {
+    Route::post('create-new-shop', 'createDefaultDetails');
+    Route::get('delete-shop/{id}', 'deleteMerchantShop');
+    
+});
+
 Route::controller(ExternalApiController::class)->prefix('v1')->group(function () {
+
     // Get all Categories
     Route::get('/category', 'getCategories');
     // Get all products
