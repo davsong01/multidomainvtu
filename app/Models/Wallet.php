@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\TransactionLog;
+use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Wallet extends Model
 {
-    use HasFactory;
+    use HasFactory, MerchantIdTrait;
     protected $fillable = ['customer_id','amount','type','transaction_id','reason'];
 
     public function transaction_log(){

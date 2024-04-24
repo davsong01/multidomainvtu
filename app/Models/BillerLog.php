@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BillerLog extends Model
 {
-    use HasFactory;
+    use HasFactory, MerchantIdTrait;
     protected $guarded = [];
 }

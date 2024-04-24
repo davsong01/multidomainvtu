@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\KycData;
 use App\Models\CustomerLevel;
+use App\Traits\MerchantIdTrait;
 use App\Models\ReservedAccountNumber;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory, MerchantIdTrait;
     protected $guarded = [];
 
     public function level()

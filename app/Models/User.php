@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Customer;
+use App\Traits\MerchantIdTrait;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\TransactionPinResetToken;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, MerchantIdTrait;
 
     /**
      * The attributes that are mass assignable.

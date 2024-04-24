@@ -6,12 +6,13 @@ use App\Models\API;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Discount;
+use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Variation extends Model
 {
-    use HasFactory;
+    use HasFactory, MerchantIdTrait;
 
     protected $guarded = [];
 

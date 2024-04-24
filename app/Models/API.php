@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Product;
 use App\Models\Variation;
 use App\Models\TransactionLog;
+use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Api extends Model
 {
 
-    use HasFactory;
+    use HasFactory, MerchantIdTrait;
     protected $guarded = [];
     protected $table = 'apis';
 

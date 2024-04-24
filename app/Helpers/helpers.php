@@ -3,14 +3,16 @@
 use App\Models\KycData;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\EmailLog;
+use App\Models\Merchant;
 use App\Models\Settings;
 use App\Mail\EmailMessages;
+use Illuminate\Support\Arr;
 use App\Models\Announcement;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Arr;
-use App\Http\Controllers\WalletController;
-use App\Models\EmailLog;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
+use App\Http\Controllers\WalletController;
 
 if (!function_exists("logEmails")) {
     function logEmails($email_to, $subject, $body)
@@ -26,46 +28,6 @@ if (!function_exists("logEmails")) {
         } catch (\Exception $e) {}
     }
 }
-
-// if (!function_exists("sendEmail")) {
-//     function sendEmail($count, $single = false)
-//     {
-//         if ($single){
-//             $pendingMails = EmailLog::where('id', 'pending')->take($count);
-//         } else {
-//             $pendingMails = EmailLog::where('status', 'pending')->take($count);
-//         }
-
-
-//         if ($pendingMails) {
-//             $clonePendingMail = clone $pendingMails;
-//             foreach (array_chunk($clonePendingMail->toArray(), 100) as $key => $value) {
-//                 $current = $pendingMails[$key];
-//                 sendEmailObject($current);
-//             }
-//         }
-//     }
-// }
-
-// if (!function_exists('sendEmailObject')) {
-//     function sendEmailObject ($current) {
-//         try {
-//             Mail::to($current->recipient)->send(new EmailMessages([
-//                 'subject' => $current->subject,
-//                 'body' => $current->content,
-//             ]));
-
-//             $current->status = 'sent';
-//             $current->save();
-//             return true;
-//         } catch (\Throwable $th) {
-//             $current->status = 'failed';
-//             $current->save();
-//             return false;
-//         }
-//     }
-// }
-
 
 if (!function_exists("sendEmails")) {
     function sendEmails($email_to, $subject, $body)
@@ -102,6 +64,13 @@ if (!function_exists("verifiableUniqueElements")) {
     function verifiableUniqueElements()
     {
         return ['meter_number', 'iuc_number', 'profile_id'];
+    }
+}
+
+if (!function_exists("getMerchantDetails")) {
+    function getMerchantDetails(){
+        $merchant = Merchant::where('id', Request::get('merchant_id'))->first();
+        return $merchant;
     }
 }
 

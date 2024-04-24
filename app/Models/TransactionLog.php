@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Models\Wallet;
 use App\Models\Product;
 use App\Models\Category;
+use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TransactionLog extends Model
 {
-    use HasFactory;
+    use HasFactory, MerchantIdTrait;
     protected $appends = ['type'];
     protected $guarded = [];
 
