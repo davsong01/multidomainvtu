@@ -1,8 +1,8 @@
 @php
     $allowedMenu = auth()->user()->admin->rolepermissions();
     $allowedRoutes = auth()->user()->admin->rolepermissions();
-@endphp
 
+@endphp
 <div class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row">

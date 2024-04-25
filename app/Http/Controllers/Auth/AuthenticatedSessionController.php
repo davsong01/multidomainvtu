@@ -36,8 +36,9 @@ class AuthenticatedSessionController extends Controller
                 return back()->with('error', 'Sorry, this account was suspended! Please contact support.');
             }
         }
+        
         $request->session()->regenerate();
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(route('dashboard', ['store_slug' => getMerchantDetails()->store_slug]));
     }
 
     /**

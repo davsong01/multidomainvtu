@@ -39,187 +39,35 @@ use App\Http\Controllers\ReservedAccountNumberController;
 */
 
 Route::get('welcome', function () {
-    return "Welcome to the main page!";
+    return "Welcome to the main site!";
 })->name('default.page');
 
 
-Route::group(['prefix' => '{locale}'], function () {
+
+Route::group(['prefix' => '{merchant}'], function () {
     Route::middleware(['default-domain-merchant-check'])->group(function () {
-        Route::get('user-details', function(){
-            dd(User::all());
+        Route::get('welcome', function ($merchant) {
+            dd($merchant);
+            // return view('admin.edit_profile', compact('merchant'));
         });
 
-        Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallback'])->name('log.payment.response');
-        Route::get('cron/analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
-        Route::get( 'cron/sendemails', [Controller::class, 'cronSendEmails']);
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-        Route::middleware(['auth', 'verified','ipcheck'])->group(function () {
-
-            Route::get('/create-transaction-pin', [DashboardController::class, 'createTransactionPin'])->name('customer.create.pin');
-            Route::post('/create-transaction-pin', [DashboardController::class, 'processCreateTransactionPin'])->name('customer.process.create.pin');
-            
-            Route::middleware(['auth', 'verified', 'tpin', 'ipcheck'])->group(function () {
-                Route::middleware('reserved_account')->group(function () {
-                    Route::get('/', [DashboardController::class, 'index']);
-                    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('customer.dashboard');
-                    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-                });
-                Route::get('/reset-transaction-pin', [DashboardController::class, 'resetTransactionPin'])->name('customer.reset.pin');
-                Route::post('/process-transaction-pin-reset', [DashboardController::class, 'processResetTransactionPin'])->name('process.transaction.pin.reset');
-                Route::get('confirm_reset_pin', [DashboardController::class, 'resetPin2']);
-                Route::post('reset_pin_final', [DashboardController::class, 'finalProcessPin'])->name('final.pin.reset');
-                // Route::post('change-pin', [HomeController::class, 'processResetPin'])->name('pin.process.reset');
-                Route::get('customer/{slug}', [TransactionController::class, 'showProductsPage'])->name('open.transaction.page');
-                Route::get('airtime-to-cash', [TransactionController::class, 'airtimeToCash'])->name('airtime-to-cash');
-                Route::get('wallet-to-bank/{sluhg}', [TransactionController::class, 'walletToBank'])->name('wallet-to-bank');
-                
-                Route::get('customer-get-variations/{product}', [VariationController::class, 'getCustomerVariations'])->name('get.customer.variations');
-            
-                Route::middleware(['kyc'])->group(function () {
-                    Route::post('customer-initialize-transaction', [TransactionController::class, 'initializeTransaction'])->name('initialize.transaction');
-                    Route::get('customer-transactions', [TransactionController::class, 'customerTransactionHistory'])->name('customer.transaction.history');
-                    
-                    Route::post('customer-verify', [TransactionController::class, 'verify'])->name('verify.unique.element');
-                    Route::get('customer-transaction_status/{transaction_id}', [TransactionController::class, 'transactionStatus'])->name('transaction.status');
-                    
-                    Route::get('customer-transaction-report', [TransactionController::class, 'showTransactionReportPage'])->name('customer.transaction.report');
-                    Route::get('customer-load-wallet', [DashboardController::class, 'showLoadWalletPge'])->name('customer.load.wallet');
-                    Route::get('customer-level-upgrade', [DashboardController::class, 'showUpgradeForm'])->name('customer.level.upgrade');
-                    Route::post('process-customer-load-wallet', [PaymentController::class, 'redirectToUrl'])->name('process-customer-load-wallet');
-                    Route::post('level-upgrade', [DashboardController::class, 'upgradeAccount'])->name('customer.level.upgrade.process');
-                    Route::get('download-transaction-receipt/{transaction_id}', [TransactionController::class, 'transactionReceipt'])->name('transaction.receipt.download');
-                    
-                    Route::get('downlines/process/withdrawal', [DashboardController::class, 'downlinesWithdrawal'])->name('downlines.withdraw');
-                    Route::post('downlines/withdraw', [DashboardController::class, 'processWithdrawal'])->name('process.withdrawal');
-                    Route::get('downlines/{id?}', [DashboardController::class, 'downlines'])->name('downlines');
-                    Route::get('alldownlines', [DashboardController::class, 'allDownlines'])->name('alldownlines');
-                    Route::get('api-settings', [DashboardController::class, 'apiSettings'])->name('api.settings');
-                    
-                });
-                Route::get('payment-callback/{provider_id?}', [PaymentController::class, 'analyzePaymentResponse'])->name('payment-callback');
-                Route::get('customer-update-kyc-info', [DashboardController::class, 'updateKycInfo'])->name('update.kyc.details');
-                Route::post('customer-update-kyc-info', [DashboardController::class, 'processUpdateKycInfo'])->name('update.kyc.details.process');
-                Route::get('get-lga-by-statename/{state}', [KycDataController::class, 'getLgaByStateName'])->name('kyc-get-lga-by-state');
-                Route::post('customer-get-discount', [TransactionController::class, 'getCustomerDiscount'])->name('get.customer.discount');
-            
-                // Route::post('transaction-confirm/{provider}/{reference?}', [PaymentController::class, 'logPaymentResponse'])->name('log.payment.response');
-            });
-            
-            Route::middleware('auth')->group(function () {
-                Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-                Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-                Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-                Route::get('/get-keys', [ProfileController::class, 'generateKeys'])->name('profile.keys');
-            });
-            
-            // Admin
-            Route::middleware(['auth', 'verified', 'admin', 'ipcheck', 'adminRoute'])->prefix('admin')->group(function () {
-                Route::resource('product', ProductController::class);
-                
-                Route::get('pull-product', [ProductController::class, 'pullProducts'])->name('product.pull');
-                Route::get('repull-product', [ProductController::class, 'pullProducts'])->name('product.repull');
-            
-                Route::get('duplicate-product/{product}', [ProductController::class, 'duplicateProduct'])->name('duplicate.product');
-                Route::resource('api', APIController::class);
-                Route::get('api-balance/{api}', [APIController::class, 'getBalance'])->name('api.balance');
-            
-                Route::resource('category', CategoryController::class);
-                Route::get('pull-categories', [CategoryController::class, 'pullCategories'])->name('category.pull');
-                Route::get('repull-categories', [CategoryController::class, 'pullCategories'])->name('category.repull');
-            
-                Route::resource('customer-blacklist', BlackListController::class);
-                Route::resource('announcement', AnnouncementController::class);
-                Route::get('emails/send/{count?}', [EmailLogController::class, 'sendMail'])->name('emails.send');
-                Route::get('emails/fire-mail/{log}', [EmailLogController::class, 'send'])->name('emails-send');
-                Route::get('emails/pending', [EmailLogController::class, 'pending'])->name('emails.pending');
-                Route::get('emails/resend/{id}', [EmailLogController::class, 'resend'])->name('emails.resend');
-                Route::patch('emails/update/{id}', [EmailLogController::class, 'update'])->name('emails.update');
-                Route::get('emails/destroy/{id}', [EmailLogController::class, 'destroy'])->name('emails.destroy');
-                Route::get('emails/clear', [EmailLogController::class, 'sweep'])->name('emails.sweep');
-                Route::get('emails', [EmailLogController::class, 'index'])->name('emails.index');
-                Route::get('black-list-status', [BlackListController::class, 'status'])->name('black.list.status');
-            
-                Route::get('setup-emails', [EmailApiController::class, 'edit'])->name('email.setup');
-                Route::post('setup-emails', [EmailApiController::class, 'update'])->name('email.setup.update');
-            
-                // transactions route
-                Route::get('transactions', [TransactionController::class, 'transView'])->name('admin.trans');
-                Route::get('wallet-transactions', [TransactionController::class, 'walletTransView'])->name('admin.walletlog');
-                Route::get('admin-wallet-funding-log', [TransactionController::class, 'walletFundingLogView'])->name('admin.walletfundinglog');
-                Route::get('admin-airtime-2-cash-log', [TransactionController::class, 'airtimeToCashTransactions'])->name('admin.airtime.2.cash.log');
-                
-                Route::get('admin-earninglog', [TransactionController::class, 'walletEarningView'])->name('admin.earninglog');
-                Route::get('credit-customer', [TransactionController::class, 'creditCustomerPage'])->name('admin.credit.customer');
-                Route::get('debit-customer', [TransactionController::class, 'debitCustomerPage'])->name('admin.debit.customer');
-                Route::post('process-credit-debit', [TransactionController::class, 'processCreditDebit'])->name('admin.process.credit.debit');
-                Route::get('admin-kyc', [KycDataController::class, 'adminKycIndex'])->name('admin.kyc');
-                Route::get('admin-reserved-account', [ReservedAccountNumberController::class, 'index'])->name('admin.reserved.accounts');
-                Route::get('account-transactions/{account}', [ReservedAccountNumberController::class, 'show'])->name('account.transactions');
-                Route::get('admin-callback-analysis', [PaymentController::class, 'callBackAnalysis'])->name('callback.analysis');
-                Route::get('admin-callback-analysis-reset/{callback}', [PaymentController::class, 'resetCallBackResponse'])->name('callback.reset');
-            
-            
-                Route::get('reserved-account-delete/{account}', [ReservedAccountNumberController::class, 'delete'])->name('reserved_account.delete');
-            
-                Route::get('single-transaction-view/{transaction}', [TransactionController::class, 'singleTransactionView'])->name('admin.single.transaction.view');
-                Route::get('query-wallet/{transactionlog?}', [TransactionController::class, 'queryWallet'])->name('admin.query.wallet');
-                Route::get('requery-transaction/{transactionlog?}', [TransactionController::class, 'requery'])->name('admin.requery.transaction');
-                
-                Route::post('change-transaction-method/{transaction}', [TransactionController::class, 'changeTransactionMethod'])->name('admin.changetransactionmethod');
-            
-                Route::post('verify-bank-details', [TransactionController::class, 'verifyBankDetails'])->name('admin.verify.bank.details');
-            
-                Route::get('customers/{status?}', [CustomerController::class, 'customers'])->name('customers');
-                Route::get('customers-active/{status}', [CustomerController::class, 'customers'])->name('customers.active');
-                Route::get('customers-suspended/{status}', [CustomerController::class, 'customers'])->name('customers.suspended');
-                Route::get('customer/edit/{id}', [CustomerController::class, 'singleCustomer'])->name('customers.edit');
-                Route::post('customer/update/{id}', [CustomerController::class, 'updateCustomer'])->name('customers.update');
-                Route::resource('customerlevel', CustomerLevelController::class);
-            
-                Route::get('pull-variations/{product}', [VariationController::class, 'pullVariations'])->name('variations.pull');
-                Route::post('update-variations/{product}', [VariationController::class, 'updateVariations'])->name('variations.update');
-                Route::post('manual-variations-add/{product}', [VariationController::class, 'addManualVariations'])->name('manual.variations.add');
-                Route::get('delete-variations/{variation}', [VariationController::class, 'deleteVariations'])->name('variation.delete');
-            
-                Route::post('create-reserved-account/{customer}', [CustomerController::class, 'addReservedAccounts'])->name('create.reserved.account');
-            
-                Route::controller(AdminController::class)->group(function () {
-                    Route::get('admins', 'index')->name('admins');
-                    Route::get('admin/new', 'create')->name('newAdmin');
-                    Route::post('admin/save', 'store')->name('adminSave');
-                    Route::get('admin/view', 'view')->name('viewAdmin');
-                    Route::post('admin/update', 'update')->name('updateAdmin');
-                    Route::get('verify-biller', 'verifyBiller')->name('admin.verifybiller');
-                    Route::post('verify-post', 'verifyPost')->name('admin.verify.post');
-                });
-            
-                Route::resource('billerlog', BillerLogController::class);
-                Route::resource('role', RoleController::class);
-                Route::resource('permission', RolePermissionController::class);
-            
-                Route::get('settings-update', [SettingsController::class, 'edit'])->name('settings.edit');
-                Route::post('settings-update', [SettingsController::class, 'update'])->name('settings.update');
-            
-                Route::get('verify-transaction/{reference}/{provider_id?}', [PaymentController::class, 'verifyPayment'])->name('transaction.verify');
-            
-                Route::resource('paymentgateway', PaymentGatewayController::class);
-            
-                Route::post('transaction-pin-reset/{user}', [CustomerController::class, 'resetTransactionPin'])->name('admin.transaction.pin.reset');
-                Route::post('password-reset/{user}', [CustomerController::class, 'resetPassword'])->name('admin.password.reset');
-                Route::post('customer-update-kyc/{customer}', [CustomerController::class, 'processCustomerUpdateKycInfo'])->name('admin.customer.update.kyc');
-                Route::get('customer-approve-kyc/{customer}', [CustomerController::class, 'approveCustomerKyc'])->name('admin.customer.approve.kyc');
-                Route::get('customer-decline-kyc/{customer}', [CustomerController::class, 'declineCustomerKyc'])->name('admin.customer.decline.kyc');
-            });
-
-            require __DIR__ . '/auth.php';
-        });
     });
 });
 
-Route::middleware(['custom-domain-merchant-check'])->group(function () {   
-    Route::get('hello', function () {
-        return "Welcome to the default site!";
-    }); 
+// Ollie's model
+Route::group(['prefix' => '/{merchant}','middleware' => \App\Http\Middleware\DefaultDomainMerchantCheckMiddleware::class,'as' => 'merchant:',
+], function () {
+    // Tenant routes here
+    Route::get('welcome', function () {
+        return view('admin.edit_profile');
+    });
+
+    Route::get('/profile',
+        [ProfileController::class, 'edit']
+    )->name('profile.edit');
 });
 
 

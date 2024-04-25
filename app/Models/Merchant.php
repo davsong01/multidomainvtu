@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\MerchantIdTrait;
-
 
 class Merchant extends Model
 {
-    use HasFactory, MerchantIdTrait;
+    use HasFactory;
 
     protected $fillable = [
         'store_slug',
@@ -20,4 +18,9 @@ class Merchant extends Model
         'subscription_start',
         'subscription_end'
     ];
+
+    public function route($name, $parameters = [], $absolute = true)
+    {
+        return app('url')->route($name, array_merge([$this->store_slug], $parameters), $absolute);
+    }
 }
