@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\User;
-use App\Models\RolePermission;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIController;
 use App\Http\Controllers\RoleController;
@@ -22,10 +19,19 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VariationController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\CustomerLevelController;
 use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ReservedAccountNumberController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,31 +44,59 @@ use App\Http\Controllers\ReservedAccountNumberController;
 |
 */
 
-Route::get('welcome', function () {
-    return "Welcome to the main page!";
-})->name('default.page');
 
 
-Route::group(['prefix' => '{locale}'], function () {
-    Route::middleware(['default-domain-merchant-check'])->group(function () {
-        Route::get('user-details', function(){
-            dd(User::all());
+// Route::group(['prefix' => '{merchant}'], function () {
+//     Route::middleware(['default-domain-merchant-check'])->group(function () {
+//         Route::get('welcome', function ($merchant) {
+//             return "Welcome to the $merchant site!";
+//         });
+
+//         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     });
+// });
+
+Route::group(['prefix' => '{merchant}'], function ($merchant) {
+    Route::middleware(['default-domain-merchant-check'])->group(function ($merchant) { 
+        Route::get('welcome', function () {
+            return view('auth.login');
         });
 
-        Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallback'])->name('log.payment.response');
-        Route::get('cron/analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
-        Route::get( 'cron/sendemails', [Controller::class, 'cronSendEmails']);
+        // Auth routes
+        Route::middleware('guest')->group(function () {
+            Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
 
-        Route::middleware(['auth', 'verified','ipcheck'])->group(function () {
+            Route::post('register', [RegisteredUserController::class, 'store']);
 
+            Route::get('login', [AuthenticatedSessionController::class, 'create'])
+                ->name('login');
+
+            Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+            Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+                ->name('password.request');
+
+            Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+                ->name('password.email');
+
+            Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+                ->name('password.reset');
+
+            Route::post('reset-password', [NewPasswordController::class, 'store'])
+                ->name('password.store');
+        });
+
+
+        Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/create-transaction-pin', [DashboardController::class, 'createTransactionPin'])->name('customer.create.pin');
             Route::post('/create-transaction-pin', [DashboardController::class, 'processCreateTransactionPin'])->name('customer.process.create.pin');
+            Route::get('/', [DashboardController::class, 'index']);
+            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
             
-            Route::middleware(['auth', 'verified', 'tpin', 'ipcheck'])->group(function () {
+            Route::middleware(['tpin'])->group(function () {
                 Route::middleware('reserved_account')->group(function () {
-                    Route::get('/', [DashboardController::class, 'index']);
                     // Route::get('/dashboard', [DashboardController::class, 'index'])->name('customer.dashboard');
-                    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
                 });
                 Route::get('/reset-transaction-pin', [DashboardController::class, 'resetTransactionPin'])->name('customer.reset.pin');
                 Route::post('/process-transaction-pin-reset', [DashboardController::class, 'processResetTransactionPin'])->name('process.transaction.pin.reset');
@@ -113,7 +147,7 @@ Route::group(['prefix' => '{locale}'], function () {
             });
             
             // Admin
-            Route::middleware(['auth', 'verified', 'admin', 'ipcheck', 'adminRoute'])->prefix('admin')->group(function () {
+            Route::middleware(['admin', 'adminRoute'])->prefix('admin')->group(function () {
                 Route::resource('product', ProductController::class);
                 
                 Route::get('pull-product', [ProductController::class, 'pullProducts'])->name('product.pull');
@@ -210,8 +244,6 @@ Route::group(['prefix' => '{locale}'], function () {
                 Route::get('customer-approve-kyc/{customer}', [CustomerController::class, 'approveCustomerKyc'])->name('admin.customer.approve.kyc');
                 Route::get('customer-decline-kyc/{customer}', [CustomerController::class, 'declineCustomerKyc'])->name('admin.customer.decline.kyc');
             });
-
-            require __DIR__ . '/auth.php';
         });
     });
 });
@@ -220,6 +252,8 @@ Route::middleware(['custom-domain-merchant-check'])->group(function () {
     Route::get('hello', function () {
         return "Welcome to the default site!";
     }); 
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
 });
 
 

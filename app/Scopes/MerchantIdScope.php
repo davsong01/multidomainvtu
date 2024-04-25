@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class MerchantIdScope implements Scope
 {
-    public function apply(Builder $builder, Model $model)
+    public function apply(Builder $builder, Model $model): void
     {
-        // Your logic to apply the scope
-        $builder->where('merchant_id', Request::get('merchant_id'));
+        $builder->where($model->getTable() . '.merchant_id', Request::get('merchant_id'));
     }
+
 }

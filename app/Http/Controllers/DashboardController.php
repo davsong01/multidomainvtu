@@ -22,6 +22,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        dd('dashborad');
         $customer = $this->customerOfTheMonth();
         
         if (auth()->user()->type == 'admin') {
