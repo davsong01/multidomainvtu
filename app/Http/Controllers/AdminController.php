@@ -63,7 +63,7 @@ class AdminController extends Controller
             ]);
         });
 
-        return redirect(route('admins'))->with('message', 'Account created successfully!');
+        return redirect(route('admins', ['merchant' => getMerchantDetails()->store_slug]))->with('message', 'Account created successfully!');
     }
 
     function view (Request $request) {

@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('announcement.index') }}">Announcement</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('announcement.index', ['merchant' => getMerchantDetails()->store_slug]) }}">Announcement</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit Announcement
                                     </li>
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('announcement.store') }}" method="POST"
+                                        <form action="{{ route('announcement.store', ['merchant' => getMerchantDetails()->store_slug]) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">

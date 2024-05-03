@@ -27,6 +27,7 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $user = auth()->user();
+        
         if ($user->status != 'active') {
             auth()->logout();
             if ($user->status == 'deleted') {
@@ -36,8 +37,10 @@ class AuthenticatedSessionController extends Controller
                 return back()->with('error', 'Sorry, this account was suspended! Please contact support.');
             }
         }
+        
         $request->session()->regenerate();
-        return redirect()->intended(RouteServiceProvider::HOME);
+        
+        return redirect()->intended(route('dashboard'));
     }
 
     /**

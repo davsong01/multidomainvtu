@@ -44,11 +44,12 @@ class APIController extends Controller
             "live_base_url" => $request->live_base_url,
         ]);
 
-        return redirect(route('api.index'))->with('message', 'Added successfully');
+        return redirect(route('api.index', ['merchant' => getMerchantDetails()->store_slug]))->with('message', 'Added successfully');
     }
 
-    public function edit(API $api)
+    public function edit($id)
     {
+        dd('sdsd', $id);
         return view('admin.api.edit', compact('api'));
     }
 

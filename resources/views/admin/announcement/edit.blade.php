@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('announcement.index') }}">Announcement</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('announcement.index', ['merchant' => getMerchantDetails()->store_slug]) }}">Announcement</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit Announcement
                                     </li>

@@ -19,7 +19,6 @@ class DefaultDomainMerchantCheckMiddleware
         if(empty($prefix)){
             return redirect(route('default.page'));  
         }
-        
         return $next($request);
     }
 }

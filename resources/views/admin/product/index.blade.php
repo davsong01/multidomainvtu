@@ -23,7 +23,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Products</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('product.index', ['merchant' => getMerchantDetails()->store_slug]) }}">Products</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Products
                                     </li>
@@ -43,9 +43,9 @@
                                 <div class="card-header">
                                     <h4 class="card-title">All products</h4> <br>
                                     @if($products->count() < 1)
-                                    <a href="{{ route('product.pull') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Products</button></a>
+                                    <a href="{{ route('product.pull', ['merchant' => getMerchantDetails()->store_slug]) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Products</button></a>
                                     @else      
-                                    <a href="{{ route('product.repull') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; RePull Products</button></a>
+                                    <a href="{{ route('product.repull', ['merchant' => getMerchantDetails()->store_slug]) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; RePull Products</button></a>
                                     @endif
                                 </div>
                                 <div class="card-content">

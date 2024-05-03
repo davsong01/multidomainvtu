@@ -24,7 +24,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('api.index') }}">API Provider</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('api.index',['merchant' => getMerchantDetails()->store_slug]) }}">API Provider</a>
                                     </li>
                                     
                                 </ol>
@@ -61,7 +61,7 @@
                                                         @if(hasAccess('api.edit') || hasAccess('api.balance'))
                                                         <td>
                                                             @if(hasAccess('api.edit'))
-                                                            <a href="{{ route('api.edit', $api->id) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View/Edit</span></button></a>
+                                                            <a href="{{ route('api.edit', ['api' => $api->id, 'merchant' => getMerchantDetails()->store_slug]) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View/Edit</span></button></a>
                                                             @endif
                                                             @if(hasAccess('api.balance'))
                                                             <a id="api-{{$api->id}}" onclick="getBalance('{{$api->id}}')" style="color:white" class="btn btn-info btn-sm mr-1 mb-1"><span id="icon-{{ $api->id }}"><i class="fa fa-refresh"></i></span><span class="align-middle ml-25">Check balance</span></a>

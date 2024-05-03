@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Settings;
+use App\Scopes\MerchantIdScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Merchant extends Model
 {
@@ -18,4 +20,10 @@ class Merchant extends Model
         'subscription_start',
         'subscription_end'
     ];
+
+    public function setting()
+    {
+        return $this->hasOne(Settings::class)->withoutGlobalScope(new MerchantIdScope());
+    }
+
 }

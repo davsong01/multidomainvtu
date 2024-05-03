@@ -23,6 +23,7 @@ if (!function_exists("logEmails")) {
                 'subject' => $subject,
                 'recipient' => $email_to,
                 'content' => $body,
+                'merchant_id' => request()->merchant_id
             ]);
            
         } catch (\Exception $e) {}
@@ -100,7 +101,8 @@ if (!function_exists("referralBalance")) {
 if (!function_exists("getSettings")) {
     function getSettings()
     {
-        return Settings::first();
+        $settings = json_decode(json_encode(request()->merchant_settings), FALSE);
+        return $settings;
     }
 }
 

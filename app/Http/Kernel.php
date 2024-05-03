@@ -55,7 +55,10 @@ class Kernel extends HttpKernel
     protected $middlewareAliases = [
         'default-domain-merchant-check' => \App\Http\Middleware\DefaultDomainMerchantCheckMiddleware::class,
         'custom-domain-merchant-check' => \App\Http\Middleware\CustomDomainMerchantCheckMiddleware::class,
-        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth' => \App\Http\Middleware\AuthCheckMiddleware::class,
+        // 'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'verified' => \App\Http\Middleware\VerifyEmailMiddleware::class,
+
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
@@ -65,7 +68,6 @@ class Kernel extends HttpKernel
         'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'ipcheck' => \App\Http\Middleware\CheckIpMiddleware::class,
         'kyc' => \App\Http\Middleware\KycMiddleware::class,

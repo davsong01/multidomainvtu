@@ -15,7 +15,9 @@ class EmailVerificationNotificationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        dd('ppp');
         if ($request->user()->hasVerifiedEmail()) {
+            dd('yes');
             return redirect()->intended(RouteServiceProvider::HOME);
         }
 
@@ -46,7 +48,6 @@ class EmailVerificationNotificationController extends Controller
             \Log::error($th->getMessage() . ' Line: ' . $th->getLine() . ' Filename: ' . $th->getFile());
         }
 
-        
         return back()->with('status', 'Verification Link sent');
     }
 }

@@ -10,5 +10,4 @@ class Settings extends Model
 {
     use HasFactory, MerchantIdTrait;
     protected $guarded = [];
-
 }

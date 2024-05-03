@@ -10,7 +10,7 @@
         <div class="card-content">
             <div class="card-body">
                @include('layouts.alerts')
-               <form method="POST" action="{{ route('verification.send') }}" class="text-center center">
+               <form method="POST" action="{{ route('verification.send', request()->array) }}" class="text-center center">
                             @csrf
                             <p class="text-center text-muted">
                                 Thanks for signing up! Before getting started, please verify your email address by clicking on the link that was sent to your registered email account. If you didn't receive the email, you can click the button bellow to resend verification email.

@@ -13,7 +13,7 @@
         <div class="card-content">
             <div class="card-body">
                @include('layouts.alerts')
-                <form action="{{ route('password.email') }}" method="POST">
+                <form action="{{ route('password.email', request()->array) }}" method="POST">
                     @csrf
                     <div class="row">
 
@@ -25,7 +25,7 @@
                     
                     <button type="submit" class="btn btn-primary glow w-100 position-relative">Email Password Reset Link<i id="icon-arrow" class="bx bx-right-arrow-alt"></i></button>
                 </form>
-                <div class="text-center mt-2"><small class="mr-25">I remember my password</small><a href="{{ route('login') }}"><small>Sign In</small></a></div>
+                <div class="text-center mt-2"><small class="mr-25">I remember my password</small><a href="{{ route('login', request()->array) }}"><small>Sign In</small></a></div>
                 @include('layouts.support')
             </div>
         </div>
