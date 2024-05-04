@@ -23,6 +23,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        dd('sdds');
         return view('auth.register');
     }
 

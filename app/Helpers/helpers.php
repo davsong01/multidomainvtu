@@ -9,6 +9,7 @@ use App\Models\Settings;
 use App\Mail\EmailMessages;
 use Illuminate\Support\Arr;
 use App\Models\Announcement;
+use App\Models\EmailApiSetting;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
@@ -39,12 +40,51 @@ if (!function_exists("sendEmails")) {
         ];
 
         try {
-
             Mail::to($email_to)->send(new EmailMessages($data));
             return true;
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
         }
+    }
+}
+
+if (!function_exists("sendAuthEmails")) {
+    function sendAuthEmails($email_to, $subject, $body)
+    {
+        $data = [
+            'subject' => $subject,
+            'body' => $body,
+        ];
+
+        try {
+            $provider = EmailApiSetting::first();
+            config([
+                'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
+                'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
+                'mail.port' => $provider->MAIL_PORT ?? env('MAIL_PORT'),
+                'mail.encryption' => $provider->MAIL_ENCRYPTION ?? env('MAIL_ENCRYPTION'),
+                'mail.username' => $provider->MAIL_USERNAME ?? env('MAIL_USERNAME'),
+                'mail.password' => $provider->MAIL_PASSWORD ?? env('MAIL_PASSWORD'),
+                'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME ?? env('MAIL_REPLY_TO_NAME'),
+                'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS ?? env('MAIL_REPLY_TO_ADDRESS'),
+                'mail.from' => [
+                    'address' => $provider->MAIL_FROM_ADDRESS ?? env('MAIL_FROM_ADDRESS'),
+                    'name' => $provider->MAIL_FROM_NAME ?? env('MAIL_FROM_NAME'),
+                ],
+            ]);
+
+            $data = [
+                'subject' => $subject,
+                'body' => $body,
+            ];
+            
+            // $current['provider'] = $provider->toArray();
+            Mail::to($email_to)->send(new EmailMessages($data));
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+        }
+
+        return true;
     }
 }
 

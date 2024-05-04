@@ -22,6 +22,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomerLevelController;
 use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\RolePermissionController;
@@ -68,20 +69,23 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
         Route::post('login', [LoginController::class, 'store'])->name('login.action');
         
         // Auth routes
-        Route::middleware('guest')->group(function ($merchant) {
-            Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-            Route::post('register', [RegisteredUserController::class, 'store']);
+        Route::middleware([])->group(function ($merchant) {
+            Route::get('register', [RegisterController::class, 'create'])->name('register');
+            Route::post('register', [RegisterController::class, 'store']);
             Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
             Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email')->middleware('throttle:1,1');
             Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
             Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
         });
 
+        Route::get('verify/{token}', [VerifyEmailController::class, 'confirmEmailVerification'])
+        ->middleware(['throttle:6,1'])
+        ->name('verification.verify');
+
         Route::middleware(['auth'])->group(function ($merchant) {
-            Route::get('verify-email', [EmailVerificationNotificationController::class, 'store'])->name('verification.notice');
+            Route::get('email-verify', [VerifyEmailController::class, 'store'])->name('verification.notice');
             // Email verification routes
-            Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
-            Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1')->name('verification.send');
+            Route::post('email/verification-notification', [VerifyEmailController::class, 'store'])->middleware('throttle:6,1')->name('verification.send');
         });
 
         Route::middleware(['auth', 'verified'])->group(function ($merchant) {

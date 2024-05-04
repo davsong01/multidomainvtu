@@ -126,6 +126,7 @@ class LoginController extends Controller
         $check = $this->create($data);
         return redirect("dashboard")->withSuccess('You have signed-in');
     }
+    
     public function create(array $data)
     {
         return User::create([

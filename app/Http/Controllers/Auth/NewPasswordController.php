@@ -45,7 +45,7 @@ class NewPasswordController extends Controller
 
         $body = 'Hello <br>Your password has been changed on your ' .request()->store_name. ' account at: ' . Carbon::now() . '.<br> If this was not you, please get in touch with us as quick as possible';
 
-        logEmails($request->email, 'Password Changed on '.request()->store_name, $body);
+        sendAuthEmails($request->email, 'Password Changed on '.request()->store_name, $body);
 
         return redirect()->route('login', $request->array)->with('message', 'Your password has been changed!');
     }

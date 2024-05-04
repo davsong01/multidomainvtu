@@ -11,7 +11,7 @@
             <div class="card-content">
                 <div class="card-body">
                     @include('layouts.alerts')
-                    <form action="{{ route('register') }}" method="POST">
+                    <form action="{{ route('register', request()->array) }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="form-group mb-50 col-sm-6 col-12">
@@ -52,15 +52,14 @@
                         <div class="form-group mb-50 mt-2 ">
                             <div class="checkbox checkbox-success checkbox-glow">
                                 <input type="checkbox" id="checkboxGlow3" name="privacy" required>
-                                <label for="checkboxGlow3"><p>I agree to the <a target="_blank" href="">TERMS OF SERVICE</a> of {{ config('app.name')}}</p></label>
+                                <label for="checkboxGlow3"><p>I agree to the <a target="_blank" href="{{ getSettings()->terms_and_conditions_link }}">TERMS OF SERVICE</a> of {{ request()->store_name }}</p></label>
                             </div>
                         </div>
-
                         <button type="submit" class="btn btn-primary glow w-100 position-relative">Register</button>
                     </form>
                     <hr>
                     <div class="text-center"><small class="mr-25">Already have an account?</small><a
-                            href="{{ route('login') }}"><small>Login</small></a></div>
+                            href="{{ route('login', request()->array) }}"><small>Login</small></a></div>
                     @include('layouts.support')
                 </div>
             </div>
