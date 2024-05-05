@@ -15,6 +15,45 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\WalletController;
 
+
+if (!function_exists("getPaymentGateways")) {
+    function getPaymentGateways()
+    {
+        $gateways = [
+            [
+                'name' => 'monnify',
+                'status' => 'active',
+            ],
+            [
+                'name' => 'squad',
+                'status' => 'active',
+            ] 
+        ];
+
+        return json_decode(json_encode($gateways), FALSE);
+    }
+}
+
+if (!function_exists("createReservedAccount")) {
+    function createReservedAccount($data = null)
+    {
+        $paymentGateway = request()->merchant_settings['payment_gateway'];
+        $reserved = null;
+
+        if (!empty($paymentGateway)) {
+            if ($paymentGateway == 'monnify') {
+                $reserved = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->createReservedAccount($data);
+            }
+
+            if ($paymentGateway == 'squad') {
+                $reserved = app('App\Http\Controllers\PaymentProcessors\SquadController')->createReservedAccount($data);
+            }
+        }
+
+        return $reserved;
+    }
+}
+
 if (!function_exists("logEmails")) {
     function logEmails($email_to, $subject, $body)
     {

@@ -23,7 +23,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('customerlevel.index') }}">Customer
+                                    <li class="breadcrumb-item"><a href="{{ route('customerlevel.index', request()->array) }}">Customer
                                             Levels</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Customer Levels
@@ -42,7 +42,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">All Customer Levels</h4> <br>
-                                    <a href="{{ route('customerlevel.create') }}"><button id="addRow"
+                                    <a href="{{ route('customerlevel.create', request()->array) }}"><button id="addRow"
                                             class="btn btn-primary mb-2 d-flex align-items-center"><i
                                                 class="bx bx-plus"></i>&nbsp; Add Customer Level</button></a>
                                     @include('layouts.alerts')
@@ -66,8 +66,8 @@
                                                     @foreach ($levels as $level)
                                                         <tr>
                                                             <td>{{ $level->name }}
-                                                                @if($level->make_api_level == 'yes')
-                                                                <button class="btn btn-primary">API</button>
+                                                                @if($level->make_default == 'yes') <br>
+                                                                <button class="btn btn-dark btn-sm">ADefaultPI</button>
                                                                 @endif
                                                             </td>
                                                             <td>{{ $level->order }}</td>
@@ -77,13 +77,13 @@
                                                             @if(hasAccess('customerlevel.edit') || hasAccess('customerlevel.destroy'))
                                                             <td>
                                                                 @if(hasAccess('customerlevel.edit'))
-                                                                    <a href="{{ route('customerlevel.edit', $level->id) }}"><button
+                                                                    <a href="{{ route('customerlevel.edit', array_merge(request()->array, ['customerlevel' => $level->id])) }}"><button
                                                                     type="button" class="btn btn-primary btn-sm mr-1 mb-1"><span class="align-middle ml-25">View/Edit</span></button></a>
                                                                 @endif
                                                                 @if(hasAccess('customerlevel.destroy'))
                                                                     @if ($level->customers_count < 1)
                                                                         <form
-                                                                            action="{{ route('customerlevel.destroy', $level->id) }}"
+                                                                            action="{{ route('customerlevel.destroy', array_merge(request()->array, ['customerlevel' => $level->id] )) }}"
                                                                             class="btn btn-custon-four btn-bg-cl-social"
                                                                             method="POST"
                                                                             onsubmit="return confirm('Are you sure you want to delete forever?');">

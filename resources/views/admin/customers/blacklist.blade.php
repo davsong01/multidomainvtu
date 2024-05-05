@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Blacklist')
 @section('content')
     <!-- Content wrapper -->
     <div class="app-content content">
@@ -9,7 +10,7 @@
                     <div class="card-header">
                         <!-- head -->
                         <h5 class="card-title mb-2">Blacklists</h5>
-                        <a href="{{ route('customer-blacklist.create') }}"><button id="addRow"
+                        <a href="{{ route('customer-blacklist.create',request()->array) }}"><button id="addRow"
                                 class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Add
                                 To Blacklist</button></a>
                         @include('layouts.alerts')
@@ -29,15 +30,6 @@
                                 <tbody>
                                     @foreach ($customers as $customer)
                                         <tr>
-                                            {{-- <td>
-                                                <img class="rounded-circle mr-1" src="{{ $customer->avatar }}"
-                                                    alt="image">
-                                                Name:<a target="_blank" href="{{ request()->route()->getPrefix() }}/customer/edit/{{ $customer->id }}">
-                                                    {{ $customer->firstname . ' ' . $customer->lastname }}</a> <br>
-                                                   Email:  {{ $customer->email }} <br>
-                                                   Phone Number: {{ $customer->phone }}
-                                            </td> --}}
-
                                             <td>{{ $customer->value }}</td>
                                             <td>{{ ucfirst($customer->status) }}</td>
                                             <td>{{ $customer->created_at->toDateString('en-GB') }}</td>
@@ -69,16 +61,17 @@
                     let status = $(this).attr('data-value');
                     let id = $(this).attr('data-id');
                     $.ajax({
-                        url: 'black-list-status',
+                        url: '{{ route('black.list.status', request()->array) }}',
                         data: {status, id},
                         success: e => {
-                            alert(e.message)
                             if (e.code == 1) {
                                 let status = $(this).attr('data-value', e.status);
                             }
                         },
                         error: () => alert('Request could not be completed!'),
                     });
+
+                    location.reload();
                 }
             })
 

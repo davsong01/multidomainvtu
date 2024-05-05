@@ -94,7 +94,7 @@ class CategoryController extends Controller
             "merchant_id" => $request()->merchant_id
         ]);
 
-        return redirect(route('category.index', ['merchant' => getMerchantDetails()->store_slug]))->with('message', 'Added successfully');
+        return redirect(route('category.index', request()->array))->with('message', 'Added successfully');
     }
 
     public function edit($id,$category)

@@ -23,7 +23,6 @@
                                             <span
                                             class="text-success">Delivered</span>
                                     </div>
-                                   
                                 </div>
                             </div>
                         </div>

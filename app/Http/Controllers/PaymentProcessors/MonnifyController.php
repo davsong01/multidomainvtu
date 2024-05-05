@@ -14,7 +14,7 @@ class MonnifyController extends Controller
 
     public function __construct()
     {
-        $this->api = PaymentGateway::where('id', 1)->first();
+        $this->api = PaymentGateway::where('slug', 'monnify')->first();
     }
 
     public function login()

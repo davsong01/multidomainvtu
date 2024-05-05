@@ -13,7 +13,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('category.index',  ['merchant' => getMerchantDetails()->store_slug]) }}">Categories</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('category.index',  request()->array) }}">Categories</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{ $category->name }}
                                     </li>
@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('category.update',  ['merchant' => getMerchantDetails()->store_slug, 'category' => $category->id])}}" method="POST">
+                                        <form action="{{route('category.update',  request()->array, 'category' => $category->id])}}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <div class="row">

@@ -2,6 +2,7 @@
 use App\Models\BlackList;
 ?>
 @extends('layouts.app')
+@section('title', 'Edit '.$user->firstname)
 @section('page-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
@@ -47,7 +48,7 @@ use App\Models\BlackList;
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array) }}">Dashboard</a>
                                     </li>
                                     <li class="breadcrumb-item active">Customer Profile</li>
                                 </ol>
@@ -162,9 +163,7 @@ use App\Models\BlackList;
                                             <h5 class="card-title mt-3">
                                                 Profile Info
                                             </h5>
-                                            <form
-                                                action="{{ request()->route()->getPrefix() }}/customer/update/{{ $user->id }}"
-                                                method="POST">
+                                            <form action="{{ route('customers.update', array_merge(request()->array, ['id' => $user->id])) }}" method="POST">
                                                 <fieldset class="form-group">
                                                     <label for="firstname">First Name</label>
                                                     <input type="text" class="form-control" id="firstname"
@@ -243,8 +242,8 @@ use App\Models\BlackList;
                                                         @foreach ($trans as $transaction)
                                                             <tr>
                                                                 <td>
-                                                                    {{ $transaction->product_name }} <br><br>
-                                                                   <span><small>{{ $transaction->created_at->toDateString('en-GB') }}</small></span>
+                                                                {{ $transaction->product_name }} <br><br>
+                                                                <span><small>{{ $transaction->created_at->toDateString('en-GB') }}</small></span>
                                                                 </td>
                                                                 <td>{!! getSettings()->currency . number_format($transaction->amount) !!}</td>
                                                                 <td>{!! getSettings()->currency . number_format($transaction->total_amount) !!}</td>
@@ -272,7 +271,6 @@ use App\Models\BlackList;
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                 
                                                     @if($downlines->count() > 0)
                                                     @foreach ($downlines as $ref)
                                                         <tr>
@@ -299,7 +297,7 @@ use App\Models\BlackList;
                                                
                                             {{-- </div> --}}
                                            
-                                            <form action="{{ route('admin.customer.update.kyc', $user->customer->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to update these details?');" enctype="multipart/form-data">
+                                            <form action="{{ route('admin.customer.update.kyc', array_merge(request()->array, ['customer' => $user->customer->id])) }}" method="POST" onsubmit="return confirm('Are you sure you want to update these details?');" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="card-content">
                                                     <div class="row">
@@ -309,8 +307,8 @@ use App\Models\BlackList;
                                                         </div>
                                                         <div class="col-md-6">
                                                             {{-- @if(getFinalKycStatus($user->customer->id) == 'unverified' || getFinalKycStatus($user->customer->id) == 'declined') --}}
-                                                            <a onclick="return confirm('You are about to approve KYC details');" href="{{ route('admin.customer.approve.kyc', $user->customer->id) }}" class="btn btn-dark btn-sm"><i class="fa fa-check"></i> Approve and create reserved accounts</a>
-                                                            <a onclick="return confirm('You are about to decline KYC details');" href="{{ route('admin.customer.decline.kyc', $user->customer->id) }}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i> Decline</a>
+                                                            <a onclick="return confirm('You are about to approve KYC details');" href="{{ route('admin.customer.approve.kyc', array_merge(request()->array, ['customer' => $user->customer->id])) }}" class="btn btn-dark btn-sm"><i class="fa fa-check"></i> Approve and create reserved accounts</a>
+                                                            <a onclick="return confirm('You are about to decline KYC details');" href="{{ route('admin.customer.decline.kyc', array_merge(request()->array, ['customer' => $user->customer->id])) }}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i> Decline</a>
                                                             {{-- @endif --}}
                                                         </div>
                                                         <hr>
@@ -542,7 +540,7 @@ use App\Models\BlackList;
                                                                         </label>
                                                                     </div>
                                                                 @else
-                                                                    <form action="{{ route('customer-blacklist.store') }}"
+                                                                    <form action="{{ route('customer-blacklist.store', request()->array) }}"
                                                                         method="POST">
                                                                         @csrf
                                                                         <input type="hidden" name="type"
@@ -585,7 +583,7 @@ use App\Models\BlackList;
                                                                         </label>
                                                                     </div>
                                                                 @else
-                                                                    <form action="{{ route('customer-blacklist.store') }}"
+                                                                    <form action="{{ route('customer-blacklist.store', request()->array) }}"
                                                                         method="POST">
                                                                         
                                                                         @csrf
@@ -650,7 +648,7 @@ use App\Models\BlackList;
                         <i class="bx bx-x"></i>
                     </button>
                 </div>
-                <form action="{{route('create.reserved.account', $user->customer->id)}}" method="POST">
+                <form action="{{route('create.reserved.account', array_merge(request()->array, ['customer' => $user->customer->id]))}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -693,7 +691,7 @@ use App\Models\BlackList;
                         <i class="bx bx-x"></i>
                     </button>
                 </div>
-                <form action="{{route('admin.transaction.pin.reset', $user->id)}}" method="POST">
+                <form action="{{route('admin.transaction.pin.reset', array_merge(request()->array, ['user' => $user]))}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -728,7 +726,7 @@ use App\Models\BlackList;
                         <i class="bx bx-x"></i>
                     </button>
                 </div>
-                <form action="{{route('admin.password.reset', $user->id)}}" method="POST">
+                <form action="{{route('admin.password.reset', array_merge(request()->array, ['user' => $user]))}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row">

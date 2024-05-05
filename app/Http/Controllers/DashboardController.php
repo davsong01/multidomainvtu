@@ -336,55 +336,15 @@ class DashboardController extends Controller
             $input['IDCARD'] = $this->uploadFile($request->IDCARD, 'kyc');
         }
 
-        // $instantVerify = ['FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'DOB', 'PHONE_NUMBER', 'COUNTRY', 'STATE', 'LGA', 'DOB', 'IDCARD', 'IDCARDTYPE'];
-        // foreach ($input as $key => $value) {
-        //     if (in_array($key, $instantVerify)) {
-        //         $this->updateKycData($key, $value, auth()->user()->customer->id, 'verified');
-        //     } else {
-        //         $this->updateKycData($key, $value, auth()->user()->customer->id, 'unverified');
-        //     }
-        // }
-
-        // $firstname = $input['FIRST_NAME'] ?? auth()->user()->firstname;
-        // $lastname = $input['LAST_NAME'] ?? auth()->user()->lastname;
-        // $middlename = $input['MIDDLE_NAME'] ?? auth()->user()->middlename;
-
-        // auth()->user()->update([
-        //     "firstname" => $firstname,
-        //     "middlename" => $middlename,
-        //     "lastname" => $lastname,
-        // ]);
         foreach ($input as $key => $value) {
             $this->updateKycData($key, $value, auth()->user()->customer->id, 'unverified');
         }
-
-        // verify BVN automatically
-        // $this->updateKycData('BVN', $request->BVN, auth()->user()->customer->id, 'verified');
 
         auth()->user()->customer->update([
             "kyc_status" => 'awaiting-approval',
         ]);
         
-        // Create reserved account
-        // $name = $firstname . ' ' . $lastname . ' ' . $middlename;
-
-        // $data = [
-        //     'BVN' => $request->BVN ?? kycStatus('BVN', auth()->user()->customer->id)['value'],
-        //     'customerName' => $name,
-        //     'accountName' => $firstname,
-        //     'customerEmail' => auth()->user()->email,
-        //     'customer_id' => auth()->user()->customer->id,
-        //     'getAllAvailableBanks' => true,
-        // ];
-
-        // $reserved = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->createReservedAccount($data);
         
-        // if ($reserved['status'] && $reserved['status'] == 'success') {
-        //     return back()->with('message', 'KYC Update completed and reserved accounts created');
-        // } else {
-        //     $error = $reserved['data'] ?? 'Please refresh this page';
-        //     return back()->with('error', 'Error: ' . $error);
-        // }
         return back()->with('message', 'KYC Info Update. Awaiting Admin approval');
 
     }

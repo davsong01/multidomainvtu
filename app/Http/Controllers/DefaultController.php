@@ -11,6 +11,7 @@ use App\Models\Settings;
 use Illuminate\Support\Str;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
+use App\Models\CustomerLevel;
 use App\Models\RolePermission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -109,6 +110,7 @@ class DefaultController extends Controller
                 $this->createPermissions($merchant, $admin);
                 // Create Annoucement 
                 $this->defaultAnnoucement($merchant);
+                $this->defaultCustomerLevel($merchant);
             });
 
             return response()->json(['status' => 'success', 'message' => 'Operation successful'], 200);
@@ -147,26 +149,35 @@ class DefaultController extends Controller
         ]);
     }
 
+    public function defaultCustomerLevel($merchant)
+    {
+        $level = CustomerLevel::updateOrCreate(['merchant_id' => $merchant->id, 'name' => 'Customer'], [
+            'name' => 'Customer',
+            'make_default' => 'yes',
+            'order' => 1,
+            'upgrade_amount' => 0,
+            'merchant_id' => $merchant->id
+        ]);
+
+        return $level;
+    }
+    
+
     public function deleteMerchantShop($id){
         // Delete announcement
         Announcement::where('merchant_id', $id)->delete();
-
         //Delete roles
         Role::where('merchant_id', $id)->delete();
-
         // Delete api
         Api::where('merchant_id', $id)->delete();
-
         // Delete admin
         Admin::where('merchant_id', $id)->delete();
-
         // Delete admin
         User::where('merchant_id', $id)->delete();
-
         Settings::where('merchant_id', $id)->delete();
-
+        CustomerLevel::where('merchant_id', $id)->delete();
         Merchant::where('id', $id)->delete();
-
+        
         return response()->json(['status' => 'success', 'message' => 'Operation successful'], 200);
 
     }

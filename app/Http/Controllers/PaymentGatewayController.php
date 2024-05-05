@@ -10,27 +10,10 @@ class PaymentGatewayController extends Controller
     /**
      * Display a listing of the resource.
      */
-
-     
+    
     public function index()
     {
         $paymentgateway = PaymentGateway::orderBy('created_at', 'DESC')->get();
-
-        if ($paymentgateway->count() < 1) {
-            $paymentgateway = PaymentGateway::create([
-                'name' => 'Monnify',
-                'base_url' => 'https://api.monnify.com/api/v1',
-                'password' => '12345678',
-                'api_key' => '1234567890',
-                'secret_key' => '1234567890',
-                'public_key' => '1234567890',
-                'contract_id' => '1234567890',
-                'merchant_email' => 'test@gmail.com',
-                'status' => 'inactive',
-                'charge' => 1.5,
-                'reserved_account_payment_charge' => 1.5
-            ]);
-        }
         return view('admin.paymentgateway.index', compact('paymentgateway'));
     }
 
@@ -42,13 +25,14 @@ class PaymentGatewayController extends Controller
         return view('admin.paymentgateway.create');
     }
 
-    public function edit(PaymentGateway $paymentgateway)
+    public function edit($merchant,  $paymentgateway)
     {
+        $paymentgateway = PaymentGateway::where('id', $paymentgateway)->first();
         return view('admin.paymentgateway.edit', compact('paymentgateway'));
     }
 
-    public function update(Request $request, PaymentGateway $paymentgateway)
-    {
+    public function update(Request $request, $merchant, $paymentgateway)
+    {        
         $this->validate($request, [
             "name" => "required",
             "password" => "nullable",
@@ -62,6 +46,8 @@ class PaymentGatewayController extends Controller
             "charge" => "required",
             "reserved_account_payment_charge" => "nullable"
         ]);
+
+        $paymentgateway = PaymentGateway::where('id', $paymentgateway)->first();
 
         $paymentgateway->update([
             "name" => $request->name,

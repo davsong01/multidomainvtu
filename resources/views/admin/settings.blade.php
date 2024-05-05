@@ -27,7 +27,7 @@ use App\Models\PaymentGateway;
                                                     </div>
                                                     <div class="card-content">
                                                         <div class="card-body">
-                                                            <form action="{{route('settings.update')}}" method="POST" enctype="multipart/form-data">
+                                                            <form action="{{route('settings.update', request()->array)}}" method="POST" enctype="multipart/form-data">
                                                                 @csrf
                                                                 <div class="row">
                                                                     <div class="col-md-6">
@@ -94,15 +94,22 @@ use App\Models\PaymentGateway;
                                                                                 <option value="inactive" {{ $settings->referral_system_status == 'inactive' ? 'selected' : ''}}>InActive</option>
                                                                             </select>
                                                                         </fieldset>
-                                                                        {{-- <fieldset class="form-group" style="display:{{ $settings->referral_system_status == 'active' ? 'block' : 'none'}}" id="referral_percentage_div">
+                                                                        <fieldset class="form-group" style="display:{{ $settings->referral_system_status == 'active' ? 'block' : 'none'}}" id="referral_percentage_div">
                                                                             <label for="referral_percentage">Referral Percentage(%)</label>
                                                                             <input type="number" class="form-control" id="referral_percentage" step="0.01" name="referral_percentage" value="{{ $settings->referral_percentage ?? old('referral_percentage') }}" placeholder="Enter percentage for referral earnings">
-                                                                        </fieldset> --}}
+                                                                        </fieldset>
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <fieldset class="form-group">
-                                                                            <label for="">Payment Gateway</label>
-                                                                            <input type="text" class="form-control" id="" value="{{ PaymentGateway::where('status', 'active')->value('name') }}" disabled>
+                                                                        <label for="payment_gateway">Payment Gateway</label>
+                                                                        <select name="payment_gateway" class="form-control" id="payment_gateway" required>
+                                                                            <option value="">Select</option>
+                                                                            @foreach(getPaymentGateways() as $gateway)
+                                                                            @if($gateway->status == 'active')
+                                                                            <option value="{{ $gateway->name }}" {{ $settings->payment_gateway == $gateway->name ? 'selected' : ''}}>{{ ucfirst($gateway->name) }}</option>
+                                                                            @endif
+                                                                            @endforeach                                                                            
+                                                                        </select>
                                                                         </fieldset>
                                                                         <div class="row">
                                                                             <div class="col-md-8">
@@ -166,10 +173,10 @@ use App\Models\PaymentGateway;
                                                                             <label for="seo_description">SEO Description</label>
                                                                             <textarea class="form-control" id="seo_description" rows="3" name="seo_description" value="{{ $settings->seo_description ?? old('seo_description') }}" placeholder="SEO Description" required>{{ $settings->seo_description ?? old('seo_description') }}</textarea>
                                                                         </fieldset>
-                                                                        <fieldset class="form-group">
+                                                                        {{-- <fieldset class="form-group">
                                                                             <label for="google_ad_code">Google Ad Code</label>
                                                                             <textarea class="form-control" id="google_ad_code" rows="3" name="google_ad_code" value="{{ $settings->google_ad_code ?? old('google_ad_code') }}" placeholder="Google ad code">{{ $settings->google_ad_code ?? old('google_ad_code') }}</textarea>
-                                                                        </fieldset>
+                                                                        </fieldset> --}}
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">

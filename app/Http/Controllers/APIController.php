@@ -45,7 +45,7 @@ class APIController extends Controller
             'merchant_id' => $request()->merchant_id
         ]);
 
-        return redirect(route('api.index', ['merchant' => getMerchantDetails()->store_slug]))->with('message', 'Added successfully');
+        return redirect(route('api.index', request()->array))->with('message', 'Added successfully');
     }
 
     public function edit($merchant, $id)

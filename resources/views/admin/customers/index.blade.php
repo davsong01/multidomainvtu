@@ -41,7 +41,7 @@
                                         <tr>
                                             <td>
                                                 <P>
-                                                    Name:<a target="_blank" href="{{ request()->route()->getPrefix() }}/customer/edit/{{ $customer->id }}">
+                                                    Name:<a target="_blank" href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->id])) }}">
                                                         {{ $customer->firstname . ' ' . $customer->lastname }}</a> <br>
                                                     Email:  {{ $customer->email }} <br>
                                                     Phone Number: {{ $customer->phone }}
@@ -58,7 +58,7 @@
                                             <td>{{ $customer->created_at->toDateString('en-GB') }}</td>
                                             @if(hasAccess('customers.edit'))
                                             <td>
-                                                <a href="{{ route('customers.edit', $customer->id) }}"><button type="button" class="btn btn-info btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View</span></button>
+                                                <a href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->id])) }}"><button type="button" class="btn btn-info btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View</span></button>
                                                 </a>
                                             </td>
                                             @endif

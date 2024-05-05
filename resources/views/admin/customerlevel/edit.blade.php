@@ -13,7 +13,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('customerlevel.index') }}">Customer Levels</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('customerlevel.index',request()->array ) }}">Customer Levels</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{ $customerlevel->name }}
                                     </li>
@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('customerlevel.update', $customerlevel->id)}}" method="POST">
+                                        <form action="{{route('customerlevel.update', array_merge(request()->array, ['customerlevel' => $customerlevel->id]))}}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                              <div class="row">
@@ -51,16 +51,16 @@
                                                     </fieldset>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    {{-- <fieldset class="form-group">
-                                                        <label for="make_api_level">Make API Level</label>
-                                                        <select class="form-control" name="make_api_level" id="make_api_level" required>
+                                                    <fieldset class="form-group">
+                                                        <label for="make_default">Make Default Level</label>
+                                                        <select class="form-control" name="make_default" id="make_default" required>
                                                             <option value="">Select</option>
-                                                            <option value="yes" {{ $customerlevel->make_api_level == 'yes' ? 'selected' : '' }}>Yes
+                                                            <option value="yes" {{ $customerlevel->make_default == 'yes' ? 'selected' : '' }}>Yes
                                                             </option>
-                                                            <option value="no" {{ $customerlevel->make_api_level == 'make_api_level' ? 'selected' : '' }}>No
+                                                            <option value="no" {{ $customerlevel->make_default == 'make_default' ? 'selected' : '' }}>No
                                                             </option>
                                                         </select>
-                                                    </fieldset> --}}
+                                                    </fieldset>
                                                     <fieldset class="form-group">
                                                         <label for="order">Order</label>
                                                         <input type="number" class="form-control" name="order" value="{{ $customerlevel->order ?? old('order') }}" placeholder="Enter order" id="order" required>

@@ -24,7 +24,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('category.index', ['merchant' => getMerchantDetails()->store_slug]) }}">Categories</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('category.index', request()->array) }}">Categories</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Categories
                                     </li>
@@ -44,9 +44,9 @@
                                     <h4 class="card-title">All Categories</h4> <br>
                                    
                                     @if($categories->count() < 1)
-                                        <a href="{{ route('category.pull', ['merchant' => getMerchantDetails()->store_slug]) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Categories</button></a>
+                                        <a href="{{ route('category.pull', request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Categories</button></a>
                                     @else    
-                                        <a href="{{ route('category.repull', ['merchant' => getMerchantDetails()->store_slug]) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Repull Categories</button></a>
+                                        <a href="{{ route('category.repull', request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Repull Categories</button></a>
                                     @endif
                                     @include('layouts.alerts')
                                 </div>

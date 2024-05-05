@@ -26,7 +26,7 @@
             {{-- Menu start --}}
             @if (in_array('Dashboard', $allowedMenu) || in_array(1, auth()->user()->admin->roleIds()))
                 <li class="{{ Route::is('dashboard') ? 'active' : '' }} nav-item svg"><a
-                        href="{{ route('dashboard', ['merchant' => getMerchantDetails()->store_slug]) }}"><svg xmlns="http://www.w3.org/2000/svg" height="24"
+                        href="{{ route('dashboard', request()->array) }}"><svg xmlns="http://www.w3.org/2000/svg" height="24"
                             viewBox="0 -960 960 960"  width="24">
                             <path
                                 d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z" />
@@ -34,7 +34,7 @@
                 </li>
             @endif
             @if (in_array('Announcement', $allowedMenu) || in_array(1, auth()->user()->admin->roleIds()))
-                <li class="{{ Request::path() == 'profile' ? 'active' : '' }} svg"><a href="{{ route('announcement.index', ['merchant' => getMerchantDetails()->store_slug]) }}">
+                <li class="{{ Request::path() == 'profile' ? 'active' : '' }} svg"><a href="{{ route('announcement.index', request()->array) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
                         <path d="M720-440v-80h160v80H720Zm48 280-128-96 48-64 128 96-48 64Zm-80-480-48-64 128-96 48 64-128 96ZM200-200v-160h-40q-33 0-56.5-23.5T80-440v-80q0-33 23.5-56.5T160-600h160l200-120v480L320-360h-40v160h-80Zm240-182v-196l-98 58H160v80h182l98 58Zm120 36v-268q27 24 43.5 58.5T620-480q0 41-16.5 75.5T560-346ZM300-480Z" />
                         </svg>
@@ -48,19 +48,19 @@
                         </svg><span class="menu-title" data-i18n="Form Elements">&nbsp;Catalogue</span></a>
                     <ul class="menu-content">
                         @if (in_array('api.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
-                            <li class="{{ Route::is('api.*') ? 'active' : '' }} svg"><a href="{{ route('api.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span class="menu-item">API
+                            <li class="{{ Route::is('api.*') ? 'active' : '' }} svg"><a href="{{ route('api.index', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span class="menu-item">API
                                 Providers</span></a>
                             </li>
                         @endif
                         @if (in_array('category.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="{{ Route::is('category.*') ? 'active' : '' }} svg"><a
-                                    href="{{ route('category.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('category.index', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item" data-i18n="Input Groups">Categories</span></a>
                             </li>
                         @endif
                         @if (in_array('product.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="{{ Route::is('product.*') ? 'active' : '' }} svg"><a
-                                    href="{{ route('product.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('product.index', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item" data-i18n="Input">Products</span></a>
                             </li>
                         @endif
@@ -75,19 +75,19 @@
                         </svg><span class="menu-title" data-i18n="Form Elements">&nbsp;Email Management</span></a>
                     <ul class="menu-content">
                         @if (in_array('emails.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
-                            <li class="{{ Route::is('emails.index') ? 'active' : '' }} svg"><a href="{{ route('emails.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                            <li class="{{ Route::is('emails.index') ? 'active' : '' }} svg"><a href="{{ route('emails.index', request()->array) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item">Emails</span></a>
                             </li>
                         @endif
                         @if (in_array('emails.pending', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="{{ Route::is('emails.pending') ? 'active' : '' }} svg"><a
-                                    href="{{ route('emails.pending', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('emails.pending', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item" data-i18n="Input">Pending Emails</span></a>
                             </li>
                         @endif
                         @if (in_array('email.setup', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="{{ Route::is('email.setup') ? 'active' : '' }} svg"><a
-                                    href="{{ route('email.setup', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('email.setup', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item" data-i18n="Input">Email Setup</span></a>
                             </li>
                         @endif
@@ -103,35 +103,35 @@
                     <ul class="menu-content">
                         @if (in_array('customers', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('customers') ? 'active' : '' }}"><a
-                                    href="{{ route('customers', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('customers', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item">All Customers</span></a>
                             </li>
                         @endif
                         @if (in_array('customers.active', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
-                            <li class="svg {{ Route::is('customers.active.*') ? 'active' : '' }}"><a
-                                    href="{{ route('customers.active', ['merchant' => getMerchantDetails()->store_slug, 'status' => 'active']) }}"><i
+                            <li class="svg {{ Route::is('customers.active') ? 'active' : '' }}"><a
+                                    href="{{ route('customers.active', array_merge(request()->array, ['status' => 'active'])) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item"
                                         data-i18n="Input">Active
                                         Customers</span></a>
                             </li>
                         @endif
                         @if (in_array('customers.suspended', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
-                            <li class="svg {{ Request::is('customers-suspended/suspended') ? 'active' : '' }}"><a
-                                    href="{{ route('customers.suspended', ['merchant' => getMerchantDetails()->store_slug, 'status' => 'suspended']) }}"><i
+                            <li class="svg {{ Route::is('customers.suspended') ? 'active' : '' }}"><a
+                                    href="{{ route('customers.suspended', array_merge(request()->array, ['status' => 'suspended'])) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item"
                                         data-i18n="Input Groups">Suspended Customers</span></a>
                             </li>
                         @endif
 
                         @if (in_array('customer-blacklist.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
-                            <li class="svg"><a href="{{ route('customer-blacklist.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                            <li class="svg  {{ Route::is('customer-blacklist.index') ? 'active' : '' }}"><a href="{{ route('customer-blacklist.index', request()->array) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item"
                                         data-i18n="Input Groups">Blacklisted Customers</span></a>
                             </li>
                         @endif
                         @if (in_array('customerlevel.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('customerlevel.*') ? 'active' : '' }}"><a
-                                    href="{{ route('customerlevel.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                                    href="{{ route('customerlevel.index', request()->array) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item"
                                         data-i18n="Input Groups">Customer Levels</span></a>
                             </li>
@@ -147,17 +147,17 @@
                         </svg><span class="menu-title" data-i18n="Form Elements">&nbsp;User Management</span></a>
                     <ul class="menu-content">
                         @if (in_array('admins', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
-                            <li class="svg {{ Route::is('admins') ? 'active' : '' }}"><a href="{{ route('admins', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                            <li class="svg {{ Route::is('admins') ? 'active' : '' }}"><a href="{{ route('admins', request()->array) }}"><i
                             class="bx bx-right-arrow-alt"></i><span class="menu-item">All
                                         Admins</span></a>
                             </li>
                         @endif
                         {{-- @if (in_array('role.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds())) --}}
-                            <li class="svg {{ Route::is('role.index') ? 'active' : '' }}"><a href="{{ route('role.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                            <li class="svg {{ Route::is('role.index') ? 'active' : '' }}"><a href="{{ route('role.index', request()->array) }}"><i
                             class="bx bx-right-arrow-alt"></i><span class="menu-item">All
                                         Roles</span></a>
                             </li>
-                            <li class="svg {{ Route::is('permission.index') ? 'active' : '' }}"><a href="{{ route('permission.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                            <li class="svg {{ Route::is('permission.index') ? 'active' : '' }}"><a href="{{ route('permission.index', request()->array) }}"><i
                             class="bx bx-right-arrow-alt"></i><span class="menu-item">All
                                         Permissions</span></a>
                             </li>
@@ -175,13 +175,13 @@
                     <ul class="menu-content">
                         @if (in_array('admin.trans', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('admin.trans') ? 'active' : '' }}"><a
-                                    href="{{ route('admin.trans', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('admin.trans', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item">Product Purchase Log</span></a>
                             </li>
                         @endif
                         @if (in_array('admin.walletfundinglog', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('admin.walletfundinglog') ? 'active' : '' }}"><a
-                                    href="{{ route('admin.walletfundinglog', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                                    href="{{ route('admin.walletfundinglog', request()->array) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item">Wallet Funding
                                         Log</span></a>
                             </li>
@@ -189,47 +189,47 @@
                         
                         @if (in_array('admin.walletlog', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('admin.walletlog') ? 'active' : '' }}"><a
-                                    href="{{ route('admin.walletlog', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('admin.walletlog', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item">Wallet
                                         Log</span></a>
                             </li>
                         @endif
                         @if (in_array('admin.earninglog', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('admin.earninglog') ? 'active' : '' }}"><a
-                                    href="{{ route('admin.earninglog', ['merchant' => getMerchantDetails()->store_slug]) }}"><i class="bx bx-right-arrow-alt"></i><span
+                                    href="{{ route('admin.earninglog', request()->array) }}"><i class="bx bx-right-arrow-alt"></i><span
                                         class="menu-item">Earnings
                                         Log</span></a>
                             </li>
                         @endif
                         @if (in_array('admin.credit.customer', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('admin.credit.customer') ? 'active' : '' }}"><a
-                                    href="{{ route('admin.credit.customer', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                                    href="{{ route('admin.credit.customer', request()->array) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item">Credit
                                         Customer</span></a>
                             </li>
                         @endif
                         @if (in_array('admin.debit.customer', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('admin.debit.customer') ? 'active' : '' }}"><a
-                                    href="{{ route('admin.debit.customer', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                                    href="{{ route('admin.debit.customer', request()->array) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item">Debit
                                         Customer</span></a>
                             </li>
                         @endif
                         @if (in_array('admin.verifybiller', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                         <li class="svg {{ Route::is('admin.verifybiller') ? 'active' : '' }}"><a
-                             href="{{ route('admin.verifybiller', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                             href="{{ route('admin.verifybiller', request()->array) }}"><i
                                  class="bx bx-right-arrow-alt"></i><span class="menu-item">Verify Biller</span></a>
                         </li>
                         @endif
                         @if (in_array('billerlog.index', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                         <li class="svg {{ Route::is('billerlog.index') ? 'active' : '' }}"><a
-                             href="{{ route('billerlog.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                             href="{{ route('billerlog.index', request()->array) }}"><i
                                  class="bx bx-right-arrow-alt"></i><span class="menu-item">Biller Logs</span></a>
                         </li>
                         @endif
                         @if (in_array('admin.reserved.accounts', $allowedRoutes) || in_array(1, auth()->user()->admin->roleIds()))
                             <li class="svg {{ Route::is('admin.reserved.accounts') ? 'active' : '' }}"><a
-                                    href="{{ route('admin.reserved.accounts', ['merchant' => getMerchantDetails()->store_slug]) }}"><i
+                                    href="{{ route('admin.reserved.accounts', request()->array) }}"><i
                                         class="bx bx-right-arrow-alt"></i><span class="menu-item">Reserved Account
                                         Numbers</span></a>
                             </li>
@@ -239,7 +239,7 @@
             @endif
             {{-- @if (in_array('Profile', $allowedMenu) || in_array(1, auth()->user()->admin->roleIds())) --}}
                 <li class="svg {{ Request::path() == 'profile' ? 'active' : '' }}"><a
-                        href="{{ route('profile.edit', ['merchant' => getMerchantDetails()->store_slug ]) }}"><svg xmlns="http://www.w3.org/2000/svg"
+                        href="{{ route('profile.edit', request()->array) }}"><svg xmlns="http://www.w3.org/2000/svg"
                             height="24" viewBox="0 -960 960 960" width="24">
                             <path
                                 d="M200-246q54-53 125.5-83.5T480-360q83 0 154.5 30.5T760-246v-514H200v514Zm280-194q58 0 99-41t41-99q0-58-41-99t-99-41q-58 0-99 41t-41 99q0 58 41 99t99 41ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm80-80h400v-10q-42-35-93-52.5T480-280q-56 0-107 17.5T280-210v10Zm200-320q-25 0-42.5-17.5T420-580q0-25 17.5-42.5T480-640q25 0 42.5 17.5T540-580q0 25-17.5 42.5T480-520Zm0 17Z" />
@@ -248,7 +248,7 @@
             {{-- @endif --}}
             @if (in_array('Callback Analysis', $allowedMenu) || in_array(1, auth()->user()->admin->roleIds()))
                 <li class="svg {{ Route::is('callback.analysis') ? 'active' : '' }}"><a
-                        href="{{ route('callback.analysis', ['merchant' => getMerchantDetails()->store_slug]) }}"><svg xmlns="http://www.w3.org/2000/svg"
+                        href="{{ route('callback.analysis', request()->array) }}"><svg xmlns="http://www.w3.org/2000/svg"
                             height="24" viewBox="0 -960 960 960" width="24">
                             <path
                                 d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"
@@ -258,7 +258,7 @@
             @endif
             @if (in_array('KYC Management', $allowedMenu) || in_array(1, auth()->user()->admin->roleIds()))
                 <li class="svg {{ Route::is('admin.kyc.*') ? 'active' : '' }}"><a
-                        href="{{ route('admin.kyc', ['merchant' => getMerchantDetails()->store_slug]) }}"><svg xmlns="http://www.w3.org/2000/svg" height="24"
+                        href="{{ route('admin.kyc', request()->array) }}"><svg xmlns="http://www.w3.org/2000/svg" height="24"
                             viewBox="0 -960 960 960"  width="24">
                             <path
                                 d="M480-260q68 0 123.5-38.5T684-400H276q25 63 80.5 101.5T480-260ZM312-520l44-42 42 42 42-42-84-86-86 86 42 42Zm250 0 42-42 44 42 42-42-86-86-84 86 42 42ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Z" />
@@ -267,7 +267,7 @@
             @endif
             @if (in_array('Payment Gateway Settings', $allowedMenu) || in_array(1, auth()->user()->admin->roleIds()))
                 <li class="svg {{ Route::is('paymentgateway.*') ? 'active' : '' }}"><a
-                        href="{{ route('paymentgateway.index', ['merchant' => getMerchantDetails()->store_slug]) }}"><svg xmlns="http://www.w3.org/2000/svg"
+                        href="{{ route('paymentgateway.index', request()->array) }}"><svg xmlns="http://www.w3.org/2000/svg"
                             height="24" viewBox="0 -960 960 960" width="24">
                             <path
                                 d="m480-560-56-56 63-64H320v-80h167l-64-64 57-56 160 160-160 160ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"
@@ -275,16 +275,16 @@
                         </svg><span class="menu-title">&nbsp;Payment Gateway Settings</span></a></li>
             @endif
             @if (in_array('General Settings', $allowedMenu) || in_array(1, auth()->user()->admin->roleIds()))
-                <li class="svg {{  Route::is('settings.edit') ? 'active' : '' }}"><a href="{{ route('settings.edit', ['merchant' => getMerchantDetails()->store_slug]) }}"><svg  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" />
+                <li class="svg {{  Route::is('settings.edit') ? 'active' : '' }}"><a href="{{ route('settings.edit', request()->array) }}"><svg  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" />
             </svg><span class="menu-title">&nbsp;General Settings</span></a></li>
             @endif
-            <li class="svg"><a href="{{ route('logout', ['merchant' => getMerchantDetails()->store_slug]) }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><svg
+            <li class="svg"><a href="{{ route('logout', request()->array) }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><svg
                         xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
                         <path
                             d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
                     </svg><span class="menu-title">&nbsp;Logout</span></a>
             </li>
-            <form id="logout-form" action="{{ route('logout', ['merchant' => getMerchantDetails()->store_slug]) }}" method="POST" style="display: none;">
+            <form id="logout-form" action="{{ route('logout', request()->array) }}" method="POST" style="display: none;">
                 @csrf
             </form>
         </ul>

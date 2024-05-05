@@ -24,7 +24,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('api.index',['merchant' => getMerchantDetails()->store_slug]) }}">API Provider</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('api.index',request()->array) }}">API Provider</a>
                                     </li>
                                     
                                 </ol>

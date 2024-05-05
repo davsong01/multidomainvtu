@@ -98,7 +98,7 @@ class RegisterController extends Controller
             'user_id' => $user->id,
             'wallet' => 0,
             'referal_wallet' => 0,
-            'customer_level' => env('DEFAULT_CUSTOMER_LEVEL_ID') ?? 1,
+            'customer_level' => request()->merchant_settings['default_customer_level_id'] ?? null,
             'merchant_id' => request()->merchant_id
         ]);
 

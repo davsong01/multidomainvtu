@@ -8,6 +8,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\CustomerLevel;
 use App\Models\KycData;
+use App\Models\PaymentGateway;
 use App\Models\ReferralEarning;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -15,10 +16,10 @@ use App\Models\ReservedAccountNumber;
 
 class CustomerController extends Controller
 {
-    function customers(Request $request, $status = null)
+    function customers(Request $request, $merchant, $status = null)
     {
         $customers = User::where('type', '!=', 'admin');
-
+       
         if ($status) {
             if ($status == 'active') {
                 $customers->where('status', 'active');
@@ -49,8 +50,10 @@ class CustomerController extends Controller
         return view('admin.customers.index', ['customers' => $customers]);
     }
 
-    public function addReservedAccounts(Request $request, Customer $customer)
+    public function addReservedAccounts(Request $request, $merchant, $customer)
     {
+        $customer = Customer::where('id',$customer)->first();
+
         $data = [
             'BVN' => $request->bvn ?? kycStatus('BVN', $customer->id)['value'],
             'customerName' => $customer->user->name,
@@ -62,6 +65,7 @@ class CustomerController extends Controller
         ];
 
         $admin_id = auth()->user()->admin->id;
+       
         $reserved = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->createReservedAccount($data, $admin_id);
 
         if ($reserved['status'] && $reserved['status'] == 'success') {
@@ -71,7 +75,7 @@ class CustomerController extends Controller
         }
     }
 
-    function singleCustomer($id)
+    function singleCustomer($merchant, $id)
     {
         if (!is_numeric($id)) {
             return redirect(404);
@@ -142,7 +146,9 @@ class CustomerController extends Controller
         return $user->toArray();
     }
 
-    public function resetTransactionPin(Request $request, User $user){
+    public function resetTransactionPin(Request $request, $merchant, $user){
+        $user = User::where('id', $user)->first();
+
         $this->validate($request, [
             'new_transaction_pin' => 'required',
         ]);
@@ -155,15 +161,16 @@ class CustomerController extends Controller
         // Send email
         $subject = "New Transaction Pin";
         $body = '<p>Hello! ' . $user->firstname . '</p>';
-        $body .= '<p style="line-height: 2.0;">Your transaction PIN has been reset by ADMIN on ' . request()->store_name . ' at ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>Your new transaction PIN is <br><strong>'.$request->new_transaction_pin. '</strong><br>. If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
+        $body .= '<p style="line-height: 2.0;">Your transaction PIN has been reset by ADMIN on ' . request()->store_name . ' at ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>Your new transaction PIN is <br><strong>'.$request->new_transaction_pin. '</strong><br>. If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_number . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
 
         logEmails($user->email, $subject, $body);
 
         return back()->with('message', 'Transaction PIN successfully reset to: '.$request->new_transaction_pin);
     }
 
-    public function resetPassword(Request $request, User $user)
+    public function resetPassword(Request $request,$merchant, $user)
     {
+        $user = User::where('id', $user)->first();
         $this->validate($request, [
             'new_password' => 'required',
         ]);
@@ -171,13 +178,14 @@ class CustomerController extends Controller
         $password = Hash::make($request->new_password);
 
         $settings = getSettings();
+        
         $user->password = $password;
         $user->save();
         
         // Send email
         $subject = "New Password Pin";
         $body = '<p>Hello! ' . $user->firstname . '</p>';
-        $body .= '<p style="line-height: 2.0;">Your password has been reset by ADMIN on ' . request()->store_name . ' at ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>Your new password is <br><strong>' . $request->new_password . '</strong><br>. If you did not request a password reset, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
+        $body .= '<p style="line-height: 2.0;">Your password has been reset by ADMIN on ' . request()->store_name . ' at ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>Your new password is <br><strong>' . $request->new_password . '</strong><br>. If you did not request a password reset, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_number . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
 
         logEmails($user->email, $subject, $body);
 
@@ -231,7 +239,8 @@ class CustomerController extends Controller
         
     }
 
-    public function approveCustomerKyc(Customer $customer){
+    public function approveCustomerKyc(Request $request, $merchant, $customer){
+        $customer = Customer::where('id', $customer)->first();
         $customer->update([
             "kyc_status" => 'verified',
         ]);
@@ -255,8 +264,8 @@ class CustomerController extends Controller
         $body .= '<p style="line-height: 2.0;">Your KYC Information has been approved ' . request()->store_name . '<br><br> You can now carry out transactions<br/></p>';
 
         logEmails($customer->user->email, $subject, $body);
-
-        $reserved = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->createReservedAccount($data);
+        $reserved = createReservedAccount($data);
+        
         if ($reserved['status'] && $reserved['status'] == 'success') {
             return back()->with('message', 'KYC Approved succesfully and reserved accounts created');
         } else {
