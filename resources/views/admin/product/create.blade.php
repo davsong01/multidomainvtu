@@ -163,7 +163,7 @@
                                                                                 </fieldset>
                                                                                 @foreach($customerlevel as $level)
                                                                                 <fieldset class="form-group">
-                                                                                    <label for="name">{{ $level->name }} Price ({!! getSettings()['currency']!!})</label>
+                                                                                    <label for="name">{{ $level->name }} Price ({!! getSettings()->currency!!})</label>
                                                                                     <input type="number" class="form-control tiny" id="productlevel" name="productlevel[{{ $level->id }}]"  value="">
                                                                                 </fieldset>
                                                                                 @endforeach

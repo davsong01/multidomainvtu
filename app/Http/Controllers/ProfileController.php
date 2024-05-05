@@ -40,14 +40,9 @@ class ProfileController extends Controller
             $request['password'] = Hash::make($request->new_password);
         }
         
-        auth()->user()->update(Arr::except($request->all(), ['_token','new_password','new_transaction_pin']));
-        // if ($request->user()->isDirty('email')) {
-        //     $request->user()->email_verified_at = null;
-        // }
-
-        // $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'Profile Updated');
+        auth()->user()->update(Arr::except($request->all(), ['_token','new_password','new_transaction_pin', 'array', 'merchant_settings', 'merchant_id', 'store_slug', 'store_name', 'array']));
+    
+        return Redirect::route('profile.edit', request()->array)->with('status', 'Profile Updated');
     }
 
     /**

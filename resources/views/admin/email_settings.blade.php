@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('email.setup.update')}}" method="POST">
+                                        <form action="{{route('email.setup.update', request()->array)}}" method="POST">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-md-6">

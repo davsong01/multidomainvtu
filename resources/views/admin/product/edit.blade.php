@@ -25,7 +25,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Products</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('product.index', request()->array) }}">Products</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{$product->name}}
                                     </li>
@@ -78,7 +78,7 @@
                                                             <!-- Tab panes -->
                                                             <div class="tab-content pt-1">
                                                                 <div class="tab-pane {{ $page == 1 ? 'active' : ''}}" id="product-details" role="tabpanel" aria-labelledby="home-tab-fill">
-                                                                    <form action="{{route('product.update', $product->id)}}" method="POST" enctype="multipart/form-data">
+                                                                    <form action="{{route('product.update', array_merge(request()->array, ['product'=>$product->id]))}}" method="POST" enctype="multipart/form-data">
                                                                         @csrf
                                                                         @method('PATCH')
                                                                         <div class="row">
@@ -175,22 +175,23 @@
                                                                                     </select>
                                                                                 </fieldset>
                                                                                 <fieldset class="form-group">
-                                                                                    <label for="name">System Price ({!! getSettings()['currency']!!})</label>
+                                                                                   
+                                                                                    <label for="name">System Price ({!! getSettings()->currency!!})</label>
                                                                                     <input type="number" class="form-control tiny" id="system_price" name="system_price"  value="{{ $product->system_price }}">
                                                                                 </fieldset>
                                                                                 @foreach($customerlevel as $level)
                                                                                 {{-- {{dd($product->category->discount_type )}} --}}
                                                                                 <fieldset class="form-group">
-                                                                                    <label for="name">{{ $level->name }} @if($product->category->discount_type == 'flat') Discounted Price ({!! getSettings()['currency']!!}) @else Discounted Percentage (%) @endif</label>
+                                                                                    <label for="name">{{ $level->name }} @if($product->category->discount_type == 'flat') Discounted Price ({!! getSettings()->currency!!}) @else Discounted Percentage (%) @endif</label>
                                                                                     <input type="number" class="form-control tiny" id="productlevel" name="productlevel[{{ $level->id }}]" step=".01" value="{{ $product->customer_level_price($level->id) }}">
                                                                                 </fieldset>
                                                                                 @endforeach
                                                                                 <fieldset class="form-group">
-                                                                                    <label for="min">Minimun Amount ({!! getSettings()['currency']!!})</label>
+                                                                                    <label for="min">Minimun Amount ({!! getSettings()->currency!!})</label>
                                                                                     <input type="number" class="form-control tiny" id="min" name="min"  value="{{ $product->min }}">
                                                                                 </fieldset>
                                                                                 <fieldset class="form-group">
-                                                                                    <label for="max">Maimum Amount ({!! getSettings()['currency']!!})</label>
+                                                                                    <label for="max">Maimum Amount ({!! getSettings()->currency!!})</label>
                                                                                     <input type="number" class="form-control tiny" id="max" name="max"  value="{{ $product->max }}">
                                                                                 </fieldset>
                                                                                 <fieldset class="form-group">
@@ -228,10 +229,10 @@
                                                                         @include('admin.product.add_variations_form')
                                                                     </div>
                                                                         
-                                                                        <a style="width:fit-content;" href="{{ route('variations.pull', $product->id) }}" class="btn btn-info mb-2 mt-1 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Variations</a>
+                                                                        <a style="width:fit-content;" href="{{ route('variations.pull', array_merge(['product'=>$product->id], request()->array)) }}" class="btn btn-info mb-2 mt-1 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Variations</a>
                                                                         @if($product->variations->count() > 0)
 
-                                                                            <form action="{{route('variations.update', $product->id)}}" method="POST" enctype="multipart/form-data">
+                                                                            <form action="{{route('variations.update',array_merge(['product'=>$product->id], request()->array))}}" method="POST" enctype="multipart/form-data">
                                                                                 @csrf
                                                                             
                                                                                 @foreach($product->variations as $variation)
@@ -244,7 +245,7 @@
                                                                                     </div>
                                                                                     <div class="col-md-2">
                                                                                         <fieldset class="form-group">
-                                                                                            <label for="name">API Price ({!! getSettings()['currency']!!})</label>
+                                                                                            <label for="name">API Price ({!! getSettings()->currency!!})</label>
                                                                                             <input type="text" class="form-control tiny" id="api_price" name="api_price[{{ $variation->id }}]"  value="{{ $variation->api_price }}">
                                                                                         </fieldset>
                                                                                     </div>
@@ -298,7 +299,7 @@
                                                                                     
                                                                                     <div class="col-md-2">
                                                                                         <fieldset class="form-group">
-                                                                                            <label for="name">System Price ({!! getSettings()['currency']!!})</label>
+                                                                                            <label for="name">System Price ({!! getSettings()->currency!!})</label>
                                                                                             <input type="number" class="form-control tiny" id="system_price" name="system_price[{{ $variation->id }}]"  value="{{ $variation->system_price }}">
                                                                                         </fieldset>
                                                                                     </div>
@@ -306,7 +307,7 @@
                                                                                     @foreach($customerlevel as $level)
                                                                                     <div class="col-md-3">
                                                                                         <fieldset class="form-group">
-                                                                                            <label for="name">{{ $level->name }} @if($variation->category->discount_type == 'flat') Discounted Price ({!! getSettings()['currency']!!}) @else Discounted Percentage (%) @endif</label>
+                                                                                            <label for="name">{{ $level->name }} @if($variation->category->discount_type == 'flat') Discounted Price ({!! getSettings()->currency!!}) @else Discounted Percentage (%) @endif</label>
                                                                                             <input type="number" step=".01" class="form-control tiny" id="level" name="level[{{ $level->id }}][{{ $variation->id }}]"  value="{{ $variation->customer_level_price($level->id) }}">
                                                                                         </fieldset>
                                                                                     </div>
@@ -315,13 +316,13 @@
                                                                                     <div class="col-md-1">
                                                                                         <fieldset class="form-group">
                                                                                             <label style="color:white">S</label>
-                                                                                            <a onclick="return confirm('You are about to delete a variation')" href="{{ route('variation.delete', $variation->id) }}"><button style="color: white;" class="btn btn-sm btn-danger form-control" style="padding: 8px;" type="button"><i class="fa fa-trash"></i></button></a>
+                                                                                            <a onclick="return confirm('You are about to delete a variation')" href="{{ route('variation.delete', array_merge(request()->array, ['variation'=>$variation->id])) }}"><button style="color: white;" class="btn btn-sm btn-danger form-control" style="padding: 8px;" type="button"><i class="fa fa-trash"></i></button></a>
                                                                                         </fieldset>
                                                                                     </div>
                                                                                     @endif
                                                                                 </div>
                                                                                 <input type="hidden" name="variation_id[{{$variation->id}}]" value="{{$variation->id}}">
-                                                                                 <hr style="height: 0px;border-color: #00cfdd;">
+                                                                                <hr style="height: 0px;border-color: #00cfdd;">
                                                                                 @endforeach
                                                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                                                 <div class="row">
@@ -414,14 +415,14 @@
             
             <div class="col-md-2">
                 <fieldset class="form-group">
-                    <label for="name">System Price ({!! getSettings()['currency']!!})</label>
+                    <label for="name">System Price ({!! getSettings()->currency!!})</label>
                     <input type="number" class="form-control tiny" id="system_price" name="system_price[]"  value="" placeholder="Variation price" required>
                 </fieldset>
             </div>
             @foreach($customerlevel as $level)
             <div class="col-md-3">
                 <fieldset class="form-group">
-                    <label for="name">{{ $level->name }} @if($product->category->discount_type == 'flat') Discounted Price ({!! getSettings()['currency']!!}) @else Discounted Percentage (%) @endif</label>
+                    <label for="name">{{ $level->name }} @if($product->category->discount_type == 'flat') Discounted Price ({!! getSettings()->currency!!}) @else Discounted Percentage (%) @endif</label>
                     <input type="number" class="form-control tiny" step=".01" id="level" name="level[{{ $level->id }}][]" value="" required>
                 </fieldset>
             </div>

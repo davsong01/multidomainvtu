@@ -127,7 +127,7 @@
                                                                         </fieldset> --}}
                                                                         <div class="col-md-6" id="amount-div" style="display:none">
                                                                             <fieldset class="form-group">
-                                                                                <label for="amount" class="">Amount {!! getSettings()['currency'] !!}</label>
+                                                                                <label for="amount" class="">Amount {!! getSettings()->currency !!}</label>
                                                                                 <input class="form-control" id="amount" name="amount" placeholder="Enter Amount" required="" type="number" required>
                                                                             </fieldset>
                                                                             <small><span id="discount" style="display:none;color: red;"></span></small> <br>
@@ -463,7 +463,7 @@
             }else{
                 hideAllUniqueElement();
             }
-            var currency = "{!! getSettings()['currency'] !!}";
+            var currency = "{!! getSettings()->currency !!}";
             if (selected[0].discount_rate > 0) {
                 if(selected[0].fixedPrice == 'Yes'){
                     $("#discount").html(selected[0].discount);

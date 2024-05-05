@@ -42,19 +42,22 @@ class APIController extends Controller
             "public_key" => $request->public_key,
             "sandbox_base_url" => $request->sandbox_base_url,
             "live_base_url" => $request->live_base_url,
+            'merchant_id' => $request()->merchant_id
         ]);
 
         return redirect(route('api.index', ['merchant' => getMerchantDetails()->store_slug]))->with('message', 'Added successfully');
     }
 
-    public function edit($id)
+    public function edit($merchant, $id)
     {
-        dd('sdsd', $id);
+        $api = API::where('id', $id)->first();
         return view('admin.api.edit', compact('api'));
     }
 
-    public function update(Request $request, API $api)
+    public function update(Request $request,$merchant, $id)
     {
+        $api = API::where('id', $id)->first();
+        
         $this->validate($request, [
             "name" => "required",
             "warning_threshold_status" => "nullable",
@@ -82,7 +85,7 @@ class APIController extends Controller
         return back()->with('message', 'Updated successfully');
     }
 
-    public function getBalance(API $api)
+    public function getBalance()
     {
         $res = app("App\Http\Controllers\Providers\KingsVtuController")->balance();
         

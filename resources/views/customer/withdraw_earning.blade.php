@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+@section('title','Withdraw Earnings')
     <!-- Content wrapper -->
     <div class="app-content content">
         <div class="content-overlay"></div>
@@ -13,7 +14,7 @@
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
                                     <li class="breadcrumb-item"><a
-                                            href="{{ route('downlines') }}">Downlines</a>
+                                            href="{{ route('downlines', request()->array) }}">Downlines</a>
                                     </li>
                                     <li class="breadcrumb-item active">Withdraw Earnings
                                     </li>
@@ -36,7 +37,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('process.withdrawal') }}" method="POST"
+                                        <form action="{{ route('process.withdrawal', request()->array) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">

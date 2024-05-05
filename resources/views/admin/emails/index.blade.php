@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Emails')
 @section('content')
     <!-- Content wrapper -->
     <div class="app-content content">
@@ -12,7 +13,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard',request()->array) }}">Dashboard</a>
                                     </li>
                                     <li class="breadcrumb-item active">Emails
                                     </li>
@@ -28,7 +29,7 @@
                         <div class="d-flex justify-content-between">
                             <h4 class="card-title">Email Management</h4>
                             @if (Route::is('emails.index'))
-                                <a onclick="confirm('You are about to clear emails')" class="btn btn-danger mr-1 mb-1" href="{{ route('emails.sweep') }}">
+                                <a onclick="confirm('You are about to clear emails')" class="btn btn-danger mr-1 mb-1" href="{{ route('emails.sweep',request()->array) }}">
                                     <i class="fa fa-trash"></i><span class="align-middle ml-25">Clear Sent Emails</span>
                                 </a>
                             @endif
@@ -61,9 +62,7 @@
                                                 {{ $mail->subject }}
                                             </td>
                                             <td>
-                                                <span class="content" data-content="{{ $mail->content }}">
-                                                    {!! substr($mail->content, 0, 250) !!}
-                                                </span>
+                                                <span class="content" data-content="{{ $mail->content }}">{!! substr($mail->content, 0, 150) !!}</span>
                                             </td>
                                             <td>
                                                 {{ ucfirst($mail->status) }}
@@ -76,25 +75,22 @@
                                                         <i class="fa fa-eye"></i> View
                                                     </button>
                                                     <a class="btn btn-warning btn-sm mr-1 mb-1"
-                                                        href="{{ route('emails.resend', $mail->id) }}">
+                                                        href="{{ route('emails.resend', array_merge(request()->array, ['id' => $mail->id])) }}">
                                                         <i class="fa fa-refresh"></i><span
                                                             class="align-middle ml-25">Resend</span>
                                                     </a>
                                                     <a onclick="confirm('You are about to delete a logged email')" class="btn btn-danger btn-sm mr-1 mb-1"
-                                                        href="{{ route('emails.destroy', $mail->id) }}">
+                                                        href="{{ route('emails.destroy', array_merge(request()->array, ['id' => $mail->id])) }}">
                                                         <i class="fa fa-trash"></i><span
                                                             class="align-middle ml-25">Delete</span>
                                                     </a>
                                                 @endif
                                                 @if ($mail->status == 'pending')
-                                                    <a class="btn btn-success btn-sm mr-1 mb-1"
-                                                        href="{{ route('emails-send', $mail->id) }}">
+                                                    <a class="btn btn-success btn-sm mr-1 mb-1" href="{{ route('emails-send', array_merge(request()->array, ['log' => $mail->id])) }}">
                                                         Send
                                                     </a>
                                                     <button type="button" class="btn btn-danger btn-sm mr-1 mb-1 edit-mail"
-                                                        data-toggle="modal" data-target="#large"
-                                                        data-id="{{ route('emails.update', $mail->id) }}">
-                                                        Edit
+                                                        data-toggle="modal" data-target="#large" data-id="{{ route('emails.update', array_merge(request()->array, ['id' => $mail->id])) }}">Edit
                                                     </button>
                                                 @endif
                                             </td>

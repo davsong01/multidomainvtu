@@ -73,11 +73,11 @@ class DefaultController extends Controller
 
                 // Create api details
                 if (env('ENT') == 'local') {
-                    $sandbox = "http://127.0.0.1:8001/api/v1/";
-                    $live = "http://127.0.0.1:8001/api/v1/";
+                    $sandbox = env('KINGSVTU_API_LOCAL_SANDBOX_BASE_URL');
+                    $live = env('KINGSVTU_API_REMOTE_SANDBOX_BASE_URL');
                 } else {
-                    $sandbox = "https://portal.kingsvtu.ng/api/v1/";
-                    $live = "https://portal.kingsvtu.ng/api/v1/";
+                    $sandbox = env('KINGSVTU_API_REMOTE_SANDBOX_BASE_URL');
+                    $live = env('KINGSVTU_API_REMOTE_LIVE_BASE_URL');
                 }
 
                 Api::Create([
@@ -135,13 +135,13 @@ class DefaultController extends Controller
     {
         Announcement::updateOrCreate(['merchant_id' => $merchant->id, 'type' => 'popup'],[
             'title' => 'Pop-up Announcement',
-            'status' => 'active',
+            'status' => 'inactive',
             'type' => 'popup',
             'message' => '<p>Welcome to </p>'.$merchant->store_name,
         ]);
         Announcement::updateOrCreate(['merchant_id' => $merchant->id, 'type' => 'scroll'], [
             'title' => 'Pop-up Announcement',
-            'status' => 'active',
+            'status' => 'inactive',
             'type' => 'scroll',
             'message' => '<p>Welcome to </p>' . $merchant->store_name,
         ]);

@@ -1,3 +1,4 @@
+@section('title', 'Dashboard')
 @extends('layouts.app')
 @section('content')
     <!-- Content wrapper -->
@@ -6,7 +7,7 @@
         <div class="content-wrapper">
             @include('admin.includes.popup')
             @include('admin.includes.scroller')
-            <p class="" style="background: #3864dcc7;width: fit-content;padding: 10px;border-radius: 5px;color: white;">Referral Link: <span id="referral-link">{{ url('/register'). '?referral='.auth()->user()->username }}</span> <span style="cursor: pointer;"><i onclick="copyLink()" class="fa fa-copy" style="color: #00ff58;"></i></span> </p>
+            <p class="" style="background: #3864dcc7;width: fit-content;padding: 10px;border-radius: 5px;color: white;">Referral Link: <span id="referral-link">{{ route('register', request()->array). '?referral='.auth()->user()->username }}</span> <span style="cursor: pointer;"><i onclick="copyLink()" class="fa fa-copy" style="color: #00ff58;"></i></span> </p>
             <div class="content-header row">
             </div>
             <div class="content-body">
@@ -62,11 +63,11 @@
                                                 <h3 class="mb-2">{!! $ref !!}</h3>
                                                 <div class="d-flex align-items-center justify-content-start"
                                                     style="gap: 10px">
-                                                    <a href="{{ route('customer.load.wallet') }}"
+                                                    <a href="{{ route('customer.load.wallet', request()->array) }}"
                                                         class="btn btn-sm btn-success glow">Fund Wallet</a>
-                                                    <a href="{{ route('downlines') }}"
+                                                    <a href="{{ route('downlines',request()->array) }}"
                                                         class="btn btn-sm btn-warning glow">Earning History</a>
-                                                    <a href="/customer-transactions"
+                                                    <a href="{{ route('customer.transaction.history', request()->array) }}"
                                                         class="btn btn-primary btn-sm glow">Transaction History</a>
                                                 </div>
                                             </div>
@@ -87,7 +88,7 @@
                                         <p>
                                             Share your referral links with friends to earn handsome rewards
                                         <div class="text-primary">
-                                            {{ url('/register'). '?referral='.auth()->user()->username }}
+                                            {{ route('register', request()->array). '?referral='.auth()->user()->username }}
                                         </div>
                                         </p>
                                     </div>

@@ -24,7 +24,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array) }}">Dashboard</a>
                                     </li>
                                     <li class="breadcrumb-item active">Downlines</li>
                                 </ol>
@@ -47,7 +47,7 @@
                                             My downlines
                                         @endif
                                     </h4>
-                                    <a href="{{ route('downlines.withdraw') }}"><button id="addRow"
+                                    <a href="{{ route('downlines.withdraw', request()->array) }}"><button id="addRow"
                                             class="btn btn-primary mt-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Withdraw Earning</button></a>
                                     @include('layouts.alerts')
                                 </div>
@@ -85,7 +85,7 @@
                                                             <td>{{ $ref->created_at->toDateTimeString() }}</td>
                                                             @if (!$check)
                                                                 <td>
-                                                                    <a href="downlines/{{ $ref->referred_customer_id }}"
+                                                                    <a href="{{ request()->merchant_slug }}/downlines/{{ $ref->referred_customer_id }}"
                                                                         class="btn btn-sm btn-primary"><i class="fa fa-eye"></i>View Transactions</a>
                                                                 </td>
                                                             @endif

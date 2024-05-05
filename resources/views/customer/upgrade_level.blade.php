@@ -43,7 +43,7 @@
                                                                         <select class="form-control" name="level" id="level" required>
                                                                         <option value="">Select</option>
                                                                         @foreach ($levels as $level)
-                                                                            <option value="{{ $level->id  }}" {{ auth()->user()->customer->level->id == $level->id ? 'selected' : ''}}>{{ $level->name }}({!!getSettings()['currency']!!}{{ $level->upgrade_amount }})</option>
+                                                                            <option value="{{ $level->id  }}" {{ auth()->user()->customer->level->id == $level->id ? 'selected' : ''}}>{{ $level->name }}({!!getSettings()->currency!!}{{ $level->upgrade_amount }})</option>
                                                                         @endforeach
                                                                     </select>
                                                                     </fieldset>

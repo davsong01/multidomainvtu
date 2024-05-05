@@ -21,11 +21,11 @@
                     @if (auth()->user()->type == 'customer')
                         <li class="nav-item d-lg-block">
                             <a class="nav-link">
-                                <a href="{{ route('customer.load.wallet') }}" class="text-muted">
+                                <a href="{{ route('customer.load.wallet',request()->array) }}" class="text-muted">
                                     <strong style="font-weight: lighter;">Balance: </strong>{!! $balance !!}
                                 </a>
                                 <br />
-                                <a href="{{ route('downlines') }}" class="text-muted">
+                                <a href="{{ route('downlines',request()->array) }}" class="text-muted">
                                     <strong style="font-weight: lighter;">Referral Earning: </strong>{!! $ref !!}
                                 </a>
                             </a>

@@ -41,7 +41,8 @@ class EmailApiController extends Controller
                 "MAIL_FROM_ADDRESS" => $data["MAIL_FROM_ADDRESS"],
                 "MAIL_FROM_NAME" => $data["MAIL_FROM_NAME"],
                 "MAIL_REPLY_TO_ADDRESS" => $data["MAIL_REPLY_TO_ADDRESS"],
-                "MAIL_REPLY_TO_NAME" => $data["MAIL_REPLY_TO_NAME"]
+                "MAIL_REPLY_TO_NAME" => $data["MAIL_REPLY_TO_NAME"],
+                "merchant_id" => request()->merchant_id
             ]);
         }else{
             $emailsetting->update([

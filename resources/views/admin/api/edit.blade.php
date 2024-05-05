@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('api.index') }}">API Provider</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('api.index', request()->array) }}">API Provider</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{ $api->name }}
                                     </li>
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('api.update', $api->id)}}" method="POST" enctype="multipart/form-data">
+                                        <form action="{{route('api.update', array_merge(request()->array, ['api' => $api->id]))}}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PATCH')
                                             <div class="row">

@@ -50,7 +50,7 @@ class SageController extends Controller
             "reference" => $reference ?? $this->generateRequestId(),
             "account_name" => $account_name,
             "amount" => $amount - env('BANK_TRANSFER_CHARGES'),
-            "narration" => 'Transfer from ' . config('app.name'),
+            "narration" => 'Transfer from ' . request()->store_name,
         ];
 
         $headers = [

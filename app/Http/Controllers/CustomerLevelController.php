@@ -42,6 +42,7 @@ class CustomerLevelController extends Controller
             'make_api_level' => 'no',
             'order' => $request->order,
             'upgrade_amount' => $request->upgrade_amount,
+            'merchant_id' => request()->merchant_id
         ]);
 
         return redirect(route('customerlevel.index'))->with('message', 'Created successfully');

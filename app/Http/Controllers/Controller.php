@@ -9,6 +9,7 @@ use App\Models\BillerLog;
 use App\Mail\EmailMessages;
 use App\Models\GeneralSetting;
 use App\Models\EmailApiSetting;
+use App\Scopes\MerchantIdScope;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Routing\Controller as BaseController;
@@ -70,7 +71,6 @@ class Controller extends BaseController
                 }
             }
         }
-
         $imageFile->save($folder . '/' . $name);
 
         return $folder . '/' . $name;
@@ -95,6 +95,8 @@ class Controller extends BaseController
         }
 
         // 
+        $location = request()->store_slug.'/'.$location;
+        
         if (!is_dir($path . '/' . $location)) {
             mkdir($path . '/' . $location, 0777, true);
         }
@@ -136,7 +138,7 @@ class Controller extends BaseController
             $name = $user->firstname ?? 'Customer';
             $subject = "Transaction Alert";
             $body = '<p>Hello! ' . $name . ',</p>';
-            $body .= '<p style="line-height: 2.0;">A transaction has just occured on your account on ' . config('app.name') . ' <br>Please find below the details of the transaction: <br>
+            $body .= '<p style="line-height: 2.0;">A transaction has just occured on your account on ' . request()->store_name . ' <br>Please find below the details of the transaction: <br>
             <strong>Transaction Purpose:</strong> ' . $transaction->reason . '<br>
             <strong>Transaction Status:</strong> ' . ucfirst($transaction->user_status) . '<br>
             <strong>Transaction Id:</strong> ' . $transaction->transaction_id . '<br>
@@ -172,7 +174,7 @@ class Controller extends BaseController
             <strong>Total Amount Paid:</strong> ' . getSettings()->currency . number_format($transaction->total_amount, 2) . '<br>
             <strong>Initial Balance:</strong> ' . getSettings()->currency . number_format($transaction->balance_before, 2) . '<br>
             <strong>Final Balance: </strong>' . getSettings()->currency . number_format($transaction->balance_after, 2) . '<br>
-            <br>Warm Regards. (' . config('app.name') . ')<br/>
+            <br>Warm Regards. (' . request()->store_name . ')<br/>
             </p>';
 
             $email = $user->email;
@@ -186,7 +188,7 @@ class Controller extends BaseController
         if ($api->warning_threshold_status == 'active' && $api->warning_threshold > $api->balance ) {
             $email = getSettings()->official_email;
 
-            $subject = "Low balance alert for " . $api->name . " on " . config('app.name');
+            $subject = "Low balance alert for " . $api->name . " on " . request()->store_name;
             $body = '<p>Hello Admin,</p>';
             $body .= '<p style="line-height: 2.0;">Your wallet balance for ' .$api->name. ' on '. config("app.name") . ' is running low.<br>
             You currently have '.getSettings()->currency.number_format($api->balance, 2).' remaning in your '.$api->name.' wallet. Please recharge<br></p><br><br>Warm Regards';
@@ -248,8 +250,8 @@ class Controller extends BaseController
         ini_set('max_execution_time', 600); //5 minutes
         // $this->purgeSentEmails();
         // Check how many have been sent within the hour
-        $sentWithinTheHour = EmailLog::where('status', 'sent')->whereBetween('sent_at', [$oneHourAgo, now()])->count();
-      
+        $sentWithinTheHour = EmailLog::withoutGlobalScope(new MerchantIdScope())->where('status', 'sent')->whereBetween('sent_at', [$oneHourAgo, now()])->count();
+        
         // \Log::info('Emails sending start at: ' .now());
         if ($sentWithinTheHour >= $hourlyRate) {
             \Log::info(now() . ' : Hourly email rate exceeded on server. ' . $sentWithinTheHour . ' emails already sent this hour');
@@ -257,13 +259,15 @@ class Controller extends BaseController
         } else {
             $pick = $hourlyRate - $sentWithinTheHour;
 
-            $emails = EmailLog::where('status', 'pending')->whereNull('sent_at')->take($pick)->get();
+            $emails = EmailLog::withoutGlobalScope(new MerchantIdScope())->where('status', 'pending')->whereNull('sent_at')->take($pick)->get();
+            
             $count = 0;
             
             foreach ($emails as $email) {
                 $data['recipient'] = $email->recipient;
                 $data['content'] = $email->content;
                 $data['subject'] = $email->subject;
+                $data['merchant_id'] = $email->merchant_id;
 
                 $res = $this->sendEmailReal($data);
 
@@ -283,25 +287,23 @@ class Controller extends BaseController
 
     public function sendEmailReal($current)
     {
-        $provider = EmailApiSetting::first();
-       
-        if(!empty($provider)){
-            config([
-                'mail.driver' => $provider->MAIL_DRIVER,
-                'mail.host' => $provider->MAIL_HOST,
-                'mail.port' => $provider->MAIL_PORT,
-                'mail.encryption' => $provider->MAIL_ENCRYPTION,
-                'mail.username' => $provider->MAIL_USERNAME,
-                'mail.password' => $provider->MAIL_PASSWORD,
-                'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME,
-                'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS,
-                'mail.from' => [
-                    'address' => $provider->MAIL_FROM_ADDRESS,
-                    'name' => $provider->MAIL_FROM_NAME,
-                ],
-            ]);
-            $current['provider'] = $provider->toArray();
-        }
+        $provider = EmailApiSetting::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $current['merchant_id'])->first();
+
+        config([
+            'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
+            'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
+            'mail.port' => $provider->MAIL_PORT ?? env('MAIL_PORT'),
+            'mail.encryption' => $provider->MAIL_ENCRYPTION ?? env('MAIL_ENCRYPTION'),
+            'mail.username' => $provider->MAIL_USERNAME ?? env('MAIL_USERNAME'),
+            'mail.password' => $provider->MAIL_PASSWORD ?? env('MAIL_PASSWORD'),
+            'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME ?? env('MAIL_REPLY_TO_NAME'),
+            'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS ?? env('MAIL_REPLY_TO_ADDRESS'),
+            'mail.from' => [
+                'address' => $provider->MAIL_FROM_ADDRESS ?? env('MAIL_FROM_ADDRESS'),
+                'name' => $provider->MAIL_FROM_NAME ?? env('MAIL_FROM_NAME'),
+            ],
+        ]);
+        $current['provider'] = $provider->toArray();
         
         try {
             Mail::to($current['recipient'])->send(new EmailMessages([

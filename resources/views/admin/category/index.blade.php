@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'All APIs')
+@section('title', 'All Categories')
 
 @section('page-css')
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/vendors.min.css') }}">

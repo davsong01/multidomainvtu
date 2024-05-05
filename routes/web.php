@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIController;
 use App\Http\Controllers\RoleController;
@@ -48,16 +49,10 @@ use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 */
 
 
-
-// Route::group(['prefix' => '{merchant}'], function () {
-//     Route::middleware(['default-domain-merchant-check'])->group(function () {
-//         Route::get('welcome', function ($merchant) {
-//             return "Welcome to the $merchant site!";
-//         });
-
-//         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     });
-// });
+Route::get('payment-callback/{provider_id?}', [PaymentController::class, 'analyzePaymentResponse'])->name('payment-callback');
+Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallback'])->name('log.payment.response');
+Route::get('analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
+Route::get('cron/sendemails', [Controller::class, 'cronSendEmails']); // fixed
 
 Route::group(['prefix' => '{merchant}'], function ($merchant) {
     Route::middleware(['default-domain-merchant-check'])->group(function ($merchant) { 
@@ -134,7 +129,6 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                     Route::get('api-settings', [DashboardController::class, 'apiSettings'])->name('api.settings');
                     
                 });
-                Route::get('payment-callback/{provider_id?}', [PaymentController::class, 'analyzePaymentResponse'])->name('payment-callback');
                 Route::get('customer-update-kyc-info', [DashboardController::class, 'updateKycInfo'])->name('update.kyc.details');
                 Route::post('customer-update-kyc-info', [DashboardController::class, 'processUpdateKycInfo'])->name('update.kyc.details.process');
                 Route::get('get-lga-by-statename/{state}', [KycDataController::class, 'getLgaByStateName'])->name('kyc-get-lga-by-state');
@@ -244,6 +238,6 @@ Route::middleware(['custom-domain-merchant-check'])->group(function () {
     Route::get('hello', function () {
         return "Welcome to the default site!";
     }); 
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
 });

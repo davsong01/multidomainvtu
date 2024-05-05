@@ -42,7 +42,7 @@
                                 @include('layouts.alerts')
                                 <div class="card-header">
                                     <h4 class="card-title">All Biller's code</h4> <br>
-                                    <p>List of all Biller's verified on {{config('app.name')}}</p>
+                                    <p>List of all Biller's verified on {{request()->store_name}}</p>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">

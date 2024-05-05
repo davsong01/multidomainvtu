@@ -72,7 +72,7 @@
                                                             </td>
                                                             <td>{{ $level->order }}</td>
                                                             <td>{{ $level->customers_count }}</td>
-                                                            <td>{!! getSettings()['currency'] !!}{{ number_format($level->upgrade_amount) }}
+                                                            <td>{!! getSettings()->currency !!}{{ number_format($level->upgrade_amount) }}
                                                             </td>
                                                             @if(hasAccess('customerlevel.edit') || hasAccess('customerlevel.destroy'))
                                                             <td>

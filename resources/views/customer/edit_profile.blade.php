@@ -45,7 +45,7 @@
                                     <div class="card-body">
                                         <p>
                                             Share your referral links with friends to earn handsome rewards
-                                            <div class="text-primary">{{ url('/register'). '?referral='.auth()->user()->username }}
+                                            <div class="text-primary">{{ route('register', request()->array). '?referral='.auth()->user()->username }}
                                             </div>
                                         </p>
                                     </div>
@@ -85,7 +85,7 @@
                                                     </div>
                                                     <div class="card-content">
                                                         <div class="card-body">
-                                                            <form action="{{ route('profile.update') }}" method="POST"
+                                                            <form action="{{ route('profile.update', request()->array) }}" method="POST"
                                                                 autocomplete="off">
                                                                 @csrf
                                                                 @method('PATCH')
@@ -188,7 +188,7 @@
 @section('page-script')
     <script src="{{ asset('app-assets/js/scripts/pages/dashboard-analytics.js') }}"></script>
 
-    <script>
+    {{-- <script>
         $('.api-key-btn').click(function() {
             $.ajax({
                 url: '{{ route('profile.keys') }}',
@@ -218,5 +218,5 @@
                 }
             })();
         })
-    </script>
+    </script> --}}
 @endsection

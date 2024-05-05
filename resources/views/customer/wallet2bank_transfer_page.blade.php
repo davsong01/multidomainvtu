@@ -61,7 +61,7 @@
                                                                         <label for="amount" class="">Amount to withdraw from wallet</label>
                                                                         <input class="form-control" id="amount" name="amount" placeholder="Enter Amount to transfer" required="" type="number" required min="1" max="{{ walletBalance(auth()->user()) - env('BANK_TRANSFER_CHARGES')}}">
                                                                         <div class="footnote">
-                                                                            <small><strong>(Maximum amount is: {!! getSettings()['currency'] !!}{{ number_format(walletBalance(auth()->user()) - env('BANK_TRANSFER_CHARGES'))}}) </strong>| <span style="color:red">Bank Charge of {!! getSettings()['currency'] !!}{{ number_format(env('BANK_TRANSFER_CHARGES'))}} applies</span></small>
+                                                                            <small><strong>(Maximum amount is: {!! getSettings()->currency !!}{{ number_format(walletBalance(auth()->user()) - env('BANK_TRANSFER_CHARGES'))}}) </strong>| <span style="color:red">Bank Charge of {!! getSettings()->currency !!}{{ number_format(env('BANK_TRANSFER_CHARGES'))}} applies</span></small>
                                                                         </div>
                                                                     </fieldset>
                                                                 </div>    

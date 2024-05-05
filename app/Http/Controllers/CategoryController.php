@@ -91,6 +91,7 @@ class CategoryController extends Controller
             "seo_keywords" => $request->seo_keywords,
             "unique_element" => $request->unique_element,
             "discount_type" => $request->discount_type,
+            "merchant_id" => $request()->merchant_id
         ]);
 
         return redirect(route('category.index', ['merchant' => getMerchantDetails()->store_slug]))->with('message', 'Added successfully');
@@ -118,7 +119,6 @@ class CategoryController extends Controller
             "seo_title" => "nullable",
             "seo_keywords" => "nullable",
             "discount_type" => "nullable",
-
         ]);
 
         $category->update([

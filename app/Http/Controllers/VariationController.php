@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Session;
 
 class VariationController extends Controller
 {
-    public function pullVariations(Product $product)
+    public function pullVariations($merchant, $product)
     {
+        $product = Product::where('id', $product)->first();
         $variations = app("App\Http\Controllers\Providers\KingsVtuController")->getVariations($product->slug);
-       
+        
         if (isset($variations['status']) && $variations['status'] == 'success') {
             $variations = $variations['data']['variations'] ?? [];
             if (!empty($variations)) {
@@ -34,7 +35,8 @@ class VariationController extends Controller
                         'max' => $variation['max'] ?? null,
                         'verifiable' => $variation['verifiable'] ?? null,
                         'unique_element' => $variation['unique_element'] ?? null,
-                        'status' => 'inactive'
+                        'status' => 'inactive',
+                        'merchant_id' => request()->merchant_id
                     ]);
                 }
 
@@ -97,7 +99,8 @@ class VariationController extends Controller
                             'customer_level' => $key,
                             'product_id' => $request->product_id,
                             'variation_id' => $k,
-                            'price' => $price ?? 0
+                            'price' => $price ?? 0,
+                            'merchant_id' => request()->merchant_id
                         ]);
                     // }
                 }
@@ -148,7 +151,8 @@ class VariationController extends Controller
                     'system_price' => $request->system_price[$key],
                     'min' => $request->minimum_amount[$key] ?? null,
                     'max' => $request->maximum_amount[$key] ?? null,
-                    'status' => $request->status[$key]
+                    'status' => $request->status[$key],
+                    'merchant_id' => request()->merchant_id
                 ]);
 
                 if (isset($request->level)) {
@@ -164,7 +168,8 @@ class VariationController extends Controller
                                     'customer_level' => $l,
                                     'product_id' => $product->id,
                                     'variation_id' => $variation->id,
-                                    'price' => $level[$key]
+                                    'price' => $level[$key],
+                                    'merchant_id' => request()->merchant_id
                                 ]);
                             }
                         }
@@ -177,9 +182,10 @@ class VariationController extends Controller
         return back()->with('message', 'Variations added succesfully');
     }
 
-    public function deleteVariations(Variation $variation)
+    public function deleteVariations($merchant,$variation)
     {
-
+        $variation = Variation::where('id', $variation)->first();
+       
         if ($variation->discounts->count() > 0) {
             foreach ($variation->discounts as $dist) {
                 $dist->delete();

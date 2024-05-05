@@ -57,7 +57,7 @@ class RegisterController extends Controller
         Auth::login($user);
         
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect(route('dashboard', request()->array))->intended();
+            return redirect()->intended(route('dashboard', request()->array));
         }
 
         return view('auth.verify-email', request()->array);

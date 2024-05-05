@@ -52,7 +52,7 @@ class TransactionController extends Controller
         $banks = Bank::all();
 
         if (walletBalance(auth()->user()) <= env('BANK_TRANSFER_CHARGES')) {
-            return redirect(route('dashboard'))->with('error', 'You need above ' . getSettings()['currency'] . number_format(env('BANK_TRANSFER_CHARGES')) . ' wallet balance to use this feature!');
+            return redirect(route('dashboard'))->with('error', 'You need above ' . getSettings()->currency . number_format(env('BANK_TRANSFER_CHARGES')) . ' wallet balance to use this feature!');
         }
         if (!empty($product) && $product->status == 'active') {
             return view('customer.wallet2bank_transfer_page', compact('product', 'banks'));
