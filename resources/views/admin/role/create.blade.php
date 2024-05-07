@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('role.index') }}">Roles</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('role.index',request()->array) }}">Roles</a>
                                     </li>
                                     <li class="breadcrumb-item active">New Role
                                     </li>
@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('role.store') }}" method="POST"
+                                        <form action="{{ route('role.store',request()->array) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">

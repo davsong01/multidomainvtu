@@ -7,15 +7,13 @@ use App\Models\KycData;
 use App\Models\Customer;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use App\Models\EmailApiSetting;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Auth\Events\Registered;
-use App\Providers\RouteServiceProvider;
+use App\Http\Controllers\Auth\VerifyEmailController;
+
 
 class RegisterController extends Controller
 {
@@ -40,7 +38,12 @@ class RegisterController extends Controller
             'last_name' => ['required', 'string'],
             'phone' => ['required', 'string'],
             'username' => ['required', 'string', 'unique:' . User::class],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'email' => [
+                'required','string','lowercase', 'email', 'max:255', Rule::unique('users')->where(function ($query) {
+                    $query->where('merchant_id', request()->merchant_id);
+                })
+            ],
+            // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', Rules\Password::defaults()],
             'privacy' => ['required'],
         ]);

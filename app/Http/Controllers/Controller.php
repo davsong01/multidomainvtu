@@ -95,7 +95,7 @@ class Controller extends BaseController
         }
 
         // 
-        $location = request()->store_slug.'/'.$location;
+        $location = 'media/'.request()->store_slug.'/'.$location;
         
         if (!is_dir($path . '/' . $location)) {
             mkdir($path . '/' . $location, 0777, true);

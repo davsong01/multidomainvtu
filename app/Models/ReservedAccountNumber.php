@@ -31,6 +31,6 @@ class ReservedAccountNumber extends Model
 
     public function payment_gateway()
     {
-        return $this->belongsTo(PaymentGateway::class, 'paymentgateway_id');
+        return $this->belongsTo(PaymentGateway::class, 'id');
     }
 }

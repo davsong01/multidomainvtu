@@ -1,4 +1,5 @@
 @extends('layouts.auth')
+@section('title', 'Register')
 @section('body')
     <!-- left section-login -->
     <div class="col-md-12 col-12 px-0">

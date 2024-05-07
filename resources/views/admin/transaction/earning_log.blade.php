@@ -47,7 +47,7 @@
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
-                            <form action="{{ route('admin.earninglog') }}" method="GET">
+                            <form action="{{ route('admin.earninglog', request()->array) }}" method="GET">
                                 {{-- @csrf --}}
                                 <div class="row">
                                     <div class="col-md-3">
@@ -113,14 +113,14 @@
                                     <tbody>
                                         @foreach ($transactions as $transaction)
                                             <tr>
-                                               
+                                            
                                                 <td>{{ $transaction->customer->user->name }} <br>
-                                                    <a href="{{ route('customers.edit', $transaction->customer)}}">{{ $transaction->customer->user->email  }}</a> <br>
+                                                    <a href="{{ route('customers.edit', array_merge(request()->array, ['id' => $transaction->customer])) }}">{{ $transaction->customer->user->email  }}</a> <br>
                                                     {{ $transaction->customer_phone }} <br>
                                                     
                                                 </td>
                                                  <td>{{ $transaction->referredCustomer->user->name }} <br>
-                                                    <a href="{{ route('customers.edit', $transaction->referredCustomer)}}">{{ $transaction->referredCustomer->user->email  }}</a> <br>
+                                                    <a href="{{ route('customers.edit', array_merge(request()->array, ['id' =>  $transaction->referredCustomer])) }}">{{ $transaction->referredCustomer->user->email  }}</a> <br>
                                                     {{ $transaction->customer_phone }} <br>
                                                     
                                                 </td>
@@ -146,7 +146,7 @@
                                                     </strong>
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.transaction.view', $transaction->id) }}">
+                                                    <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.transaction.view', array_merge(request()->array, ['transaction' => $transaction->id])) }}">
                                                         <i class="fa fa-eye"></i>
                                                         <span class="align-middle ml-25">View</span>
                                                     </a>

@@ -23,7 +23,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('billerlog.index') }}">Biller Logs</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('billerlog.index', request()->array) }}">Biller Logs</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Biller's Information
                                     </li>
@@ -82,7 +82,7 @@
                                                             {{ $biller->created_at}}
                                                         </td>
                                                         <td>
-                                                            <form action="{{ route('billerlog.destroy', $biller->id) }}"
+                                                            <form action="{{ route('billerlog.destroy', array_merge(request()->array, ['billerlog' => $biller->id])) }}"
                                                                 class="btn btn-custon-four btn-bg-cl-social" method="POST"
                                                                 onsubmit="return confirm('Are you sure you want to delete forever?');">
                                                                 {{ csrf_field() }}

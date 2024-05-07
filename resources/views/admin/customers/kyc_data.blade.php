@@ -33,21 +33,23 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($customers as $customer)
+                                    @if(!empty($customer->user))
                                         <tr>
                                             <td>
                                                 <P>
-                                                    <a target="_blank" href="{{ request()->route()->getPrefix() }}/customer/edit/{{ $customer->id }}">
-                                                        {{ $customer->user->firstname . ' ' . $customer->user->lastname }}</a> <br>
-                                                        {{ $customer->user->email }} <br>
-                                                        {{ $customer->user->phone }}
+                                                    <a target="_blank" href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->id]))}}">
+                                                        {{ $customer->user?->firstname . ' ' . $customer->user?->lastname }}</a> <br>
+                                                        {{ $customer->user?->email }} <br>
+                                                        {{ $customer->user?->phone }}
                                                 </P>
                                             </td>
                                             <td style="">{{ ucfirst($customer->kyc_status) }}</td>
                                             <td>
-                                                <a href="{{ route('customers.edit', $customer->user->id) }}"><button type="button" class="btn btn-info btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View</span></button>
+                                                <a href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->user?->id]))}}"><button type="button" class="btn btn-info btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View</span></button>
                                                 </a>
                                             </td>
                                         </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>

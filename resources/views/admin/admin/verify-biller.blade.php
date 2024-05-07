@@ -25,7 +25,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('admin.trans') }}">Transactions</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('admin.trans', request()->array) }}">Transactions</a>
                                     </li>
                                     <li class="breadcrumb-item active">Verify Biller
                                     </li>
@@ -62,7 +62,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <form action="{{ route('admin.verify.post') }}" method="POST"
+                                        <form action="{{ route('admin.verify.post', request()->array) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">

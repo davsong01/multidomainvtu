@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use App\Models\RolePermission;
 use Illuminate\Http\Request;
+use App\Models\RolePermission;
+use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
@@ -34,7 +35,12 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $data = $this->validate($request, [
-            'name' => 'required|unique:roles',
+            'name' => [
+                'required', Rule::unique('roles')->where(function ($query) {
+                    $query->where('merchant_id', request()->merchant_id);
+                })
+            ],
+            // 'name' => 'required|unique:roles',
             'menus' => 'required',
             'status' => 'required',
             'permissions' => 'required',
@@ -64,8 +70,10 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    public function edit($merchant, $role)
     {
+        $role = Role::where('id', $role)->first();
+
         $menus = RolePermission::where('status', 'active')->where('type', 'menu')->get();
         $permissions = RolePermission::where('status', 'active')->where('type', 'link')->orderBy('name','ASC')->get();
         $rolePermissions = explode(",",$role->permissions);
@@ -76,10 +84,17 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Role $role)
+    public function update(Request $request, $merchant, $role)
     {
+        $role = Role::where('id',$role)->first();
+
         $data = $this->validate($request, [
-            'name' => 'required|unique:roles,name,' . $role->id,
+            'name' => [
+                'required', Rule::unique('roles')->ignore($role->id)->where(function ($query) {
+                    $query->where('merchant_id', request()->merchant_id);
+                })
+            ],
+            // 'name' => 'required|unique:roles,name,' . $role->id,
             'menus' => 'required',
             'status' => 'required',
             'permissions' => 'required',
@@ -94,7 +109,7 @@ class RoleController extends Controller
             'permissions' => $permissions
         ]);
 
-        return redirect(route('role.index'))->with('message', 'Role updated succesfully');
+        return redirect(route('role.index',request()->array))->with('message', 'Role updated succesfully');
 
     }
 

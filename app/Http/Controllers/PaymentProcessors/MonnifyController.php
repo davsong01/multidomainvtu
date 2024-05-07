@@ -114,6 +114,8 @@ class MonnifyController extends Controller
             return [
                 'status' => 'failed',
                 'status_code' => 0,
+                'data' => 'Invalid Provider Authentication',
+
             ];
         } else {
             $url = $this->api->base_url . 'v2/bank-transfer/reserved-accounts';
@@ -163,7 +165,9 @@ class MonnifyController extends Controller
                             'status' => $response['responseBody']['status'] ?? null,
                             'purpose' => 'WALLET-FUNDING',
                             'bvn' => $response['responseBody']['bvn'],
-                            'response' => json_encode($response)
+                            'response' => json_encode($response),
+                            'merchant_id' => request()->merchant_id,
+
                         ]);
                     }
                     

@@ -1,4 +1,6 @@
 @extends('layouts.auth')
+@section('title', 'Reset Password')
+
 @section('body')
 <!-- left section-login -->
 

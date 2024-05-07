@@ -65,9 +65,8 @@ class CustomerController extends Controller
         ];
 
         $admin_id = auth()->user()->admin->id;
-       
-        $reserved = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->createReservedAccount($data, $admin_id);
-
+        $reserved = createReservedAccount($data, $admin_id);
+        
         if ($reserved['status'] && $reserved['status'] == 'success') {
             return back()->with('message', 'Reserved Account(s) crearted successfully');
         } else {

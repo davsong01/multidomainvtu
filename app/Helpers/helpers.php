@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PaymentProcessors\MonnifyController;
+use App\Http\Controllers\PaymentProcessors\SquadController;
 use App\Models\KycData;
 use App\Models\Category;
 use App\Models\Customer;
@@ -35,18 +37,20 @@ if (!function_exists("getPaymentGateways")) {
 }
 
 if (!function_exists("createReservedAccount")) {
-    function createReservedAccount($data = null)
+    function createReservedAccount($data = null,$admin_id=null)
     {
         $paymentGateway = request()->merchant_settings['payment_gateway'];
         $reserved = null;
 
         if (!empty($paymentGateway)) {
             if ($paymentGateway == 'monnify') {
-                $reserved = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->createReservedAccount($data);
+                $monnify = new MonnifyController();
+                $reserved = $monnify->createReservedAccount($data, $admin_id);
             }
 
             if ($paymentGateway == 'squad') {
-                $reserved = app('App\Http\Controllers\PaymentProcessors\SquadController')->createReservedAccount($data);
+                $squad = new SquadController();
+                $reserved = $squad->createReservedAccount($data, $admin_id);
             }
         }
 
@@ -209,7 +213,7 @@ if (!function_exists("getSettings")) {
 if (!function_exists("staffDefaultPassword")) {
     function staffDefaultPassword()
     {
-        return '550523';
+        return '550523@'.request()->merchant_id;
     }
 }
 

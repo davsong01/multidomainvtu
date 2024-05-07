@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Customer;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -35,7 +36,12 @@ class AdminController extends Controller
             'password' => 'nullable',
             'phone' => 'nullable',
             'permissions' => 'required',
-            'email' => 'required|unique:users',
+            'email' => [
+                'required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->where(function ($query) {
+                    $query->where('merchant_id', request()->merchant_id);
+                })
+            ],
+            // 'email' => 'required|unique:users',
             'status' => 'nullable',
         ]);
         
@@ -44,7 +50,7 @@ class AdminController extends Controller
         }else{
             $password = Hash::make(staffDefaultPassword());
         }
-
+        
         DB::transaction(function () use($request, $password){
             $user = User::create([
                 'firstname' => $request->first_name,
@@ -55,10 +61,13 @@ class AdminController extends Controller
                 'status' => $request->status,
                 'type' => 'admin',
                 'username' => Str::slug($request->firstname . '-' . $request->lastname),
+                'merchant_id' => request()->merchant_id,
+                'email_verified_at' => now(),
             ]);
 
             $admins = Admin::create([
                 'user_id' => $user->id,
+                'merchant_id' => request()->merchant_id,
                 'permissions' => join(',', $request->permissions),
             ]);
         });
@@ -82,12 +91,14 @@ class AdminController extends Controller
             'password' => 'nullable',
             'phone' => 'nullable',
             'roles' => 'required',
-            'email' => 'required|unique:users,email,'.$request->id,
+            'email' => [
+                'required','email','max:255', Rule::unique('users')->ignore($request->id)->where(function ($query) {
+                    $query->where('merchant_id', request()->merchant_id);
+                })
+            ],
             'status' => 'nullable',
         ]);
 
-        // 'unique:table,email_column_to_check,id_to_ignore'
-       
         $admin = User::find($request->id);
 
         if (!empty($request->password)) {

@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('admins') }}">Admins</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('admins',request()->array) }}">Admins</a>
                                     </li>
                                     <li class="breadcrumb-item active">New Account
                                     </li>
@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('adminSave') }}" method="POST"
+                                        <form action="{{ route('adminSave',request()->array) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">

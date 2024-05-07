@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('permission.index') }}">Permission</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('permission.index',request()->array) }}">Permission</a>
                                     </li>
                                     <li class="breadcrumb-item active">New Permission
                                     </li>
@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('permission.store') }}" method="POST"
+                                        <form action="{{ route('permission.store',request()->array) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">

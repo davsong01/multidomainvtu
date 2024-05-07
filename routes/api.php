@@ -17,7 +17,7 @@ use App\Http\Controllers\ExternalApiController;
 |
 */
 
-Route::controller(DefaultController::class)->prefix('v1')->group(function () {
+Route::controller(DefaultController::class)->middleware('micro-service')->prefix('v1')->group(function () {
     Route::post('create-new-shop', 'createDefaultDetails');
     Route::get('delete-shop/{id}', 'deleteMerchantShop');
     

@@ -53,6 +53,9 @@ Route::get('payment-callback/{provider_id?}', [PaymentController::class, 'analyz
 Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallback'])->name('log.payment.response');
 Route::get('analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
 Route::get('cron/sendemails', [Controller::class, 'cronSendEmails']); // fixed
+Route::get('/', function () {
+    return view('mainlandingpages.index');
+})->name('landing.main');
 
 Route::group(['prefix' => '{merchant}'], function ($merchant) {
     Route::middleware(['default-domain-merchant-check'])->group(function ($merchant) { 

@@ -56,8 +56,7 @@
                                                     <tr>
                                                         <td><p>
                                                             {{$number->customer->user->name}} <br>
-                                                            <a title="View Customer" target="_blank" href="{{route('customers.edit', $number->customer->user->id)}}">{{$number->customer->user->email}}</a> <br>
-                                                            
+                                                            <a title="View Customer" target="_blank" href="{{route('customers.edit', array_merge(request()->array, ['id'=> $number->customer->user->id]))}}">{{$number->customer->user->email}}</a> <br>
                                                                 <small style="color:black"><strong>Created on: {{$number->created_at}} </strong>
                                                                     @if(!empty($number->admin_id)) <br>
                                                                     By: <strong>{{ $number->admin->user->firstname . ' '. $number->admin->user->lastname}}</strong>
@@ -75,12 +74,12 @@
                                                             </p>
                                                         </td>
                                                         <td>
-                                                            <a title ="View Transactions" href="{{route('account.transactions', $number->id)}}">
+                                                            <a title ="View Transactions" href="{{route('account.transactions', array_merge(request()->array, ['account'=>$number->id]))}}">
                                                             {!! getSettings()->currency !!}{{ number_format($number->transactions->sum('total_amount'), 2) }} <small><strong>({{number_format($number->transactions->count())}})</strong></small></a>
                                                         </td>
                                                         <td>
                                                             @if($number->transactions->count() < 1)
-                                                            <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', $number->id) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
+                                                            <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', array_merge(request()->array, ['account' => $number->id])) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
                                                             @endif
                                                         </td>
                                                     </tr>

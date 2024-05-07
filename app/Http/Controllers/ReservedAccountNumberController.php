@@ -18,16 +18,28 @@ class ReservedAccountNumberController extends Controller
         return view('admin.customers.reserved_account_numbers', compact('numbers'));
     }
 
-    public function delete(ReservedAccountNumber $account)
+    public function delete($merchant, $account)
     {
-        if ($account->paymentgateway_id == 1) {
-            $delete = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->deleteReservedAccount($account->account_reference);
-        }
+        $account = ReservedAccountNumber::where('id',$account)->first();
+        $slug = $account->payment_gateway->slug ?? null;
+        
+        if(!empty($slug)){
+            if ($slug == 'monnify') {
+                $delete = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->deleteReservedAccount($account->account_reference);
+            }
 
-        if ($delete['status'] == 'success') {
-            return back()->with('message', 'Reserved Account Deleted successfully');
-        } else {
-            return back()->with('error', $delete['data']);
+            if ($slug == 'squad') {
+                $delete = app('App\Http\Controllers\PaymentProcessors\SquadController')->deleteReservedAccount($account->account_reference);
+            }
+
+            if ($delete['status'] == 'success') {
+                return back()->with('message', 'Reserved Account Deleted successfully');
+            } else {
+                return back()->with('error', $delete['data']);
+            }
+
+        }else{
+            return back()->with('message', 'Invalid Payment gateway selected');
         }
     }
 
@@ -50,8 +62,10 @@ class ReservedAccountNumberController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ReservedAccountNumber $account)
+    public function show($merchant, $account)
     {
+        $account = ReservedAccountNumber::where('id', $account)->first();
+
         $transactions = TransactionLog::where('account_number', $account->account_number)->orderBy('created_at', 'DESC')->get();
         
         return view('admin.customers.reserved_account_number_transactions', compact('transactions','account'));

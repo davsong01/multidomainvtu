@@ -12,7 +12,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('admins') }}">Admins</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('admins',request()->array) }}">Admins</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{ $admin->firstname }}
                                     </li>
@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('updateAdmin') }}" method="POST"
+                                        <form action="{{ route('updateAdmin',request()->array) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">
@@ -70,6 +70,11 @@
                                                         <option value="active" {{ $admin->status == 'active' ? 'selected' :'' }}>Active</option>
                                                         <option value="inactive"  {{ $admin->status == 'inactive' ? 'selected' :''}}>Suspended</option>
                                                     </select>
+                                                </fieldset>
+                                                {{-- <fieldset class="form-group col-md-6">
+                                                    <label class="text-bold-600" for="password">Change Password<span style="color:red"></span></label>
+                                                    <input type="password" class="form-control" name="password" placeholder="Enter password"
+                                                        id="password" autocomplete="off"> --}}
                                                 </fieldset>
                                                 <fieldset class="form-group col-sm-6 col-12">
                                                 <label for="file_name">Roles</label>

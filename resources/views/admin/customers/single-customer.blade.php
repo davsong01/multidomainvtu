@@ -480,8 +480,12 @@ use App\Models\BlackList;
                                                         @foreach ($accounts as $key => $account)
                                                             @if ($account->paymentgateway_id == 1)
                                                                 <tr>
-                                                                    <td>{{ ucfirst($account->account_name) }}</td>
-                                                                    <td>{{ ucfirst($account->bank_name) }}</td>
+                                                                    <td>{{ ucfirst($account->account_name) }} <br>
+                                                                        <span style="background-color: yellow;color:black;padding: 5px 3px;margin-top: 19px !important;border-radius: 5px;"><small>{{ ucfirst($account->payment_gateway?->name) }}</small></span>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ ucfirst($account->bank_name) }}
+                                                                    </td>
                                                                     <td>{{ ucfirst($account->account_number) }} <br>
                                                                     <small style="color:black"><strong>Created on: {{$account->created_at}} </strong>
                                                                         @if(!empty($account->admin_id)) <br>
@@ -491,14 +495,14 @@ use App\Models\BlackList;
                                                                         @endif
                                                                     </small></td>
                                                                     <td>
-                                                                        <a title ="View Transactions" href="{{route('account.transactions', $account->id)}}">
+                                                                        <a title ="View Transactions" href="{{route('account.transactions', array_merge(request()->array, ['account' =>$account->id ]))}}">
                                                                         {!! getSettings()->currency !!}{{ number_format($account->transactions->sum('total_amount'), 2) }} <small><strong>({{number_format($account->transactions->count())}})</strong></small></a>
                                                                     </td>
                                                                     <td>
                                                                         <div
                                                                             @if($account->transactions->count() < 1)
                                                                             <a>
-                                                                            <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', $account->id) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
+                                                                            <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', array_merge(request()->array, ['account' =>$account->id ])) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
                                                                             @endif
                                                                         </div>
                                                                     </td>

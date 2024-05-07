@@ -24,7 +24,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('role.index') }}">Roles</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('role.index',request()->array) }}">Roles</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Roles
                                     </li>
@@ -42,7 +42,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">All Roles</h4> <br>
-                                    <a href="{{ route('role.create') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Add Role
+                                    <a href="{{ route('role.create',request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Add Role
                                     </button></a>
                                     @include('layouts.alerts')
                                 </div>
@@ -64,7 +64,7 @@
                                                         <td>{{ ucfirst($role->status) }}</td>
                                                         
                                                         <td>
-                                                            <a href="{{ route('role.edit', $role->id) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
+                                                            <a href="{{ route('role.edit', array_merge(request()->array, ['role'=>$role->id])) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
                                                         </td>
                                                     </tr>
                                                     @endforeach

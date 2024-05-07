@@ -40,6 +40,7 @@ class LoginController extends Controller
         // $this->ensureIsNotRateLimited();
         if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password'], 'merchant_id' => $request->merchant_id))) {
             $user = auth()->user();
+            
             if ($user->status != 'active') {
                 if ($user->status == 'deleted') {
                     return back()->with('error', 'Sorry, this account has been deleted! Please contact support.');
