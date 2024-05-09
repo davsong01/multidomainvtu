@@ -56,9 +56,9 @@ class Kernel extends HttpKernel
         'default-domain-merchant-check' => \App\Http\Middleware\DefaultDomainMerchantCheckMiddleware::class,
         'custom-domain-merchant-check' => \App\Http\Middleware\CustomDomainMerchantCheckMiddleware::class,
         'auth' => \App\Http\Middleware\AuthCheckMiddleware::class,
-        // 'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'micro-service' => \App\Http\Middleware\MicroService::class,
         'verified' => \App\Http\Middleware\VerifyEmailMiddleware::class,
-
+        // 'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
