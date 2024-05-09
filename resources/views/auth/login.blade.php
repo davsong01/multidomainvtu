@@ -5,6 +5,7 @@
 
 <div class="col-md-12 col-12 px-0">
     <div class="card disable-rounded-right d-flex justify-content-center">
+        @include('layouts.auth_shop_details')
         <div class="card-header pb-1">
             <div class="card-title">
                 <h4 class="text-center mb-2">Welcome Back</h4>

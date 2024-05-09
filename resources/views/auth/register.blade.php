@@ -4,7 +4,7 @@
     <!-- left section-login -->
     <div class="col-md-12 col-12 px-0">
         <div class="card disable-rounded-right d-flex justify-content-center">
-            @include('layouts.shop_details')
+            @include('layouts.auth_shop_details')
             <div class="card-header pb-1">
                 <div class="card-title">
                     <h4 class="text-center mb-2">Create An Account</h4>
@@ -51,12 +51,14 @@
                                     placeholder="Password" required>
                             </div>
                         </div>
+                        @if(!empty(getSettings()->terms_and_conditions_link))
                         <div class="form-group mb-50 mt-2 ">
                             <div class="checkbox checkbox-success checkbox-glow">
                                 <input type="checkbox" id="checkboxGlow3" name="privacy" required>
                                 <label for="checkboxGlow3"><p>I agree to the <a target="_blank" href="{{ getSettings()->terms_and_conditions_link }}">TERMS OF SERVICE</a> of {{ request()->store_name }}</p></label>
                             </div>
                         </div>
+                        @endif
                         <button type="submit" class="btn btn-primary glow w-100 position-relative">Register</button>
                     </form>
                     <hr>

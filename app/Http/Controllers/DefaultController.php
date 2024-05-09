@@ -150,6 +150,7 @@ class DefaultController extends Controller
             'name' => 'Admin',
             'permissions' => implode(",", $ids),
             'status' => 'active',
+            'role_type' => 'superadmin',
             'merchant_id' => $merchant->id
         ]);
 

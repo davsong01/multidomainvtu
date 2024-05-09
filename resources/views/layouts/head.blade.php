@@ -76,10 +76,16 @@
         .svg svg{
             fill: {{ getSettings()->menu_text_color }};
         }
+        .content-wrapper{
+            margin-top: 0 !important;
+            padding: 1rem 2.2rem 0 !important
+        }
+
     </style>
     @yield('page-css')
     @if(Auth::check() && auth()->user()->type == 'customer')
     {{-- Google ads --}}
     {!! getSettings()->google_ad_code !!}
     @endif
+   
 </head>

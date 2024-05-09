@@ -105,7 +105,7 @@ class SettingsController extends Controller
             if ($request->payment_gateway == 'squad') {
                 PaymentGateway::updateOrCreate(['merchant_id' => request()->merchant_id, 'name' => 'Squad'], [
                     'name' => 'Squad',
-                    'base_url' => 'https://sandbox-api-d.squadco.com/',
+                    'base_url' => env('ENT') == 'local' ? 'https://sandbox-api-d.squadco.com/' : 'https://api-d.squadco.com/',
                     'status' => 'active',
                     'charge' => 0,
                     'slug' => 'squad',
@@ -117,7 +117,6 @@ class SettingsController extends Controller
         }
 
         $settings->update($data);
-
         return back()->with('message', 'Operation successful');
     }
 

@@ -190,7 +190,7 @@ use App\Models\BlackList;
                                                 <fieldset class="form-group">
                                                     <label for="customerlevel">Customer Level</label>
                                                     <select name="customerlevel" class="form-control" id="customerlevel">
-                                                        <option value="">Select Customerlevel</option>
+                                                        <option value="">Select Customer level</option>
                                                         @foreach ($customerLevels as $level)
                                                         <option value="{{ $level->id }}" {{$user->customer->customer_level == $level->id ? 'selected':''}}>{{ $level->name}}</option>
                                                         @endforeach

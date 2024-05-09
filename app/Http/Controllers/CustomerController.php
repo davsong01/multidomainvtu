@@ -109,7 +109,7 @@ class CustomerController extends Controller
         );
     }
 
-    function updateCustomer(Request $request, $id = null)
+    function updateCustomer(Request $request, $merchant, $id = null)
     {
         $val = $request->validate([
             'status' => 'required',
@@ -118,7 +118,9 @@ class CustomerController extends Controller
         ]);
 
         $user = User::where('id', $id)->first();
-        $user->update($request->except(['_token', 'ip', 'customerlevel']));
+        $except = $request->except(['_token', 'ip', 'customerlevel', 'merchant_settings', 'merchant_id', 'store_slug', 'store_name', 'array']);
+        
+        $user->update($except);
 
         if(!empty($request->customerlevel)){
             $level = CustomerLevel::where('id', $request->customerlevel)->first();

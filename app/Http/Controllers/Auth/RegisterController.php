@@ -45,8 +45,13 @@ class RegisterController extends Controller
             ],
             // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', Rules\Password::defaults()],
-            'privacy' => ['required'],
         ]);
+
+        if(!empty(getSettings()->terms_and_conditions_link)){
+            $request->validate([
+                'privacy' => ['required'],
+            ]);
+        }
 
         $user = $this->createUser($request);
         // $user->update([

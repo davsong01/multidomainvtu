@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@section('title', 'KYC Data')
+
 @section('page-css')
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/vendors.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/tables/datatable/datatables.min.css') }}"> 
@@ -19,6 +21,8 @@
                     <div class="card-header">
                         <!-- head -->
                         <h5 class="card-title">KYC Data</h5>
+                        @include('layouts.alerts')
+
                     </div>
 
                     <div class="card-body">
@@ -61,6 +65,7 @@
             </section>
         </div>
     </div>
+@endsection
 @section('page-script')
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>

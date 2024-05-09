@@ -67,7 +67,7 @@
                                                         <tr>
                                                             <td>{{ $level->name }}
                                                                 @if($level->make_default == 'yes') <br>
-                                                                <button class="btn btn-dark btn-sm">ADefaultPI</button>
+                                                                <button class="btn btn-dark btn-sm">Default Level</button>
                                                                 @endif
                                                             </td>
                                                             <td>{{ $level->order }}</td>
