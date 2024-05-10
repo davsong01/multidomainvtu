@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Api;
+use App\Models\API;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Admin;
@@ -100,7 +101,7 @@ class DefaultController extends Controller
                 $live = env('KINGSVTU_API_REMOTE_LIVE_BASE_URL');
             }
 
-            Api::Create([
+            API::Create([
                 "name" => 'KingsVTU',
                 "warning_threshold_status" => 'inactive',
                 "warning_threshold" => null,
@@ -202,7 +203,7 @@ class DefaultController extends Controller
         //Delete roles
         Role::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->delete();
         // Delete api
-        Api::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->delete();
+        API::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->delete();
         // Delete admin
         Admin::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->delete();
         
