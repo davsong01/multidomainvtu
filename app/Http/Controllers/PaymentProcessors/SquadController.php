@@ -29,7 +29,7 @@ class SquadController extends Controller
         ];
 
         $response = $this->makeCall($url, [], $headers, 'GET');
-        dd($respons);
+        dd($response);
         if (
             isset($response['responseCode']) && isset($response['responseBody']) && $response['responseCode'] == 0 && $response['responseBody']['paymentStatus'] == 'PAID' &&
             $response['responseMessage'] == 'success'
