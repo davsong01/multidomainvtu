@@ -36,7 +36,7 @@ class ProductController extends Controller
                                     "name" => $product['display_name'],
                                     "display_name" => $product['display_name'],
                                     "slug" => $product['slug'],
-                                    "status" => 'inactive',
+                                    "status" => 'active',
                                     "description" => $product['description'] ?? null,
                                     "min" => $product['min'] ?? null,
                                     "max" => $product['max'] ?? null,

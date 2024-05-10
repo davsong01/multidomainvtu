@@ -14,6 +14,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmailApiController;
 use App\Http\Controllers\EmailLogController;
+use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\BillerLogController;
 use App\Http\Controllers\BlackListController;
@@ -59,9 +60,7 @@ Route::get('/', function () {
 
 Route::group(['prefix' => '{merchant}'], function ($merchant) {
     Route::middleware(['default-domain-merchant-check'])->group(function ($merchant) { 
-        Route::get('/', function () {
-            return view('welcome');
-        })->name('welcome');
+        Route::get('/', [MerchantController::class, 'index'])->name('welcome');
 
         Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
         Route::post('login', [LoginController::class, 'store'])->name('login.action');

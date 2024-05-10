@@ -68,6 +68,7 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach ( $categories as $category )
+                                                    
                                                     <tr>
                                                         <td>{{ $category->name }}</td>
                                                         <td>{{ $category->order }}</td>

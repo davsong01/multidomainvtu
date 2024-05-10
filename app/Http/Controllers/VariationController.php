@@ -35,7 +35,7 @@ class VariationController extends Controller
                         'max' => $variation['max'] ?? null,
                         'verifiable' => $variation['verifiable'] ?? null,
                         'unique_element' => $variation['unique_element'] ?? null,
-                        'status' => 'inactive',
+                        'status' => 'active',
                         'merchant_id' => request()->merchant_id
                     ]);
                 }

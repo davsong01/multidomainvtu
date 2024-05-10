@@ -19,7 +19,7 @@
                     <div class="col-xl-8 col-11">
                         <div class="card bg-authentication mb-0">
                             <div class="row m-1">
-                                <a href="/" class="app-brand-link gap-2" style="margin: auto !important;">
+                                <a href="{{ route('welcome', request()->array )}}" class="app-brand-link gap-2" style="margin: auto !important;">
                                     <span class="app-brand-logo demo">
                                         <img style="object-fit: contain;max-width: 300px;" src="{{ asset(getSettings()->logo) }}" height="100px">
                                     </span>

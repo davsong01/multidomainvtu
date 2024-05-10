@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Api;
 use App\Models\API;
 use App\Models\Role;
 use App\Models\User;
@@ -106,8 +105,8 @@ class DefaultController extends Controller
                 "warning_threshold_status" => 'inactive',
                 "warning_threshold" => null,
                 "api_key" => $request->api_key,
-                "secret_key" => $request->secret_key,
-                "public_key" => $request->public_key,
+                // "secret_key" => $request->secret_key,
+                // "public_key" => $request->public_key,
                 "sandbox_base_url" => $sandbox,
                 "live_base_url" => $live,
                 'merchant_id' => $merchant->id

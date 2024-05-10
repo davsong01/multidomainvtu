@@ -89,9 +89,8 @@
 @section('page-script')
 
 <script>
-     function getBalance(id){
-        var url = "{{ url('admin/api-balance') }}/"+id;
-        
+    function getBalance(id){
+        var url = "{{ url('/') .'/'.request()->store_slug }}/"+'admin/api-balance/'+id;
         $.ajax({
             url: url,
             method: 'GET',
@@ -112,22 +111,6 @@
             }
         });
     }
-        // function getBalance(id){
-        //     alert('sd');
-        //     let url = "{{url('/')}}"+"api-balance/"+id;
-        //     $.ajax({
-        //         type: "GET",
-        //         url: url,
-        //         dataType: 'json',
-        //         beforeSend: function () {
-        //             $("#icon-"+id).html("<i class='fa fa-spinner fa-spin'></i>");
-        //         },
-        //         success: function (data) {
-        //             $("#api-"+id).html(data.message);
-        //         }
-        //     });
-        // }
-        
     </script>
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>

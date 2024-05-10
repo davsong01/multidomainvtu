@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\User;
+use App\Models\Product;
 use App\Models\Merchant;
+use App\Models\TransactionLog;
 use Illuminate\Http\Request;
 
 class MerchantController extends Controller
@@ -12,7 +16,14 @@ class MerchantController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::count();
+        $products = Product::count();
+        $productX = Product::where('status', 'active')->inRandomOrder()->take(6)->get();
+        $transactions = TransactionLog::count();
+        $categories = Category::count();
+        $categorys = Category::where('status','active')->inRandomOrder()->get();
+        
+        return view('merchantlandingpages.index',compact('users','products','transactions','categories', 'categorys', 'productX'));
     }
 
     /**

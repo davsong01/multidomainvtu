@@ -36,6 +36,7 @@ class CategoryController extends Controller
                                 "description" => $category['description'],
                                 "unique_element" => $category['unique_element'] ?? '',
                                 "discount_type" => $category['discount_type'] ?? '',
+                                "status" => 'active',
                                 "merchant_id" => $merchant_id,
                             ]
                         );

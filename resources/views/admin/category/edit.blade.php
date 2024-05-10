@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('category.update',  request()->array, 'category' => $category->id])}}" method="POST">
+                                        <form action="{{route('category.update', array_merge(request()->array, ['category' => $category->id]))}}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <div class="row">
