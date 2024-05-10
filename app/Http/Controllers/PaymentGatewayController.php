@@ -43,8 +43,9 @@ class PaymentGatewayController extends Controller
             "merchant_email" => "nullable",
             "base_url" => "nullable",
             "status" => "nullable",
-            "charge" => "required",
-            "reserved_account_payment_charge" => "nullable"
+            // "charge" => "required",
+            "reserved_account_payment_charge" => "nullable",
+            "reserved_account_payment_charge_type" => "nullable",
         ]);
 
         $paymentgateway = PaymentGateway::where('id', $paymentgateway)->first();
@@ -59,8 +60,10 @@ class PaymentGatewayController extends Controller
             "merchant_email" => $request->merchant_email,
             "base_url" => $request->base_url,
             "status" => $request->status,
-            "charge" => $request->charge,
+            // "charge" => $request->charge,
             "reserved_account_payment_charge" => $request->reserved_account_payment_charge,
+            "reserved_account_payment_charge_type" => $request->reserved_account_payment_charge_type,
+
         ]);
 
         return back()->with('message', 'Updated successfully');

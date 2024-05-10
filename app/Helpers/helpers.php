@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\PaymentProcessors\MonnifyController;
-use App\Http\Controllers\PaymentProcessors\SquadController;
 use App\Models\KycData;
 use App\Models\Category;
 use App\Models\Customer;
@@ -11,11 +9,29 @@ use App\Models\Settings;
 use App\Mail\EmailMessages;
 use Illuminate\Support\Arr;
 use App\Models\Announcement;
+use App\Models\PaymentGateway;
 use App\Models\EmailApiSetting;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\PaymentProcessors\SquadController;
+use App\Http\Controllers\PaymentProcessors\MonnifyController;
+
+if (!function_exists("extractKeyValuesFromMultiDimensionalArray")) {
+    function extractKeyValuesFromMultiDimensionalArray($search_column,$value_column, $arr): array
+    {
+        $modified = [];
+        if(!empty($arr) && !empty($arr)){
+            foreach($arr as $r){
+                if(isset($r[$search_column]) && isset($r[$value_column])){
+                    $modified[$r[$search_column]] = $r[$value_column];                
+                }
+            }
+        }
+        return $modified;
+    }
+}
 
 
 if (!function_exists("getPaymentGateways")) {
@@ -24,7 +40,7 @@ if (!function_exists("getPaymentGateways")) {
         $gateways = [
             [
                 'name' => 'monnify',
-                'status' => 'active',
+                'status' => 'inactive',
             ],
             [
                 'name' => 'squad',
@@ -36,12 +52,38 @@ if (!function_exists("getPaymentGateways")) {
     }
 }
 
+if (!function_exists("getPaymentGatewayReservedAccountCharge")) {
+    function getPaymentGatewayReservedAccountCharge($provider = null)
+    {
+        if(!empty($provider)){
+            $gateway = PaymentGateway::where('status', 'active')->first();
+        }else{
+            $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->first();
+        }
+
+        if($gateway->reserved_account_payment_charge_type == 'flat'){
+            $charge = $gateway->reserved_account_payment_charge;
+            $display_value = getSettings()->currency . number_format($charge, 1);
+            $type = 'flat';
+        }else{
+            $charge = $gateway->reserved_account_payment_charge;
+            $display_value = $charge.'%';
+            $type = 'percentage';
+        }
+
+        return [
+            'type' => $type,
+            'value' => $charge,
+            'display_value' => $display_value
+        ];
+    }
+}
+
 if (!function_exists("createReservedAccount")) {
     function createReservedAccount($data = null,$admin_id=null)
     {
         $paymentGateway = request()->merchant_settings['payment_gateway'];
         $reserved = null;
-
         if (!empty($paymentGateway)) {
             if ($paymentGateway == 'monnify') {
                 $monnify = new MonnifyController();
@@ -1320,6 +1362,7 @@ if (!function_exists("kycStatus")) {
         return $data;
     }
 }
+
 
 if (!function_exists("getFinalKycStatus")) {
     function getFinalKycStatus($customer_id)

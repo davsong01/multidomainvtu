@@ -161,7 +161,7 @@ class MonnifyController extends Controller
                             'account_name' => $account['accountName'] ?? null,
                             'bank_name' => $account['bankName'] ?? null,
                             'bank_code' => $account['bankCode'] ?? null,
-                            'paymentgateway_id' => 1,
+                            'paymentgateway_id' => $this->api->id,
                             'status' => $response['responseBody']['status'] ?? null,
                             'purpose' => 'WALLET-FUNDING',
                             'bvn' => $response['responseBody']['bvn'],

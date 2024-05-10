@@ -24,7 +24,7 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('category.index', request()->array) }}">Payment Gateways</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('paymentgateway.index', request()->array) }}">Payment Gateways</a>
                                     </li>
                                     
                                 </ol>
@@ -50,6 +50,7 @@
                                                     <tr>
                                                         <th>Name</th>
                                                         <th>Status</th>
+                                                        <th>Webhook Notification URL</th>
                                                         @if(hasAccess('paymentgateway.edit'))
                                                         <th>Actions</th>
                                                         @endif
@@ -59,6 +60,7 @@
                                                     @foreach ( $paymentgateway as $gateway )
                                                     <tr>
                                                         <td>{{ $gateway->name }}</td>
+                                                        <td><a href="{{ url('/').'/log-p-callback/'.$gateway->id }}">{{ url('/').'/log-p-callback/'.$gateway->id }}</a></td>
                                                         <td style="color:{{ $gateway->status == 'active' ? 'green' : 'red'}}">{{ ucfirst($gateway->status) }}</td>
                                                         @if(hasAccess('paymentgateway.edit'))
                                                         <td>

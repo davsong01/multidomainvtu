@@ -186,21 +186,36 @@
                                                                         @endif
                                                                     </fieldset>
                                                                 </div> --}}
-                                                                {{-- <div class="col-md-6">   
+                                                                <div class="col-md-6">   
                                                                     <fieldset class="form-group">
                                                                         @if(kycStatus('DOB', auth()->user()->customer->id)['status'] == 'verified')
                                                                         <label for="DOB">Date of Birth</label><span class="verified"><i class="fa fa-check"></i> Verified</span>
                                                                         <input type="date" class="form-control" value="{{ kycStatus('DOB', auth()->user()->customer->id)['value'] }}" disabled>
                                                                         @else 
                                                                             @if(kycStatus('DOB', auth()->user()->customer->id)['status'] == 'declined')
-                                                                            <label for="LGA">Date of Birth (As associated with your BVN)</label><span class="declined"><i class="fa fa-times"></i> Declined</span>
+                                                                            <label for="DOB">Date of Birth (As associated with your BVN)</label><span class="declined"><i class="fa fa-times"></i> Declined</span>
                                                                             @else
                                                                             <label for="DOB">Date of Birth (As associated with your BVN)</label><span class="unverified"><i class="fa fa-times"></i> Not Verified</span>
                                                                             @endif
                                                                         <input type="date" name="DOB"  class="form-control" value="{{ kycStatus('DOB', auth()->user()->customer->id)['value'] }}" required>
                                                                         @endif
                                                                     </fieldset>
-                                                                </div> --}}
+                                                                </div>
+                                                                <div class="col-md-6">   
+                                                                    <fieldset class="form-group">
+                                                                        @if(kycStatus('ADDRESS', auth()->user()->customer->id)['status'] == 'verified')
+                                                                        <label for="ADDRESS">Date of Birth</label><span class="verified"><i class="fa fa-check"></i> Verified</span>
+                                                                        <input type="text" class="form-control" value="{{ kycStatus('ADDRESS', auth()->user()->customer->id)['value'] }}" disabled>
+                                                                        @else 
+                                                                            @if(kycStatus('ADDRESS', auth()->user()->customer->id)['status'] == 'declined')
+                                                                            <label for="ADDRESS">House Address</label><span class="declined"><i class="fa fa-times"></i> Declined</span>
+                                                                            @else
+                                                                            <label for="ADDRESS">House Address</label><span class="unverified"><i class="fa fa-times"></i> Not Verified</span>
+                                                                            @endif
+                                                                        <input type="text" name="ADDRESS"  class="form-control" value="{{ kycStatus('ADDRESS', auth()->user()->customer->id)['value'] }}" required>
+                                                                        @endif
+                                                                    </fieldset>
+                                                                </div>
                                                                 <div class="col-md-6">   
                                                                     <fieldset class="form-group">
                                                                         @if(kycStatus('BVN', auth()->user()->customer->id)['status'] == 'verified')

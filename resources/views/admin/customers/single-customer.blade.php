@@ -478,10 +478,10 @@ use App\Models\BlackList;
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($accounts as $key => $account)
-                                                            @if ($account->paymentgateway_id == 1)
+                                                            {{-- @if ($account->paymentgateway_id == 1) --}}
                                                                 <tr>
                                                                     <td>{{ ucfirst($account->account_name) }} <br>
-                                                                        <span style="background-color: yellow;color:black;padding: 5px 3px;margin-top: 19px !important;border-radius: 5px;"><small>{{ ucfirst($account->payment_gateway?->name) }}</small></span>
+                                                                        <span style="background-color: yellow;color:black;padding: 5px 3px;margin-top: 19px !important;border-radius: 5px;"><small>{{ ucfirst($account->gateway?->name) }}</small></span>
                                                                     </td>
                                                                     <td>
                                                                         {{ ucfirst($account->bank_name) }}
@@ -500,14 +500,14 @@ use App\Models\BlackList;
                                                                     </td>
                                                                     <td>
                                                                         <div
-                                                                            @if($account->transactions->count() < 1)
+                                                                            @if($account->transactions->count() < 1 && $account->gateway->slug == 'monnify')
                                                                             <a>
                                                                             <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', array_merge(request()->array, ['account' =>$account->id ])) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
                                                                             @endif
                                                                         </div>
                                                                     </td>
                                                                 </tr>
-                                                            @endif
+                                                            {{-- @endif --}}
                                                         @endforeach
                                                     </tbody>
                                                 </table>
@@ -662,9 +662,11 @@ use App\Models\BlackList;
                                     
                                     <select class="form-control js-example-basic-single" name="bank[]" id="bank" required multiple>
                                         <option value="">Select</option>
+                                        @if(getSettings()->payment_gateway == 'monnify')
                                         <option value="50515" {{ old('bank') == '50515' ? 'selected' : ''}}>Moniepoint</option>
                                         <option value="035" {{ old('bank') == '035' ? 'selected' : ''}}>Wema Bank</option>
                                         <option value="232" {{ old('bank') == '232' ? 'selected' : ''}}>Sterling Bank</option>
+                                        @endif
                                         <option value="058" {{ old('bank') == '058' ? 'selected' : ''}}>Guaranty Trust Bank</option> 
                                     </select>
                                 </fieldset>

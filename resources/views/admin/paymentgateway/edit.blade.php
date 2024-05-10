@@ -76,15 +76,22 @@
                                                         <label for="base_url">Base URL</label>
                                                         <input type="text" class="form-control" id="base_url" name="base_url" value="{{ $paymentgateway->base_url ?? old('base_url') }}" placeholder="Enter base URL" required>
                                                     </fieldset>
-                                                    <fieldset class="form-group">
+                                                    {{-- <fieldset class="form-group">
                                                         <label for="charge">Gateway Charge for card funding <span style="color:red">(%)</span></label>
                                                         <input type="number" class="form-control" id="charge" name="charge" step=".10" value="{{ $paymentgateway->charge ?? old('charge') }}" placeholder="Enter gatway charge in percentage" required>
+                                                    </fieldset> --}}
+                                                    <fieldset class="form-group">
+                                                        <label for="reserved_account_payment_charge_type">Gateway Reserved Account Payment Charge Type</label>
+                                                        <select class="form-control" name="reserved_account_payment_charge_type" id="reserved_account_payment_charge_type" required>
+                                                            <option value="">Select</option>
+                                                            <option value="flat" {{ $paymentgateway->reserved_account_payment_charge_type == 'flat' ? 'selected' : ''}}>Flat</option>
+                                                            <option value="percentage" {{ $paymentgateway->reserved_account_payment_charge_type == 'percentage' ? 'selected' : ''}}>Percentage</option>
+                                                        </select>
                                                     </fieldset>
                                                     <fieldset class="form-group">
-                                                        <label for="reserved_account_payment_charge">Gateway Reserved Account Payment Charge <span style="color:red">({!! getSettings()->currency !!})</span></label>
+                                                        <label for="reserved_account_payment_charge">Gateway Reserved Account Payment Charge <span style="color:red">({{ getPaymentGatewayReservedAccountCharge()['type'] }}) </span></label>
                                                         <input type="number" class="form-control" id="reserved_account_payment_charge" name="reserved_account_payment_charge" step=".10" value="{{ $paymentgateway->reserved_account_payment_charge ?? old('reserved_account_payment_charge') }}" placeholder="Enter flat reserved account payment charge" required>
                                                     </fieldset>
-                                                    
                                                     <fieldset class="form-group">
                                                         <label for="status">Gateway Status</label>
                                                         <select class="form-control" name="status" id="status" required>

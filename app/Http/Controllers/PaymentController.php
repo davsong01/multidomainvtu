@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\PaymentGateway;
 use App\Models\TransactionLog;
+use App\Scopes\MerchantIdScope;
 use Illuminate\Support\Facades\DB;
 use App\Models\ReservedAccountNumber;
 use App\Models\ReservedAccountCallback;
@@ -67,7 +69,12 @@ class PaymentController extends Controller
 
     public function dumpCallback(Request $request, $provider)
     {
-        if ($provider == 1) {
+        $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $provider)->first();
+        if(!$gateway){
+            return;
+        }
+
+        if ($gateway->slug == 'monnify') {
             $account_number = $request['eventData']['destinationAccountInformation']['accountNumber'];
             $session_id = $request['eventData']['paymentSourceInformation'][0]['sessionId'];
             $transaction_reference = $request['eventData']['transactionReference'] ?? $request['eventData']['paymentReference'];
@@ -75,9 +82,18 @@ class PaymentController extends Controller
             $paid_on = $request['eventData']['paidOn'];
         }
 
+        if ($gateway->slug == 'squad') {
+            $account_number = $request['virtual_account_number'];
+            $session_id = $request['transaction_reference'];
+            $transaction_reference = $request['transaction_reference'];
+            $payment_method = $request['channel'];
+            $paid_on = Carbon::parse($request['transaction_date']);
+        }
+
         $check = ReservedAccountCallback::where(['session_id' => $session_id, 'transaction_reference' => $transaction_reference])->first();
+        
         if (!$check) {
-            ReservedAccountCallback::create([
+            ReservedAccountCallback::updateOrCreate(['session_id' => $session_id], [
                 'raw' => json_encode($request->all()),
                 'provider_id' => $provider,
                 'paid_on' => $paid_on ?? null,
@@ -92,37 +108,40 @@ class PaymentController extends Controller
     public function analyzeCallbackResponse()
     {
         try {
-            
-            $calls = ReservedAccountCallback::where(['status' => 'pending'])->orderBy('id', 'ASC')
+            $calls = ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where(['status' => 'pending'])->orderBy('id', 'ASC')
                 ->take(5)
                 ->get()
                 ->toArray();
-
+            
             if (count($calls) < 1) {
                 return;
             }
 
             $tlk = 'PICKED-' . time();
             $ids = array_column($calls, 'id');
-            ReservedAccountCallback::whereIn('id', $ids)->update(['status' => $tlk]);
+
+            // ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->whereIn('id', $ids)->update(['status' => $tlk]);
+            // $calls = ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where(['status' => $tlk])->get()->toArray();
             
-            $calls = ReservedAccountCallback::where(['status' => $tlk])->get()->toArray();
+            // dummy
+            $calls = ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where(['status' => 'pending'])->orderBy('id', 'ASC')->get();
+            // end dummy
             
             foreach ($calls as $call) {
                 // DB::beginTransaction();
                 
                 $decodeCall = json_decode($call['raw'], true);
-                $account = ReservedAccountNumber::with('customer')->where('account_number', $call['account_number'])->first();
-                $provider = PaymentGateway::where('id', $call['provider_id'])->first();
+                $account = ReservedAccountNumber::withoutGlobalScope(new MerchantIdScope())->with('cron_customer')->where('account_number', $call['account_number'])->where('paymentgateway_id', $call['provider_id'])->first();
+                $provider = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $call['provider_id'])->first();
                 
                 if (!$account) {
                     continue;
                 }
 
-                $customer = $account->customer;
-                $user = $account->customer->user;
+                $customer = $account->cron_customer;
+                $user = $account->cron_customer->cron_user;
                 
-                if ($call['provider_id'] == 1) {
+                if ($provider->slug == 'monnify') {
                     $payment_type = $call['payment_method'];
 
                     if ($payment_type === 'CARD') {
@@ -137,7 +156,21 @@ class PaymentController extends Controller
 
                     if (isset($analyze) && $analyze['status'] == 'success') {
                         $payment_method = $provider->name . '(' . $decodeCall['eventData']['paymentMethod'] . ')';
-                        $provider_charge = $provider->reserved_account_payment_charge ?? 0;
+                        $provider_charge = getPaymentGatewayReservedAccountCharge($provider->id) ?? 0;
+                        // $provider_charge = $provider_charge + $extra_charge;
+                        $original_amount = $analyze['data']['amountPaid'] ?? $decodeCall['eventData']['amountPaid'];
+                        $transaction_id = $analyze['data']['transactionReference'] ?? $decodeCall['eventData']['transactionReference'];
+                    }
+                }
+                
+                if ($provider->slug == 'squad') {
+                    $analyze = app('App\Http\Controllers\PaymentProcessors\SquadController')->verifyTransaction($call['transaction_reference']);
+
+                    ReservedAccountCallback::where('id', $call['id'])->update(['raw_requery' => json_encode($analyze['data'])]);
+
+                    if (isset($analyze) && $analyze['status'] == 'success') {
+                        $payment_method = $provider->name . '(' . $decodeCall['eventData']['paymentMethod'] . ')';
+                        $provider_charge = getPaymentGatewayReservedAccountCharge($provider->id) ?? 0;
                         // $provider_charge = $provider_charge + $extra_charge;
                         $original_amount = $analyze['data']['amountPaid'] ?? $decodeCall['eventData']['amountPaid'];
                         $transaction_id = $analyze['data']['transactionReference'] ?? $decodeCall['eventData']['transactionReference'];

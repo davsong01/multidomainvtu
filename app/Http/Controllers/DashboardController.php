@@ -330,6 +330,8 @@ class DashboardController extends Controller
             "BVN" => "required|string|min:11|max:11",
             "IDCARD" => "required|image|max:1024",
             "IDCARDTYPE" => "required",
+            "ADDRESS" => "required",
+            "DOB" => "required",
         ]);
         
         if (!empty($request->IDCARD)) {

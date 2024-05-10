@@ -51,7 +51,7 @@ use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
 Route::get('payment-callback/{provider_id?}', [PaymentController::class, 'analyzePaymentResponse'])->name('payment-callback');
 Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallback'])->name('log.payment.response');
-Route::get('analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
+Route::get('cron/analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
 Route::get('cron/sendemails', [Controller::class, 'cronSendEmails']); // fixed
 Route::get('/', function () {
     return view('mainlandingpages.index');

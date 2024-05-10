@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\PaymentProcessors;
 
 
+use App\Models\KycData;
+use App\Models\Customer;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\PaymentGateway;
+use App\Http\Controllers\Controller;
 use App\Models\ReservedAccountNumber;
 
 class SquadController extends Controller
@@ -20,252 +22,139 @@ class SquadController extends Controller
 
     public function verifyTransaction($reference)
     {
-        $token = $this->login();
-
-        if (empty($token)) {
-            return [
-                'status' => 'failed',
-                'status_code' => 0,
-            ];
-        } else {
-            $url = $this->api->base_url . 'v2/transactions/' . urlencode($reference);
-            $headers = [
-                "Content-Type: application/json",
-                "Authorization: Bearer " . $token . "",
-            ];
-
-            $response = $this->basicApiCall($url, [], $headers, 'GET');
-
-            if (
-                isset($response['responseCode']) && isset($response['responseBody']) && $response['responseCode'] == 0 && $response['responseBody']['paymentStatus'] == 'PAID' &&
-                $response['responseMessage'] == 'success'
-            ) {
-                $real = [
-                    'status' => 'success',
-                    'data' => $response['responseBody'],
-                ];
-            } else {
-                $real = [
-                    'status' => 'failed',
-                    'data' => $response['responseMessage'],
-                ];
-            }
-
-            return $real;
-        }
-    }
-
-    public function verifyBVN(array $data)
-    {
-        $url = $this->api->base_url . 'v2/vas/bvn-details-match';
+        $url = $this->api->base_url . 'v2/transactions/' . urlencode($reference);
         $headers = [
             "Content-Type: application/json",
-            "Authorization: Bearer " . $this->api->secret_key . "",
+            "Authorization: Bearer " . $this->api->secret_key,
         ];
 
-        $response = $this->basicApiCall($url, $data, $headers, 'POST');
+        $response = $this->makeCall($url, [], $headers, 'GET');
+        dd($respons);
+        if (
+            isset($response['responseCode']) && isset($response['responseBody']) && $response['responseCode'] == 0 && $response['responseBody']['paymentStatus'] == 'PAID' &&
+            $response['responseMessage'] == 'success'
+        ) {
+            $real = [
+                'status' => 'success',
+                'data' => $response['responseBody'],
+            ];
+        } else {
+            $real = [
+                'status' => 'failed',
+                'data' => $response['responseMessage'],
+            ];
+        }
 
-        return $response;
-
+        return $real;
     }
 
     public function createReservedAccount(array $data, int $admin_id = null)
     {
         $url = $this->api->base_url . 'virtual-account';
+        // Get customer and kyc data
+        $customer = Customer::with('multiplekycdata')->where('id', $data['customer_id'])->first();
+        $kycData = $customer->multiplekycdata->toArray();
+        
+        $kycData = extractKeyValuesFromMultiDimensionalArray('key','value', $kycData);
+        $gender = "1";
+        if (isset($kycData['GENDER'])) {
+            if ($kycData['GENDER'] == 'male') {
+                $gender = "1";
+            } else {
+                $gender = "2";
+            }
+        }
+        
         $payload = [
-            'first_name',
-            'mobile_num',
-            'dob',
-            'last_name',
-            'gender', //"1" - Male, "2" -Female
-            'address',
-            'customer_identifier', //unique customer identifier as given by merchant
-            'bvn'
+            "customer_identifier" => request()->store_slug.'-'.$data['customer_id'],
+            "first_name" => $kycData['FIRST_NAME'] ?? NULL,
+            "last_name" => $kycData['LAST_NAME'] ?? NULL,
+            "mobile_num" => $kycData['PHONE_NUMBER'], 
+            "email" => $data["customerEmail"],
+            "bvn" => $kycData['BVN'],
+            "dob" => $kycData['DATE_OF_BIRTH'] ?? '19/09/1980',
+            "address" => $kycData['DATE_OF_BIRTH'] ?? 'Lagos',
+            "gender" => $gender,
         ];
 
         $headers = [
-            "Content-Type: application/json",
-            "Authorization: Bearer " . $this->api->secret_key . "",
+            "Content-Type" => "application/json",
+            "Authorization" => "Bearer " . $this->api->secret_key . "",
         ];
 
-        $response = $this->basicApiCall($url, $data, $headers, 'POST');
+        $response = $this->makeCall($url, $payload, $headers);
+        
+        if (
+            isset($response) && $response['success'] == true &&
+            $response['message'] == 'Success'
+        ) {
+            if (isset($response['data'])) {
+                $dataX = $response['data'];
+                
+                ReservedAccountNumber::updateOrCreate([
+                    'customer_id' => $data["customer_id"] ?? null,
+                    'account_reference' => $dataX['customer_identifier'],
+                    'account_number' => $dataX['virtual_account_number'] ?? null,
+                ], [
+                    'customer_id' => $data["customer_id"] ?? null,
+                    'admin_id' => $admin_id ?? null,
+                    'account_reference' => $dataX['customer_identifier'],
+                    'account_number' => $dataX['virtual_account_number'] ?? null,
+                    'account_name' => $dataX['first_name'],
+                    'bank_name' => 'GT Bank',
+                    'bank_code' => $dataX['bank_code'],
 
-        return $response;
-
-        if (empty($token)) {
-            return [
-                'status' => 'failed',
-                'status_code' => 0,
-            ];
-        } else {
-            $url = $this->api->base_url . 'virtual-account';
-            $headers = [
-                "Content-Type: application/json",
-                "Authorization: Bearer " . $token . "",
-            ];
-
-            $data["preferredBanks"] = $data["preferredBanks"] ?? null;
-            $getAllAvailableBanks = empty($data["preferredBanks"]) ? true : false;
-            $payload = json_encode([
-                "customer_id" => $data["customer_id"],
-                "bvn" => $data["BVN"],
-                "customerEmail" => $data["customerEmail"],
-                "accountName" => $data["accountName"] ?? $data["customerName"],
-                "currencyCode" => "NGN",
-                "contractCode" => $this->api->contract_id,
-                "getAllAvailableBanks" => $data["getAllAvailableBanks"],
-                "accountReference" => $this->generateRequestId(),
-                'getAllAvailableBanks' => $getAllAvailableBanks,
-                "preferredBanks" => $data["preferredBanks"],
-            ]);
-
-            $response = $this->basicApiCall($url, $payload, $headers, 'POST');
-            
-            if (
-                $response && $response['responseCode'] == 0 &&
-                $response['responseMessage'] == 'success'
-            ) {
-                if (isset($response['responseBody']['accounts']) && isset($response['responseBody']['bvn'])) {
-                    foreach ($response['responseBody']['accounts'] as $account) {
-                        ReservedAccountNumber::updateOrCreate([
-                            'customer_id' => $data["customer_id"] ?? null,
-                            'account_number' => $account['accountNumber'] ?? null,
-                            'account_name' => $account['accountName'] ?? null,
-                            'bank_name' => $account['bankName'] ?? null,
-                            'bank_code' => $account['bankCode'] ?? null,
-                        ], [
-                            'customer_id' => $data["customer_id"] ?? null,
-                            'admin_id' => $admin_id ?? null,
-                            'account_reference' => $response['responseBody']['accountReference'] ?? null,
-                            'account_number' => $account['accountNumber'] ?? null,
-                            'account_name' => $account['accountName'] ?? null,
-                            'bank_name' => $account['bankName'] ?? null,
-                            'bank_code' => $account['bankCode'] ?? null,
-                            'paymentgateway_id' => 1,
-                            'status' => $response['responseBody']['status'] ?? null,
-                            'purpose' => 'WALLET-FUNDING',
-                            'bvn' => $response['responseBody']['bvn'],
-                            'response' => json_encode($response)
-                        ]);
-                    }
-                    
-                    $data = [
-                        'status' => 'success',
-                        'data' => '',
-                    ];
-                }else{
-                    $data = [
-                        'status' => 'failed',
-                        'data' => $response['responseMessage'] ?? 'No Accounts set by Provider',
-                    ];
-                }
-
-            } else {
-                $data = [
-                    'status' => 'failed',
-                    'data' => $response['responseMessage'] ?? 'no-response',
-                ];
-            }
-            
-            return $data;
-        }
-    }
-
-    public function deleteReservedAccount(string $account_reference)
-    {
-        $token = $this->login();
-
-        if (empty($token)) {
-            return [
-                'status' => 'failed',
-                'status_code' => 0,
-            ];
-        } else {
-            $url = $this->api->base_url . 'v1/bank-transfer/reserved-accounts/reference/' . $account_reference;
-            $headers = [
-                "Content-Type: application/json",
-                "Authorization: Bearer " . $token . "",
-            ];
-
-            $response = $this->basicApiCall($url, [], $headers, 'DELETE');
-
-            if (
-                $response && $response['responseCode'] == 0 &&
-                $response['responseMessage'] == 'success'
-            ) {
-                ReservedAccountNumber::where('account_reference', $account_reference)->delete();
-                $data = [
+                    'paymentgateway_id' => $this->api->id,
+                    'status' => 'active',
+                    'purpose' => 'WALLET-FUNDING',
+                    'bvn' =>  $kycData['BVN'],
+                    'response' => json_encode($response),
+                    'merchant_id' => request()->merchant_id,
+                ]);
+                
+                $res = [
                     'status' => 'success',
                     'data' => '',
                 ];
-            } else {
-                $data = [
+            }else{
+                $res = [
                     'status' => 'failed',
-                    'data' => $response['responseBody'] ?? $response['responseMessage'],
+                    'data' => $response['message'] ?? 'No Accounts set by Provider',
                 ];
             }
 
-            return $data;
+        } else {
+            $res = [
+                'status' => 'failed',
+                'data' => $response['message'] ?? 'no-response',
+            ];
         }
+        
+        return $res;
     }
 
+    public function makeCall($url, $payload, $headers, $method = 'POST'){
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Authorization: ' . $this->api->secret_key
+            ),
+        ));
 
+        $response = curl_exec($curl);
 
-    public function redirectToGateway(Request $request, $transaction)
-    {
-        $token = $this->login();
-        // $token = base64_encode($this->api->api_key . ":" . $this->api->secret_key);
+        curl_close($curl);
 
-        if (empty($token)) {
-            return [
-                'status' => 'failed',
-                'status_code' => 0,
-            ];
-        } else {
-            $url = $this->api->base_url . 'v1/merchant/transactions/init-transaction';
-
-            $headers = [
-                "Content-Type: application/json",
-                "Authorization: Bearer " . $token,
-            ];
-            $payload =  json_encode([
-                "amount" => $request->amount,
-                "customerName" => auth()->user()->firstname . ' ' . auth()->user()->lastname,
-                "customerEmail" => auth()->user()->email,
-                "paymentReference" => $request['reference'],
-                "paymentDescription" => "WALLET-FUNDING",
-                "currencyCode" => "NGN",
-                "contractCode" => $this->api->contract_id,
-                "redirectUrl" => route('payment-callback', $this->api->id),
-                "paymentMethods" => ["CARD", "ACCOUNT_TRANSFER"]
-            ]);
-
-            $response = $this->basicApiCall($url, $payload, $headers, 'POST');
-
-            $transaction->update([
-                'request_data' => $payload,
-                'api_response' => json_encode($response),
-            ]);
-
-            if ($response && $response['responseCode'] == 0 && $response['responseMessage'] == 'success') {
-                $url = $response['responseBody']['checkoutUrl'];
-                $transaction->update(['transaction_id' => $response['responseBody']['transactionReference']]);
-                $data = [
-                    'status' => 'success',
-                    'status_code' => 1,
-                    'url' => $url,
-                ];
-            } else {
-                $transaction->update(['balance_after' => $transaction->balance_before]);
-                $url = null;
-
-                $data =  [
-                    'status' => 'failed',
-                    'status_code' => 0,
-                ];
-            }
-
-            return $data;
-        }
+        return json_decode($response, true);
     }
 }

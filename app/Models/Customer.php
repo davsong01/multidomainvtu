@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\KycData;
 use App\Models\CustomerLevel;
+use App\Scopes\MerchantIdScope;
 use App\Traits\MerchantIdTrait;
 use App\Models\ReservedAccountNumber;
 use Illuminate\Database\Eloquent\Model;
@@ -35,8 +36,19 @@ class Customer extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function cron_user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withoutGlobalScope(new MerchantIdScope());
+    }
+
     public function transactions()
     {
         return $this->hasMany(TransactionLog::class);
     }
+
+    public function multiplekycdata()
+    {
+        return $this->hasMany(KycData::class);
+    }
+
 }

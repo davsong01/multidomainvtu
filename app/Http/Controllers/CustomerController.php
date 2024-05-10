@@ -272,7 +272,6 @@ class CustomerController extends Controller
         } else {
             return back()->with('error', 'KYC Approved succesfully but NO reserved accounts created');
         }
-        
     }
 
     public function declineCustomerKyc(Customer $customer)
