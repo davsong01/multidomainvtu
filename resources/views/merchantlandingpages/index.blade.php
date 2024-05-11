@@ -105,19 +105,19 @@
                     <!-- Counter -->
                     <div class="counter-container">
                         <div class="counter-cell">
-                            <div data-purecounter-start="0" data-purecounter-end="231" data-purecounter-duration="3" class="purecounter">{{ $users * 100 }}+</div>
+                            <div data-purecounter-start="0" data-purecounter-end="{{ $users * 100 }}" data-purecounter-duration="3" class="purecounter">+</div>
                             <div class="counter-info">Happy Customers</div>
                         </div> <!-- end of counter-cell -->
                         <div class="counter-cell">
-                            <div data-purecounter-start="0" data-purecounter-end="385" data-purecounter-duration="1.5" class="purecounter">{{ $categories * 100 }}+</div>
+                            <div data-purecounter-start="0" data-purecounter-end="{{ $categories }}" data-purecounter-duration="1.5" class="purecounter">+</div>
                             <div class="counter-info">Categories</div>
                         </div> <!-- end of counter-cell -->
                         <div class="counter-cell">
-                            <div data-purecounter-start="0" data-purecounter-end="385" data-purecounter-duration="1.5" class="purecounter">{{ $products * 100 }}+</div>
+                            <div data-purecounter-start="0" data-purecounter-end="{{ $products * 10 }}" data-purecounter-duration="1.5" class="purecounter">{{ $products * 10 }}+</div>
                             <div class="counter-info">Products</div>
                         </div> <!-- end of counter-cell -->
                         <div class="counter-cell">
-                            <div data-purecounter-start="0" data-purecounter-end="159" data-purecounter-duration="3" class="purecounter">{{ $transactions * 25}}</div>
+                            <div data-purecounter-start="0" data-purecounter-end="{{ $transactions * 100}}" data-purecounter-duration="1.5" class="purecounter">{{ $transactions * 25}}+</div>
                             <div class="counter-info">Transactions</div>
                         </div> <!-- end of counter-cell -->
                         
