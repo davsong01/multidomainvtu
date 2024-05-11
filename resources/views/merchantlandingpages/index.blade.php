@@ -206,15 +206,17 @@
                     <div class="card-container">
                         @foreach($productX as $product)
                         <!-- Card -->
+                        <a style="text-decoration:none" href="{{ route('login', request()->array) }}">
                         <div class="card">
                             <div class="card-icon">
                                 <img class="f-image" src="{{ $product->image }}" alt="">
                                 {{-- <span class="fas fa-rocket"></span> --}}
                             </div>
                             <div class="card-body">
-                                <a style="text-decoration:none" href="{{ route('login', request()->array) }}"><h6 class="card-title">{{ $product->display_name }}</h6></a>
+                                <h6 class="card-title">{{ $product->display_name }}</h6>
                             </div>
                         </div>
+                        </a>
                         @endforeach
                         <!-- end of card -->
 
@@ -233,7 +235,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <p class="p-small">Copyright © {{date('Y')}} <a href="{{ route('welcome', request()->array)}}">{{ request()->store_name }}.</a> All rights reserved</p>
+                    <p class="p-small">Copyright © {{date('Y')}} <a href="{{ route('welcome', request()->array)}}"><strong>{{ request()->store_name }}.</strong></a> A subsidiary of <a href="https://https://kingsvtu.ng/"><strong>KINGSVTU</strong></a></p>
                 </div> <!-- end of col -->
             </div> <!-- enf of row -->
         </div> <!-- end of container -->

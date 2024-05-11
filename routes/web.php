@@ -55,6 +55,7 @@ Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallbac
 Route::get('cron/analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
 Route::get('cron/sendemails', [Controller::class, 'cronSendEmails']); // fixed
 Route::get('/', function () {
+    
     return view('mainlandingpages.index');
 })->name('landing.main');
 

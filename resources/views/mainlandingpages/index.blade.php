@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <!-- site metas -->
-<title>Buy Vtu</title>
+<title>BuyVTU</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content=""> 
@@ -20,7 +20,7 @@
 <!-- Responsive-->
 <link rel="stylesheet" href="{{ asset('main-landing/css/responsive.css')}}">
 <!-- fevicon -->
-<link rel="icon" href="{{ asset('main-landing/images/fevicon.png')}}" type="image/gif'" />
+<link rel="icon" href="{{ asset('main-landing/images/img-1.png')}}" type="image/gif'" />
 <!-- Scrollbar Custom CSS -->
 <link rel="stylesheet" href="{{ asset('main-landing/css/jquery.mCustomScrollbar.min.css')}}">
 <!-- Tweaks for older IEs-->
@@ -29,13 +29,54 @@
 <link rel="stylesheet" href="{{ asset('main-landing/css/owl.carousel.min.css')}}">
 <link rel="stylesheet" href="{{ asset('main-landing/css/owl.theme.default.min.css')}}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+<style>
+  .icon_1{
+    fill:#ecdf8f !important;
+   
+  }
+  .box_main {
+    background-color: black !important;
+  }
+
+  .box_main:hover {
+    background-color: #000000c4 !important;
+  }
+
+  .icon{
+    fill:#ecdf8f !important;
+    height: 70px !important;
+    width: 70px !important
+  }
+  .moremore_bt_1 a {
+    border: 2px solid #ecdf8f !important;
+  }
+
+  @media (max-width: 575px) {
+    .btn-primary {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+  }
+   .btn-primary {
+    background: black !important;
+    border: black !important;
+    color: #ecdf8f !important;
+  }
+  .moremore_bt a:hover {
+    border: 2px solid #ac8585 !important;
+  }
+
+  .copyright_section {
+    border-top: solid white 1px !important;
+  }
+</style>
 </head>
 <body>
   <!--header section start -->
     <div class="header_section">
       <div class="header_left">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <div class="logo"><a href="index.html"><img src="{{ asset('main-landing/images/logor.png')}}"></a></div>
+          <div class="logo"><a href="index.html"><img src="{{ asset('main-landing/images/logo.jpeg')}}"></a></div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -50,21 +91,15 @@
               <li class="nav-item">
                 <a class="nav-link" href="#services">Services</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#team">Team</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#contact">Contact Us</a>
-              </li>
             </ul>
           </div>
         </nav>
         <div class="banner_main">
-          <h1 class="banner_taital">financial <br>Service</h1>
-          <p class="banner_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever </p>
+          <h1 class="banner_taital"> BuyVTU<br><span style="font-weight: lighter;font-size: 28px;">THE WAY WE NOW TRADE</span><br></h1>
+          <p class="banner_text">Your reliable VTU Portal for Data, Airtime, TV Subscriptions, Bills Payment and Exam Pins. </p>
           <div class="btn_main">
-            <div class="more_bt"><a href="#">Read More </a></div>
-            <div class="contact_bt"><a href="#">Contact Us</a></div>
+            <div class="more_bt"><a href="{{ env('KINGSVTU_PORTAL_URL').'/'.'login' }}" target="_blank">Trader Login </a></div>
+            <div class="contact_bt"><a href="{{ env('KINGSVTU_PORTAL_URL').'/'.'register' }}" target="_blank">Newbie Signup</a></div>
           </div>
         </div>
       </div>
@@ -78,9 +113,9 @@
       <div class="container">
         <div class="row">
           <div class="col-md-8">
-            <h1 class="services_taital">WELCOME TO {{config('app.name')}}</h1>
-            <p class="services_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it </p>
-            <div class="moremore_bt"><a href="#">Read More </a></div>
+            <h1 class="services_taital">Who we are</h1>
+            <p class="services_text"><strong>Over 12 years experience in community business...</strong> <br><br>Our portal is automated, with instant delivery of products. Its our pride that we offer some of the best prices in VTU business. Our over a decade experience in IT and business gives us an edge over most of our competitors. We don’t just trade, we mentor entrepreneurs into becoming self-reliant in VTU business too. KINGSVTU.NG is a subsidiary of XPINOKINGS LIMITED (RC: 1870867) <br><br>Our head office is located in the Gold Coast, Queensland, Australia. We have dedicated servers and staff members in Abuja, Lagos, Akwa Ibom and Oyo, Nigeria. <br><br>Although the portals operate 24/7, our Nigeria-based Managers and Agents handle the support department from 8am to 8pm daily. </p>
+            <div class="moremore_bt"><a style="color: black;border: 2px solid black;" href="{{ env('KINGSVTU_URL').'/'.'about' }}" target="_blank">Explore </a></div>
           </div>
           <div class="col-md-4">
             <div><img src="{{ asset('main-landing/images/img-1.png')}}" class="image_1"></div>
@@ -92,127 +127,43 @@
     <!--services section start -->
     <div class="what_we_do_section layout_padding" id="services">
       <div class="container">
-        <h1 class="what_taital">WHAT WE DO</h1>
-        <p class="what_text">It is a long established fact that a reader will be distracted by the readable content of a </p>
+        <h1 class="what_taital">PRODUCTS AVAILABLE FOR YOU TO SELL TO YOUR CUSTOMERS</h1>
+        <p class="what_text"></p>
         <div class="what_we_do_section_2">
           <div class="row">
-          <div class="col-lg-3 col-sm-6">
+          @foreach(landingPageCategories() as $category)
+          <div class="col-lg-3 col-sm-6" style="margin-bottom: 20px;">
             <div class="box_main">
-              <div class="icon_1"><img src="{{ asset('main-landing/images/icon-1.png')}}"></div>
-              <h3 class="accounting_text">Accounting</h3>
-              <p class="lorem_text">Lorem Ipsum is simply dummy text of the printing and</p>
-              <div class="moremore_bt_1"><a href="#">Read More </a></div>
+              <div class="icon_1">
+                {!! $category['icon'] !!}
+              </div>
+              <h3 class="accounting_text">{{ $category['display_name']}}</h3>
+              <p class="lorem_text"><br></p>
+              <div style="color:white !important" class="moremore_bt_1"><a href="#">Explore</a></div>
             </div>
           </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="box_main active">
-              <div class="icon_1"><img src="{{ asset('main-landing/images/icon-2.png')}}"></div>
-              <h3 class="accounting_text">Advisor</h3>
-              <p class="lorem_text">Lorem Ipsum is simply dummy text of the printing and</p>
-              <div class="moremore_bt_1"><a href="#">Read More </a></div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="box_main">
-              <div class="icon_1"><img src="{{ asset('main-landing/images/icon-3.png')}}"></div>
-              <h3 class="accounting_text">Investment</h3>
-              <p class="lorem_text">Lorem Ipsum is simply dummy text of the printing and</p>
-              <div class="moremore_bt_1"><a href="#">Read More </a></div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="box_main">
-              <div class="icon_1"><img src="{{ asset('main-landing/images/icon-4.png')}}"></div>
-              <h3 class="accounting_text">Financial</h3>
-              <p class="lorem_text">Lorem Ipsum is simply dummy text of the printing and</p>
-              <div class="moremore_bt_1"><a href="#">Read More </a></div>
-            </div>
-          </div>
+          @endforeach
         </div>
         </div>
       </div>
     </div>
     <!--services section end -->
     <!--project section start -->
-    <div class="project_section layout_padding">
+  
+    <div class="project_section_2 layout_padding" style="margin-bottom:20px">
       <div class="container">
         <div class="row">
-          <div class="col-md-6">
-            <div class="project_main">
-              <h1 class="services_taital">Our projects</h1>
-              <p class="services_text">It is a long established fact that a reader will be distracted by the readable content of a </p>
-              <div class="moremore_bt"><a href="#">Read More </a></div>
-              <div class="image_6"><img src="{{ asset('main-landing/images/img-6.png')}}"></div>
-            </div>
+          <div class="col-lg-4 col-sm-12"></div>
+          <div class="col-lg-4 col-sm-12" style="display: flex;">
+              <div class="moremore_bt" style="margin: auto;"><a href="{{ env('KINGSVTU_URL').'/'.'supportdesk' }}" target="_blank">Contact support </a></div>
           </div>
-          <div class="col-md-6">
-            <div class="images_main">
-              <div class="images_left">
-                <div class="container_1">
-                  <img src="{{ asset('main-landing/images/img-2.png')}}" alt="Avatar" class="image" style="width:100%">
-                  <div class="middle">
-                    <div class="text"><img src="{{ asset('main-landing/images/search-icon.png')}}"></div>
-                    <h2 class="fact_text">Established Fact</h2>
-                  </div>
-                </div>
-                <div class="container_1">
-                  <img src="{{ asset('main-landing/images/img-3.png')}}" alt="Avatar" class="image" style="width:100%">
-                  <div class="middle">
-                    <div class="text"><img src="{{ asset('main-landing/images/search-icon.png')}}"></div>
-                    <h2 class="fact_text">Established Fact</h2>
-                  </div>
-                </div>
-              </div>
-              <div class="images_right">
-                <div class="container_1">
-                  <img src="{{ asset('main-landing/images/img-4.png')}}" alt="Avatar" class="image" style="width:100%">
-                  <div class="middle">
-                    <div class="text"><img src="{{ asset('main-landing/images/search-icon.png')}}"></div>
-                    <h2 class="fact_text">Established Fact</h2>
-                  </div>
-                </div>
-                <div class="container_1">
-                  <img src="{{ asset('main-landing/images/img-5.png')}}" alt="Avatar" class="image" style="width:100%">
-                  <div class="middle">
-                    <div class="text"><img src="{{ asset('main-landing/images/search-icon.png')}}"></div>
-                    <h2 class="fact_text">Established Fact</h2>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="project_section_2 layout_padding">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3 col-sm-6">
-            <div class="icon_1"><img src="{{ asset('main-landing/images/icon-3.png')}}"></div>
-            <h3 class="accounting_text_1">1000+</h3>
-            <p class="yers_text">Years of Business</p>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="icon_1"><img src="{{ asset('main-landing/images/icon-4.png')}}"></div>
-            <h3 class="accounting_text_1">20000+</h3>
-            <p class="yers_text">Projects Delivered</p>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="icon_1"><img src="{{ asset('main-landing/images/icon-2.png')}}"></div>
-            <h3 class="accounting_text_1">10000+</h3>
-            <p class="yers_text">Satisfied Customers</p>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <div class="icon_1"><img src="{{ asset('main-landing/images/icon-1.png')}}"></div>
-            <h3 class="accounting_text_1">1500+</h3>
-            <p class="yers_text">Services</p>
-          </div>
+          <div class="col-lg-4 col-sm-12"></div>
         </div>
       </div>
     </div>
     <!--project section end -->
     <!--team section start -->
-    <div class="team_section layout_padding" id="team">
+    {{-- <div class="team_section layout_padding" id="team">
       <div class="container">
         <h1 class="what_taital">Our Team and experts</h1>
         <p class="what_text_1">It is a long established fact that a reader will be distracted by the readable content of a </p>
@@ -269,10 +220,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
     <!--team section end -->
     <!--client section start -->
-    <div class="client_section layout_padding">
+    {{-- <div class="client_section layout_padding">
       <div class="container">
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
           <ol class="carousel-indicators">
@@ -317,51 +268,11 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
     <!--client section end -->
     <!--footer section start -->
-    <div class="footer_section layout_padding">
+    <div class="footer_section layout_padding"style="padding-top: 0px;" >
       <div class="container">
-        <div class="row">
-          <div class="col-lg-3 col-sm-6">
-            <h4 class="about_text">About Financial</h4>
-            <div class="location_text"><img src="{{ asset('main-landing/images/map-icon.png')}}"><span class="padding_left_15">Locations</span></div>
-            <div class="location_text"><img src="{{ asset('main-landing/images/call-icon.png')}}"><span class="padding_left_15">+01 9876543210</span></div>
-            <div class="location_text"><img src="{{ asset('main-landing/images/mail-icon.png')}}"><span class="padding_left_15">demo@gmail.com</span></div>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <h4 class="about_text">About Financial</h4>
-            <p class="dolor_text">ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt</p>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <h4 class="about_text">Instagram</h4>
-            <div class="footer_images">
-              <div class="footer_images_left">
-                <div class="image_12"><img src="{{ asset('main-landing/images/img-12.png')}}"></div>
-                <div class="image_12"><img src="{{ asset('main-landing/images/img-12.png')}}"></div>
-                <div class="image_12"><img src="{{ asset('main-landing/images/img-12.png')}}"></div>
-              </div>
-              <div class="footer_images_right">
-                <div class="image_12"><img src="{{ asset('main-landing/images/img-12.png')}}"></div>
-                <div class="image_12"><img src="{{ asset('main-landing/images/img-12.png')}}"></div>
-                <div class="image_12"><img src="{{ asset('main-landing/images/img-12.png')}}"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-sm-6">
-            <h4 class="about_text">Newsletter</h4>
-            <input type="text" class="mail_text" placeholder="Enter your email" name="Enter your email">
-            <div class="subscribe_bt"><a href="#">Subscribe</a></div>
-            <div class="footer_social_icon">
-              <ul>
-                <li><a href="#"><img src="{{ asset('main-landing/images/fb-icon1.png')}}"></a></li>
-                 <li><a href="#"><img src="{{ asset('main-landing/images/twitter-icon1.png')}}"></a></li>
-                <li><a href="#"><img src="{{ asset('main-landing/images/linkedin-icon1.png')}}"></a></li>
-                <li><a href="#"><img src="{{ asset('main-landing/images/youtub-icon1.png')}}"></a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
         <!-- copyright section start -->
         <div class="copyright_section">
           <div class="copyright_text">Copyright {{ date('Y')}} All Right Reserved By <a href="{{ url('/')}}">{{config('app.name')}}</a></div>
