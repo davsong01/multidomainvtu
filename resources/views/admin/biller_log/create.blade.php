@@ -10,7 +10,7 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
                                     <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Products</a>
                                     </li>

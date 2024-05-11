@@ -2,8 +2,7 @@
 <div class="main-menu menu-fixed menu-dark menu-accordion" data-scroll-to-active="true">
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row">
-            <li class="nav-item mr-auto"><a class="navbar-brand" href="/">
-                    {{-- <div class="brand-logo"><img class="logo" src="{{ asset(getSettings()->logo ) }}" /></div> --}}
+            <li class="nav-item mr-auto"><a class="navbar-brand" href="{{ route('welcome', request()->array)}}">
                     <div class="brand-logo"><img style="max-height: 70px;text-align: center;margin: auto;max-width: 150px;object-fit: contain;" src="{{ asset(getSettings()->dashboard_logo) }}" />
                     <h2 class="brand-text mb-0"></h2>
                 </a></li>
