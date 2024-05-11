@@ -235,7 +235,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <p class="p-small">Copyright © {{date('Y')}} <a href="{{ route('welcome', request()->array)}}"><strong>{{ request()->store_name }}.</strong></a> A subsidiary of <a href="https://https://kingsvtu.ng/"><strong>KINGSVTU</strong></a></p>
+                    <p class="p-small">Copyright © {{date('Y')}} <a href="{{ route('welcome', request()->array)}}"><strong>{{ request()->store_name }}.</strong></a> A subsidiary of <a href="{{env('KINGSVTU_URL')}}"><strong>KINGSVTU</strong></a></p>
                 </div> <!-- end of col -->
             </div> <!-- enf of row -->
         </div> <!-- end of container -->
