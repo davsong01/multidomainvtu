@@ -172,7 +172,7 @@ use App\Models\PaymentGateway;
                                                                         
                                                                         
                                                                         <fieldset class="form-group">
-                                                                            <label for="seo_description">SEO Description</label>
+                                                                            <label for="seo_description">SEO Description (Supports HTML tags)</label>
                                                                             <textarea class="form-control" id="seo_description" rows="3" name="seo_description" value="{{ $settings->seo_description ?? old('seo_description') }}" placeholder="SEO Description" required>{{ $settings->seo_description ?? old('seo_description') }}</textarea>
                                                                         </fieldset>
                                                                         {{-- <fieldset class="form-group">

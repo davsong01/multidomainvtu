@@ -80,7 +80,7 @@
                 <div class="col-lg-7 col-xl-7">
                     <div class="text-container">
                         <h1 class="h1-large">{{ request()->store_name }}</h1>
-                        <p class="p-large">{{ getSettings()->seo_description }}</p>
+                        <p class="p-large">{!! getSettings()->seo_description !!}</p>
                         <a class="btn-solid-lg" href="{{route('login',request()->array)}}">Login</a>
                         <a class="btn-outline-lg" href="{{route('register',request()->array)}}">Register</a>
                     </div> <!-- end of text-container -->

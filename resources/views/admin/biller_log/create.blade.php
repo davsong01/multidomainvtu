@@ -126,7 +126,7 @@
                                                                                     <input type="text" class="form-control"  name="seo_keywords" placeholder="Enter SEO Keywords" id="seo_keywords" value="{{ old('seo_keywords')}}">
                                                                                 </fieldset>
                                                                                  <fieldset class="form-group">
-                                                                                    <label for="seo_description">SEO Description</label>
+                                                                                    <label for="seo_description">SEO Description (Supports HTML tags)</label>
                                                                                     <textarea class="form-control" id="seo_description" rows="3" name="seo_description" placeholder="SEO Description">{{ old('seo_description') }}</textarea>
                                                                                 </fieldset>
                                                                                
