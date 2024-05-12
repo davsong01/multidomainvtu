@@ -11,7 +11,9 @@ use Illuminate\Support\Arr;
 use App\Models\Announcement;
 use App\Models\PaymentGateway;
 use App\Models\EmailApiSetting;
+use App\Scopes\MerchantIdScope;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\WalletController;
@@ -172,15 +174,24 @@ if (!function_exists("logEmails")) {
 }
 
 if (!function_exists("sendEmails")) {
-    function sendEmails($email_to, $subject, $body)
+    function sendEmails($email_to, $subject, $body, $merchant_id = null)
     {
-        $data = [
-            'subject' => $subject,
-            'body' => $body,
-        ];
-
         try {
-            $provider = EmailApiSetting::first();
+            if(!empty($merchant_id)){
+                $provider = EmailApiSetting::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $merchant_id)->first();
+                $settings = Settings::with('merchant')->withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $merchant_id)->first();
+
+                $email_settings = [
+                    'merchant_settings' => $settings,
+                    'merchant_id' => $settings->merchant->id,
+                    'store_slug' => $settings->merchant->store_slug,
+                    'store_name' => $settings->merchant->store_name,
+                ];
+            }else{
+                $provider = EmailApiSetting::first();
+                $email_settings = $request['merchant_settings'] ?? [];
+            }
+
             config([
                 'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
                 'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
@@ -200,7 +211,8 @@ if (!function_exists("sendEmails")) {
                 'subject' => $subject,
                 'body' => $body,
             ];
-            
+
+            $request['email_settings'] = $email_settings;
             Mail::to($email_to)->send(new EmailMessages($data));
             return true;
         } catch (\Exception $e) {

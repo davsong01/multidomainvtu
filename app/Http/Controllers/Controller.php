@@ -287,40 +287,7 @@ class Controller extends BaseController
 
     public function sendEmailReal($current)
     {
-        $provider = EmailApiSetting::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $current['merchant_id'])->first();
-
-        config([
-            'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
-            'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
-            'mail.port' => $provider->MAIL_PORT ?? env('MAIL_PORT'),
-            'mail.encryption' => $provider->MAIL_ENCRYPTION ?? env('MAIL_ENCRYPTION'),
-            'mail.username' => $provider->MAIL_USERNAME ?? env('MAIL_USERNAME'),
-            'mail.password' => $provider->MAIL_PASSWORD ?? env('MAIL_PASSWORD'),
-            'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME ?? env('MAIL_REPLY_TO_NAME'),
-            'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS ?? env('MAIL_REPLY_TO_ADDRESS'),
-            'mail.from' => [
-                'address' => $provider->MAIL_FROM_ADDRESS ?? env('MAIL_FROM_ADDRESS'),
-                'name' => $provider->MAIL_FROM_NAME ?? env('MAIL_FROM_NAME'),
-            ],
-        ]);
-        $current['provider'] = $provider->toArray();
-        
-        try {
-            Mail::to($current['recipient'])->send(new EmailMessages([
-                'subject' => $current['subject'],
-                'body' => $current['content'],
-                'provider' => $current['provider'] ?? [],
-            ]));
-            
-            return [
-                'message' => 'success',
-            ];
-        } catch (\Exception $e) {
-            return [
-                'message' => 'error',
-                'error' => $e->getMessage(),
-            ];
-        }
+        sendEmails($current['recipient'], $current['subject'], $current['content'],$current['merchant_id']);
     }
 
     public function checkRequestIDFormat($requestId) {

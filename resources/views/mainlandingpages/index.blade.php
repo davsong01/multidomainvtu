@@ -81,7 +81,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            {{-- <ul class="navbar-nav mr-auto">
               <li class="nav-item">
                 <a class="nav-link" href="#">Home</a>
               </li>
@@ -91,15 +91,14 @@
               <li class="nav-item">
                 <a class="nav-link" href="#services">Services</a>
               </li>
-            </ul>
+            </ul> --}}
           </div>
         </nav>
         <div class="banner_main">
           <h1 class="banner_taital"> BuyVTU<br><span style="font-weight: lighter;font-size: 28px;">THE WAY WE NOW TRADE</span><br></h1>
-          <p class="banner_text">Your reliable VTU Portal for Data, Airtime, TV Subscriptions, Bills Payment and Exam Pins. </p>
-          <div class="btn_main">
-            <div class="more_bt"><a href="{{ env('KINGSVTU_PORTAL_URL').'/'.'login' }}" target="_blank">Trader Login </a></div>
-            <div class="contact_bt"><a href="{{ env('KINGSVTU_PORTAL_URL').'/'.'register' }}" target="_blank">Newbie Signup</a></div>
+          <p class="banner_text">Your reliable VTU Portal for Data, Airtime, TV Subscriptions, Bills Payment and Exam Pins. </p><p  class="banner_text"><strong>DO YOU WISH TO HAVE A VTU SHOP UNDER BUYVTU.COM?</strong>Please contact the Business Manager via 09125335323</p>
+          <div class="btn_main" style="padding-top: 10px;">
+            <div class="contact_bt" style="margin-left: 0px;"><a href="{{ env('KINGSVTU_URL').'/'.'buyvtu' }}" target="_blank">Click Here</a></div>
           </div>
         </div>
       </div>
@@ -115,7 +114,6 @@
           <div class="col-md-8">
             <h1 class="services_taital">Who we are</h1>
             <p class="services_text"><strong>Over 12 years experience in community business...</strong> <br><br>Our portal is automated, with instant delivery of products. Its our pride that we offer some of the best prices in VTU business. Our over a decade experience in IT and business gives us an edge over most of our competitors. We don’t just trade, we mentor entrepreneurs into becoming self-reliant in VTU business too. KINGSVTU.NG is a subsidiary of XPINOKINGS LIMITED (RC: 1870867) <br><br>Our head office is located in the Gold Coast, Queensland, Australia. We have dedicated servers and staff members in Abuja, Lagos, Akwa Ibom and Oyo, Nigeria. <br><br>Although the portals operate 24/7, our Nigeria-based Managers and Agents handle the support department from 8am to 8pm daily. </p>
-            <div class="moremore_bt"><a style="color: black;border: 2px solid black;" href="{{ env('KINGSVTU_URL').'/'.'about' }}" target="_blank">Explore </a></div>
           </div>
           <div class="col-md-4">
             <div><img src="{{ asset('main-landing/images/img-1.png')}}" class="image_1"></div>
@@ -139,7 +137,7 @@
               </div>
               <h3 class="accounting_text">{{ $category['display_name']}}</h3>
               <p class="lorem_text"><br></p>
-              <div style="color:white !important" class="moremore_bt_1"><a href="#">Explore</a></div>
+              {{-- <div style="color:white !important" class="moremore_bt_1"><a href="#">Explore</a></div> --}}
             </div>
           </div>
           @endforeach
@@ -155,7 +153,7 @@
         <div class="row">
           <div class="col-lg-4 col-sm-12"></div>
           <div class="col-lg-4 col-sm-12" style="display: flex;">
-              <div class="moremore_bt" style="margin: auto;"><a href="{{ env('KINGSVTU_URL').'/'.'supportdesk' }}" target="_blank">Contact support </a></div>
+              <div class="moremore_bt" style="margin: auto;"><a href="{{ env('KINGSVTU_URL').'/'.'buyvtu' }}" target="_blank">Contact support </a></div>
           </div>
           <div class="col-lg-4 col-sm-12"></div>
         </div>
