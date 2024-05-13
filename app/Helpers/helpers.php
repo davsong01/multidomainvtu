@@ -213,10 +213,18 @@ if (!function_exists("sendEmails")) {
             ];
 
             $request['email_settings'] = $email_settings;
+            
             Mail::to($email_to)->send(new EmailMessages($data));
-            return true;
+
+            return [
+                'message' => 'success',
+            ];
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
+            return [
+                'message' => 'error',
+                'error' => $e->getMessage(),
+            ];
         }
     }
 }

@@ -96,7 +96,7 @@
         </nav>
         <div class="banner_main">
           <h1 class="banner_taital"> BuyVTU<br><span style="font-weight: lighter;font-size: 28px;">THE WAY WE NOW TRADE</span><br></h1>
-          <p class="banner_text">Your reliable VTU Portal for Data, Airtime, TV Subscriptions, Bills Payment and Exam Pins. </p><p  class="banner_text"><strong>DO YOU WISH TO HAVE A VTU SHOP UNDER BUYVTU.COM?</strong>Please contact the Business Manager via 09125335323</p>
+          <p class="banner_text">Your reliable VTU Portal for Data, Airtime, TV Subscriptions, Bills Payment and Exam Pins. </p><p  class="banner_text"><strong>DO YOU WISH TO HAVE A VTU SHOP UNDER BUYVTU.COM?</strong> Please contact the Business Manager via 09125335323 or click the button below</p>
           <div class="btn_main" style="padding-top: 10px;">
             <div class="contact_bt" style="margin-left: 0px;"><a href="{{ env('KINGSVTU_URL').'/'.'buyvtu' }}" target="_blank">Click Here</a></div>
           </div>

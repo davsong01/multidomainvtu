@@ -24,6 +24,7 @@ class EmailLogController extends Controller
     public function resend(Request $request, EmailLog $id)
     {
         $this->sendEmailReal($id->toArray());
+
         return back()->with('message', 'Email resent successfully!');
     }
 
@@ -93,7 +94,7 @@ class EmailLogController extends Controller
     {
         $log = EmailLog::where('id', $log)->first();
         $res = $this->sendEmailReal($log->toArray());
-
+        
         if (isset($res) && ($res['message'] && $res['message'] == 'success')) {
             $log->status = 'sent';
             $log->errors = null;

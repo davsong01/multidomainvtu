@@ -51,6 +51,7 @@ use App\Mail\EmailMessages;
 |
 */
 
+
 Route::get('payment-callback/{provider_id?}', [PaymentController::class, 'analyzePaymentResponse'])->name('payment-callback');
 Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallback'])->name('log.payment.response');
 Route::get('cron/analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
@@ -60,7 +61,11 @@ Route::get('/', function () {
 })->name('landing.main');
 
 Route::group(['prefix' => '{merchant}'], function ($merchant) {
-    Route::middleware(['default-domain-merchant-check'])->group(function ($merchant) { 
+    Route::middleware(['default-domain-merchant-check'])->group(function ($merchant) {
+        Route::get('test', function () {
+            return view('emails.empty_template');
+        });
+        
         Route::get('/', [MerchantController::class, 'index'])->name('welcome');
 
         Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');

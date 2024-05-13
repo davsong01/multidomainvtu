@@ -48,8 +48,8 @@ class DefaultController extends Controller
             'subscription_start' => 'nullable',
             'subscription_end' => 'nullable',
             'api_key' => 'nullable',
-            'secret_key' => 'required',
-            'public_key' => 'required',
+            // 'secret_key' => 'required',
+            // 'public_key' => 'required',
         ]);
 
         if ($validator->fails()) {

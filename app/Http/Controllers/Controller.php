@@ -287,7 +287,7 @@ class Controller extends BaseController
 
     public function sendEmailReal($current)
     {
-        sendEmails($current['recipient'], $current['subject'], $current['content'],$current['merchant_id']);
+        return sendEmails($current['recipient'], $current['subject'], $current['content'],$current['merchant_id']);
     }
 
     public function checkRequestIDFormat($requestId) {
