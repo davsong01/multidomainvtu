@@ -176,13 +176,14 @@ if (!function_exists("logEmails")) {
 if (!function_exists("sendEmails")) {
     function sendEmails($email_to, $subject, $body, $merchant_id = null)
     {
+        $email_settings = [];
         try {
             if(!empty($merchant_id)){
                 $provider = EmailApiSetting::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $merchant_id)->first();
                 $settings = Settings::with('merchant')->withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $merchant_id)->first();
 
                 $email_settings = [
-                    'merchant_settings' => $settings,
+                    'logo' => $settings->logo,
                     'merchant_id' => $settings->merchant->id,
                     'store_slug' => $settings->merchant->store_slug,
                     'store_name' => $settings->merchant->store_name,
@@ -191,7 +192,7 @@ if (!function_exists("sendEmails")) {
                 $provider = EmailApiSetting::first();
                 $email_settings = $request['merchant_settings'] ?? [];
             }
-
+            
             config([
                 'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
                 'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
@@ -210,12 +211,11 @@ if (!function_exists("sendEmails")) {
             $data = [
                 'subject' => $subject,
                 'body' => $body,
+                'email_settings' => $email_settings ?? []
             ];
 
-            $request['email_settings'] = $email_settings;
-            
             Mail::to($email_to)->send(new EmailMessages($data));
-
+            
             return [
                 'message' => 'success',
             ];

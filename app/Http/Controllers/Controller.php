@@ -268,10 +268,10 @@ class Controller extends BaseController
                 $data['content'] = $email->content;
                 $data['subject'] = $email->subject;
                 $data['merchant_id'] = $email->merchant_id;
-
+                
                 $res = $this->sendEmailReal($data);
 
-                if (isset($res) && ($res['message'] && $res['message'] == 'success')) {
+                if (isset($res) && $res['message'] == 'success') {
                     $count++;
                     $email->status = 'sent';
                     $email->sent_at = now();

@@ -21,10 +21,11 @@ class EmailLogController extends Controller
         return view('admin.emails.index', ['emails' => $mails]);
     }
 
-    public function resend(Request $request, EmailLog $id)
+    public function resend(Request $request, $merchant, $id)
     {
-        $this->sendEmailReal($id->toArray());
-
+        $email = EmailLog::where('id',$id)->first()->toArray();
+        $this->sendEmailReal($email);
+        
         return back()->with('message', 'Email resent successfully!');
     }
 

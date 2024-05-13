@@ -39,11 +39,14 @@
   <td>    
     <table bgcolor="#ffffff" class="content" align="center" cellpadding="0" cellspacing="0" border="0">
       <tr>
-        <td bgcolor="#c7d8a7" class="header">
+        <td bgcolor="white" class="header" style="border-bottom:solid 1px">
           <table width="70" align="center" border="0" cellpadding="0" cellspacing="0">  
             <tr>
               <td style="padding: 0 0px 0px 0;">
-                <img class="fix" src="https://kingsvtu.ng/wp-content/uploads/2024/03/cropped-kingsvtung-new-logo-2024-400x59-pixels.png" width="300px" height="auto" border="0" alt="" />
+                @php
+                    $logo = $data['email_settings']['logo'] ?? request()->merchant_settings['logo'];
+                @endphp
+                <img class="fix" src="{{ asset($logo) }}" width="auto" height="300" border="0" alt="" />
               </td>
             </tr>
           </table>
@@ -66,13 +69,13 @@
         <td class="innerpadding borderbottom">
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-              <td class="h2">
+              {{-- <td class="h2">
                 Subject
-              </td>
+              </td> --}}
             </tr>
             <tr>
               <td class="bodycopy">
-                Content
+               {!! $data['body']!!}
               </td>
             </tr>
           </table>
@@ -84,7 +87,10 @@
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td align="center" class="footercopy">
-                &reg; {{ date('Y') }}, {{ request()->store_name }}<br/>
+                @php
+                    $store_name =  $data['email_settings']['store_name'] ?? request()->store_name;
+                @endphp
+                &reg; {{ date('Y') }}, {{ $store_name }}<br/>
               </td>
             </tr>
           </table>
