@@ -224,17 +224,18 @@ class DefaultController extends Controller
 
     public function updateMerchantShop(Request $request, $id)
     {
-        $merchant = Merchant::where('id', $request->merchant_id)->first();
-
+        $merchant = Merchant::where('id', $id)->first();
+        $data = [
+            'store_slug' => $request['store_slug'] ?: $merchant->store_slug,
+            'status' => $request['shop_status'] ?: $merchant->status,
+            'store_name' => $request['store_name'] ?: $merchant->store_name,
+            'subscription_start' => !empty($request['subscription_start']) ? Carbon::parse($request['subscription_start']) : $merchant->subscription_start,
+            'subscription_end' => !empty($request['subscription_end']) ? Carbon::parse($request['subscription_end']) : $merchant->subscription_end,
+            // 'custom_domain' => !empty($request['custom_domain']) ? $request['custom_domain'] : $merchant->custom_domain
+        ];
+        
         if (!empty($merchant)) {
-            $merchant->update([
-                'store_slug' => $request['store_slug'] ?: $merchant->store_slug,
-                'store_name' => $request['store_name'] ?: $merchant->store_name,
-                'subscription_start' => $request['subscription_start'] ?: $merchant->subscription_start,
-                'subscription_end' => $request['subscription_end'] ?: $merchant->subscription_end,
-                'custom_domain' => $request['custom_domain'] ?: $merchant->custom_domain
-            ]);
-
+            $merchant->update($data);
             // Settings::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->update();
         }
         return response()->json(['status' => 'success', 'message' => 'Operation successful from destination server'], 200);

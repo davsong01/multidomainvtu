@@ -19,7 +19,8 @@ class Merchant extends Model
         'location',
         'status',
         'subscription_start',
-        'subscription_end'
+        'subscription_end',
+        'custom_domain'
     ];
 
     public function setting()

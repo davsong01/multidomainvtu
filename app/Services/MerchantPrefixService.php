@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Merchant;
 use App\Models\Settings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MerchantPrefixService
 {
@@ -14,9 +15,16 @@ class MerchantPrefixService
         $details = [];
 
         if (!empty($prefix)) {
-            $merchantDetails = Merchant::with('setting', 'default_customer_level')->where('store_slug', $prefix)->where('status', 'active')->first();
+            $merchantDetails = Merchant::with('setting', 'default_customer_level')->where('store_slug', $prefix)->first();
         
             if (!empty($merchantDetails)) {
+                if($merchantDetails->status == 'inactive'){
+
+                }
+
+                if ($merchantDetails->subscription_end < Carbon::now()) {
+                    
+                }
                 $settings = $merchantDetails->setting->toArray();
                 $settings['default_customer_level_id'] = $merchantDetails->default_customer_level->id ?? null;
                 
