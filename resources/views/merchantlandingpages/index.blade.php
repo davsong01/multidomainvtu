@@ -4,19 +4,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+    @php
+        $logo = !empty(getSettings()->logo) ? getSettings()->logo : 'main-landing/images/logo.jpeg';
+        $favicon = !empty(getSettings()->favicon) ? getSettings()->favicon : 'main-landing/images/logo.jpeg';
+    @endphp
     <!-- SEO Meta Tags -->
     <meta name="description" content="{{ getSettings()->seo_description }}">
     <meta name="author" content="{{ request()->store_name }}">
 
-    <!-- OG Meta Tags to improve the way the post looks when you share the page on Facebook, Twitter, LinkedIn -->
-	<meta property="og:site_name" content="" /> <!-- website name -->
-	<meta property="og:site" content="{{ request()->store_name }}" /> <!-- website link -->
-	<meta property="og:title" content="{{ request()->store_name }}"/> <!-- title shown in the actual shared post -->
-	<meta property="og:description" content="{{ getSettings()->seo_description }}" /> <!-- description shown in the actual shared post -->
-	<meta property="og:image" content="{{ asset(getSettings()->logo) }}" /> <!-- image link, make sure it's jpg -->
-	<meta property="og:url" content="{{ url('/') }}" /> <!-- where do you want your post to link to -->
-	<meta name="twitter:card" content="{{ asset(getSettings()->logo) }}"> <!-- to have large image post format in Twitter -->
+	<meta property="og:site_name" content=""/>
+	<meta property="og:site" content="{{ request()->store_name }}"/>
+	<meta property="og:title" content="{{ request()->store_name }}"/>
+	<meta property="og:description" content="{{ getSettings()->seo_description }}"/> 
+	<meta property="og:image" content="{{ asset($logo ) }}"/>
+	<meta property="og:url" content="{{ url('/') }}" />
+	<meta name="twitter:card" content="{{ asset($favicon) }}">
 
     <!-- Webpage Title -->
     <title>{{ request()->store_name }}</title>
@@ -59,7 +61,7 @@
         <div class="container">
 
             <!-- Image Logo -->
-            <a class="navbar-brand logo-image" href="{{route('welcome', request()->array )}}"><img src="{{ asset(getSettings()->logo)}}" alt="alternative"></a> 
+            <a class="navbar-brand logo-image" href="{{route('welcome', request()->array )}}"><img src="{{ asset($logo)}}" alt="logo"></a> 
 
             <!-- Text Logo - Use this if you don't have a graphic logo -->
             @if(empty(getSettings()->logo))
@@ -194,12 +196,12 @@
                         <p>Greatly hearted has who believe. Drift allow green son walls years for blush. Sir margaret drawings repeated recurred exercise laughing may you</p>
                         <p>Do repeated whatever to welcomed absolute no. Fat surprise although more words outlived</p>
                         <ul class="list-unstyled li-space-lg">
-                            {{-- @foreach($categorys as $category)
+                            @foreach(landingPageCategories() as $category)
                             <li class="d-flex">
                                 <i class="fas fa-square"></i>
-                                <div class="flex-grow-1">{{ $category->display_name }}</div>
+                                <div class="flex-grow-1">{{ $category['display_name'] }}</div>
                             </li>
-                            @endforeach --}}
+                            @endforeach
                         </ul>
                     </div> <!-- end of text-container -->
                 </div> <!-- end of col -->

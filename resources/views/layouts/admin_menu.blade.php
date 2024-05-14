@@ -1,13 +1,14 @@
 @php
     $allowedMenu = auth()->user()->admin->rolepermissions();
     $allowedRoutes = auth()->user()->admin->rolepermissions();
+    $logo = !empty(getSettings()->dashboard_logo) ? getSettings()->dashboard_logo : 'main-landing/images/logo.jpeg';
 @endphp
 
 <div class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row">
             <li class="nav-item mr-auto"><a class="navbar-brand" href="{{ route('welcome', request()->array)}}">
-                    <div class="brand-logo"><img style="max-height: 70px;text-align: center;margin: auto;max-width: 200px;padding-top: 56.25%;" src="{{ asset(getSettings()->dashboard_logo) }}" />
+                    <div class="brand-logo"><img style="max-height: 50px;text-align: center;margin: auto;max-width: 200px;padding-top: 56.25%;margin-bottom:10px" src="{{ asset($logo) }}" />
                     </div>
                     {{-- <div class="brand-logo"><img style="height: auto;" class="logo" src="{{ asset('site/dashboard_logo.jpeg')}}" /></div> --}}
 

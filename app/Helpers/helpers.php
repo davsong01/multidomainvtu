@@ -34,7 +34,7 @@ if (!function_exists("landingPageCategories")) {
                 'class' => 'ion',
             ],
             [
-                "display_name" => "Buy Data",
+                "display_name" => "Data Subscriptions",
                 "status" => "active",
                 "slug" => "data",
                 "description" => "KINGSVTU.NG: Buy Internet Data",
@@ -43,7 +43,7 @@ if (!function_exists("landingPageCategories")) {
                 "discount_type" => "flat",
             ],
             [
-                "display_name" => "TV Subscription",
+                "display_name" => "TV Subscriptions",
                 "status" => "active",
                 "slug" => "tv",
                 "description" => "KINGSVTU.NG: Choose from a range of TV subscriptions for your entertainment. Easy payment, quick value delivery",
