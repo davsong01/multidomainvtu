@@ -192,9 +192,8 @@
             <div class="row">
                 <div class="col-lg-5">
                     <div class="text-container">
-                        <h2>OUR PRODUCTS AND SERVICES</h2>
-                        <p>Greatly hearted has who believe. Drift allow green son walls years for blush. Sir margaret drawings repeated recurred exercise laughing may you</p>
-                        <p>Do repeated whatever to welcomed absolute no. Fat surprise although more words outlived</p>
+                        <h2>WE ARE HERE FOR YOU!</h2>
+                        <p>Deciding to choose our VTU shop for all your data, airtime and other purchases is the right choice to make because you end up with a good exclusive service and friendly prices on your trades. Your satisfaction makes us happy.</p>
                         <ul class="list-unstyled li-space-lg">
                             @foreach(landingPageCategories() as $category)
                             <li class="d-flex">
