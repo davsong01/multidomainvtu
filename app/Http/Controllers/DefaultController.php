@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use Carbon\Carbon;
 use App\Models\API;
 use App\Models\Role;
@@ -26,6 +27,7 @@ use App\Models\EmailApiSetting;
 use App\Scopes\MerchantIdScope;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DefaultController extends Controller
@@ -58,8 +60,6 @@ class DefaultController extends Controller
 
         try {
             DB::beginTransaction();
-
-            
             // Create Merchant
             $merchant = Merchant::updateOrCreate([
                 'store_slug' => $request->store_slug,
@@ -220,6 +220,37 @@ class DefaultController extends Controller
         Variation::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->delete();
 
         return response()->json(['status' => 'success', 'message' => 'Operation successful'], 200);
+    }
+
+    public function updateMerchantShop(Request $request, $id)
+    {
+        $merchant = Merchant::where('merchant_id', $id)->first();
+        if (!empty($merchant)) {
+            $merchant->update([
+                'store_slug' => $request['store_slug'] ?: $merchant->store_slug,
+                'store_name' => $request['store_name'] ?: $merchant->store_name,
+                'subscription_start' => $request['subscription_start'] ?: $merchant->subscription_start,
+                'subscription_end' => $request['subscription_end'] ?: $merchant->subscription_end,
+                'custom_domain' => $request['custom_domain'] ?: $merchant->custom_domain
+            ]);
+
+            // Settings::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->update();
+        }
+        return response()->json(['status' => 'success', 'message' => 'Operation successful from destination server'], 200);
+    }
+
+    public function accessMerchantShop(Request $request){
+        $merchant = Merchant::where('id', $request->merchant_id)->first();
+        // Admin
+        if($merchant){
+            $user = User::withoutGlobalScope(new MerchantIdScope())->where('type', 'admin')->where('merchant_id',$request->merchant_id)->where('status', 'active')->first();
+
+            if($user){
+                Auth::login($user);
+                Session::put('loginId', $user->id);
+                return redirect()->intended(route('dashboard', $merchant->store_slug));
+            }
+        }     
     }
 
 }

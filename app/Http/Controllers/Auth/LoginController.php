@@ -7,6 +7,7 @@ use Session;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Scopes\MerchantIdScope;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Services\MerchantPrefixService;
@@ -31,7 +32,7 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-
+        
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required',
@@ -56,6 +57,7 @@ class LoginController extends Controller
                     }
                 }
             }
+            
             $request->session()->put('loginId', $user->id);
             return redirect()->intended(route('dashboard', $request->array));
         } else {

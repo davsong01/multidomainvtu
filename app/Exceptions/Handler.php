@@ -21,7 +21,7 @@ class Handler extends ExceptionHandler
         
         $merchantPrefix = new MerchantPrefixService($request);
         $merchant = $merchantPrefix->getMerchantCustomerInfo($request);
-        
+        dd($exception->getMessage());
         if ($exception instanceof TokenMismatchException) {
             // Handle CSRF token mismatch (419 error) here
             \Log::error(['419 Error' => $exception->getMessage(), 'Merchant' => $merchant]);

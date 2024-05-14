@@ -85,6 +85,7 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
         ->middleware(['throttle:6,1'])
         ->name('verification.verify');
 
+
         Route::middleware(['auth'])->group(function ($merchant) {
             Route::get('email-verify', [VerifyEmailController::class, 'store'])->name('verification.notice');
             // Email verification routes
