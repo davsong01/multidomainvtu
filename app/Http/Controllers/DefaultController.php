@@ -224,7 +224,8 @@ class DefaultController extends Controller
 
     public function updateMerchantShop(Request $request, $id)
     {
-        $merchant = Merchant::where('merchant_id', $id)->first();
+        $merchant = Merchant::where('id', $request->merchant_id)->first();
+
         if (!empty($merchant)) {
             $merchant->update([
                 'store_slug' => $request['store_slug'] ?: $merchant->store_slug,
