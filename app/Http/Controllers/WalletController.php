@@ -26,7 +26,7 @@ class WalletController extends Controller
             'transaction_id' => $data['transaction_id'] ?? null,
             'reason' => $data['reason'] ?? null,
             'payment_method' => $data['payment_method'] ?? null,
-            'merchant_id' => request()->merchant_id,
+            'merchant_id' => $data['merchant_id'] ?? request()->merchant_id,
         ]);
 
         return $wallet;
@@ -34,16 +34,18 @@ class WalletController extends Controller
 
     public function updateCustomerWallet($user, $amount, $type)
     {
+        $customer = !empty($user->customer) ? $user->customer : $user->cron_customer;
+        
         if ($type == 'credit') {
-            $user->customer->update([
-                'wallet' => $user->customer->wallet + $amount,
+            $customer->update([
+                'wallet' => $customer->wallet + $amount,
             ]);
         } else {
-            $user->customer->update([
-                'wallet' => $user->customer->wallet - $amount,
+            $customer->update([
+                'wallet' => $customer->wallet - $amount,
             ]);
         }
-
+        
         return;
     }
 

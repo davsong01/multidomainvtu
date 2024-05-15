@@ -49,8 +49,8 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Name</th>
-                                                        <th>Status</th>
                                                         <th>Webhook Notification URL</th>
+                                                        <th>Status</th>
                                                         @if(hasAccess('paymentgateway.edit'))
                                                         <th>Actions</th>
                                                         @endif

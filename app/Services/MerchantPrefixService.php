@@ -25,6 +25,7 @@ class MerchantPrefixService
                 if ($merchantDetails->subscription_end < Carbon::now()) {
                     
                 }
+                
                 $settings = $merchantDetails->setting->toArray();
                 $settings['default_customer_level_id'] = $merchantDetails->default_customer_level->id ?? null;
                 

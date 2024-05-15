@@ -113,14 +113,14 @@ if (!function_exists("getPaymentGatewayReservedAccountCharge")) {
     function getPaymentGatewayReservedAccountCharge($provider = null)
     {
         if(!empty($provider)){
-            $gateway = PaymentGateway::where('status', 'active')->first();
+            $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('status', 'active')->where('id', $provider)->first();
         }else{
-            $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->first();
+            $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('status', 'active')->first();
         }
-
+        
         if($gateway->reserved_account_payment_charge_type == 'flat'){
             $charge = $gateway->reserved_account_payment_charge;
-            $display_value = getSettings()->currency . number_format($charge, 1);
+            $display_value = isset(getSettings()->currency) ? getSettings()->currency : '' . number_format($charge, 1);
             $type = 'flat';
         }else{
             $charge = $gateway->reserved_account_payment_charge;
@@ -133,6 +133,18 @@ if (!function_exists("getPaymentGatewayReservedAccountCharge")) {
             'value' => $charge,
             'display_value' => $display_value
         ];
+    }
+}
+
+if (!function_exists("calculatePaymentGatewayReservedAccountCharge")) {
+    function calculatePaymentGatewayReservedAccountCharge($data, $amount)
+    {
+        if ($data['type'] == 'flat') {
+            $charge = $data['value'];
+        } else {
+            $charge =  $data['value'] / 100 * $amount;
+        }
+        return $charge;
     }
 }
 

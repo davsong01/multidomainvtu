@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Merchant;
 use Illuminate\Http\Request;
 use App\Models\PaymentGateway;
 use App\Models\TransactionLog;
@@ -70,7 +71,9 @@ class PaymentController extends Controller
     public function dumpCallback(Request $request, $provider)
     {
         $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $provider)->first();
-        if(!$gateway){
+        $merchant = Merchant::where('id', $gateway->merchant_id)->first();
+    
+        if(!$gateway || !$merchant){
             return;
         }
 
@@ -90,8 +93,8 @@ class PaymentController extends Controller
             $paid_on = Carbon::parse($request['transaction_date']);
         }
 
-        $check = ReservedAccountCallback::where(['session_id' => $session_id, 'transaction_reference' => $transaction_reference])->first();
-        
+        $check = ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where(['session_id' => $session_id, 'transaction_reference' => $transaction_reference])->first();
+       
         if (!$check) {
             ReservedAccountCallback::updateOrCreate(['session_id' => $session_id], [
                 'raw' => json_encode($request->all()),
@@ -100,6 +103,7 @@ class PaymentController extends Controller
                 'session_id' => $session_id,
                 'account_number' => $account_number,
                 'payment_method' => $payment_method,
+                'merchant_id' => $merchant->id,
                 'transaction_reference' => $transaction_reference,
             ]);
         }
@@ -126,7 +130,7 @@ class PaymentController extends Controller
             // dummy
             $calls = ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where(['status' => 'pending'])->orderBy('id', 'ASC')->get();
             // end dummy
-            
+           
             foreach ($calls as $call) {
                 // DB::beginTransaction();
                 
@@ -165,15 +169,16 @@ class PaymentController extends Controller
                 
                 if ($provider->slug == 'squad') {
                     $analyze = app('App\Http\Controllers\PaymentProcessors\SquadController')->verifyTransaction($call['transaction_reference']);
-
-                    ReservedAccountCallback::where('id', $call['id'])->update(['raw_requery' => json_encode($analyze['data'])]);
+                    
+                    ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call['id'])->update(['raw_requery' => json_encode($analyze['data'])]);
 
                     if (isset($analyze) && $analyze['status'] == 'success') {
-                        $payment_method = $provider->name . '(' . $decodeCall['eventData']['paymentMethod'] . ')';
-                        $provider_charge = getPaymentGatewayReservedAccountCharge($provider->id) ?? 0;
+                       
+                        $payment_method = $provider->name . '(BANK_TRANSFER)';
+                        
                         // $provider_charge = $provider_charge + $extra_charge;
-                        $original_amount = $analyze['data']['amountPaid'] ?? $decodeCall['eventData']['amountPaid'];
-                        $transaction_id = $analyze['data']['transactionReference'] ?? $decodeCall['eventData']['transactionReference'];
+                        $original_amount = $analyze['data']['principal_amount'];
+                        $transaction_id = $analyze['data']['transactionReference'] ?? $call['transaction_reference'];
                     }
                 }
 
@@ -182,12 +187,9 @@ class PaymentController extends Controller
                     $wallet = new WalletController();
                     $balance = $wallet->getWalletBalance($user);
                     $reference = $this->generateRequestId();
-                    // if (!empty($provider->reserved_account_payment_charge)) {
-                    //     // $provider_charge = ($provider->reserved_account_payment_charge / 100) * $original_amount;
-                    //     $provider_charge = $provider_charge;
-                    // } else {
-                    //     $provider_charge = 0;
-                    // }
+
+                    $provider_charge_setting = getPaymentGatewayReservedAccountCharge($provider->id) ?? 0;
+                    $provider_charge = calculatePaymentGatewayReservedAccountCharge($provider_charge_setting, $analyze['data']['principal_amount']) ?? 0;
                     $amount = $original_amount - $provider_charge;
 
                     $request['type'] = 'credit';
@@ -211,32 +213,35 @@ class PaymentController extends Controller
                     $request['provider_charge'] = $provider_charge;
                     $request['wallet_funding_provider'] = $call['provider_id'];
                     $request['account_number'] =  $call['account_number'];
+                    $request['merchant_id'] =  $call['merchant_id'];
 
-                    $transaction =  app('App\Http\Controllers\TransactionController')->logTransaction($request);
+                    $settings = $call->merchant->setting;
+                    $settings->store_name = $call->merchant->store_name;
                     
+                    $transaction =  app('App\Http\Controllers\TransactionController')->logTransaction($request);
                     $transaction->update([
                         'balance_after' => $balance + $amount,
                         'status' => 'delivered',
-                        'descr' => 'Wallet Funding Via Account: ' . $call['account_number'] . ' of ' . getSettings()->currency . number_format($amount, 2) . ' was successful',
+                        'descr' => 'Wallet Funding Via Account: ' . $call['account_number'] . ' of ' . $settings->currency . number_format($amount, 2) . ' was successful',
                     ]);
-
+                    
                     $request['type'] = 'credit';
                     $request['total_amount'] = $amount;
                     $request['transaction_id'] = $transaction->transaction_id;
                     $request['reason'] = 'WALLET FUNDING Via Reserved account';
 
                     $wal = $wallet->logWallet($request);
-
+                    
                     // Update Customer Wallet
                     $wallet->updateCustomerWallet($user, $amount, $request['type']);
-                    ReservedAccountCallback::where('id', $call['id'])->update(['transaction_id' => $transaction_id]);
+                    ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call['id'])->update(['transaction_id' => $transaction_id]);
 
-                    $this->sendTransactionEmail($transaction, $user);
+                    $this->sendTransactionEmail($transaction, $user, $settings);
                 }
 
                 //
-                ReservedAccountCallback::where('id', $call['id'])->update(['status' => 'analyzed']);
-                // DB::commit();
+                ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call['id'])->update(['status' => 'analyzed']);
+                DB::commit();
             }
         } catch (\Throwable $th) {
             DB::rollBack();

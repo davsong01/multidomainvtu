@@ -540,6 +540,7 @@ class TransactionController extends Controller
             'account_number' => $data['account_number'] ?? null,
             'ip_address' => Session::get('ip_address') ?? null,
             'domain_name' => Session::get('domain_name') ?? null,
+            'merchant_id' => $data['merchant_id'] ?? request()->merchant_id,
         ];
 
         $trans = TransactionLog::create($pre);

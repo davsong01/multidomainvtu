@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Merchant;
 use App\Traits\MerchantIdTrait;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ReservedAccountCallback extends Model
 {
@@ -14,4 +15,10 @@ class ReservedAccountCallback extends Model
     public function transaction(){
         return $this->belongsTo(TransactionLog::class, 'transaction_reference','transaction_id');
     }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class);
+    }
+    
 }

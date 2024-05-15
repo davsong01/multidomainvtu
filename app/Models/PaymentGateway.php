@@ -12,4 +12,5 @@ class PaymentGateway extends Model
     use HasFactory, MerchantIdTrait;
 
     protected $guarded = [];
+    
 }

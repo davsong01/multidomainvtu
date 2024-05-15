@@ -129,9 +129,11 @@ class Controller extends BaseController
         return $trx;
     }
 
-    public function sendTransactionEmail($transaction, $user)
+    public function sendTransactionEmail($transaction, $user, $settings=null)
     {
-        if (getSettings()->transaction_email_notification == 'yes') {
+        $settings = $settings ?? getSettings();
+
+        if ($settings->transaction_email_notification == 'yes') {
             $variation_name =  isset($transaction->variation) ? ' | ' . $transaction->variation->system_name : '';
             $product =  $transaction->product->name ?? '' .  $variation_name;
             $extras = isset($transaction->extras) ? $transaction->extras : '';
@@ -163,17 +165,17 @@ class Controller extends BaseController
                 }
             }
 
-            $body .= '<strong>Unit Price:</strong> ' . getSettings()->currency . $transaction->unit_price . '<br>';
+            $body .= '<strong>Unit Price:</strong> ' . $settings->currency . $transaction->unit_price . '<br>';
 
             if (!empty($transaction->provider_charge)) {
-                $body .= '<strong>Convenience Fee:</strong> ' . getSettings()->currency . number_format($transaction->provider_charge, 2) . '<br>';
+                $body .= '<strong>Convenience Fee:</strong> ' . $settings->currency . number_format($transaction->provider_charge, 2) . '<br>';
             }
 
             $body .= '<strong>Quantity:</strong> ' . $transaction->quantity . '<br>
-            <strong>Discount Applied:</strong> ' . getSettings()->currency . number_format($transaction->discount, 2) . '<br>
-            <strong>Total Amount Paid:</strong> ' . getSettings()->currency . number_format($transaction->total_amount, 2) . '<br>
-            <strong>Initial Balance:</strong> ' . getSettings()->currency . number_format($transaction->balance_before, 2) . '<br>
-            <strong>Final Balance: </strong>' . getSettings()->currency . number_format($transaction->balance_after, 2) . '<br>
+            <strong>Discount Applied:</strong> ' . $settings->currency . number_format($transaction->discount, 2) . '<br>
+            <strong>Total Amount Paid:</strong> ' . $settings->currency . number_format($transaction->total_amount, 2) . '<br>
+            <strong>Initial Balance:</strong> ' . $settings->currency . number_format($transaction->balance_before, 2) . '<br>
+            <strong>Final Balance: </strong>' . $settings->currency . number_format($transaction->balance_after, 2) . '<br>
             <br>Warm Regards. (' . request()->store_name . ')<br/>
             </p>';
 
