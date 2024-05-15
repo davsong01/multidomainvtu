@@ -120,7 +120,7 @@ class SquadController extends Controller
         ];
 
         $response = $this->makeCall($url, $payload);
-    dd($response);
+
         if (
             isset($response) && $response['success'] == true &&
             $response['message'] == 'Success'
