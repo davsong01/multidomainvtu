@@ -20,5 +20,9 @@ class ReservedAccountCallback extends Model
     {
         return $this->belongsTo(Merchant::class);
     }
-    
+
+    public function gateway(){
+        return $this->belongsTo(PaymentGateway::class, 'paymentgateway_id');
+
+    }
 }
