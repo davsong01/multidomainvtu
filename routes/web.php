@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\User;
-use App\Mail\OrderShipped;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIController;
@@ -56,7 +54,6 @@ use App\Mail\EmailMessages;
 Route::post('log-p-callback/{provider}', [PaymentController::class, 'dumpCallback'])->name('log.payment.response'); // fixed
 Route::get('cron/analyze-callback', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze'); // fixed
 Route::get('cron/sendemails', [Controller::class, 'cronSendEmails']); // fixed
-Route::get('cron/get', [PaymentController::class, 'analyzeCallbackResponse'])->name('callback.analyze');
 
 Route::get('/', function () {
     return view('mainlandingpages.index');
