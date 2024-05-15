@@ -996,8 +996,9 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function singleTransactionView(TransactionLog $transaction)
+    public function singleTransactionView($merchant, $transaction)
     {
+        $transaction = TransactionLog::where('id',$transaction)->first();
         return view('admin.transaction.single_transaction', compact('transaction'));
     }
 
@@ -1087,8 +1088,9 @@ class TransactionController extends Controller
         }
     }
 
-    public function queryWallet(Request $request, TransactionLog $transactionlog)
+    public function queryWallet(Request $request, $merchant, $transactionlog)
     {
+        $transactionlog = TransactionLog::where('id', $transactionlog)->first();
         $type = $request->type;
         $check = Wallet::where('transaction_id', $transactionlog->transaction_id)
             ->where('type', $type)

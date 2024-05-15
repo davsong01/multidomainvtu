@@ -107,6 +107,8 @@ class PaymentController extends Controller
                 'transaction_reference' => $transaction_reference,
             ]);
         }
+
+        return response()->json(['message' => 'success'], 200);
     }
 
     public function analyzeCallbackResponse()

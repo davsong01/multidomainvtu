@@ -143,8 +143,8 @@
                                                 <td>{{ $transaction->customer_name }} <br>
                                                     <a href="">{{ $transaction->customer_email  }}</a> <br>
                                                     {{ $transaction->customer_phone }} <br>
-                                                    @if($transaction->status == 'success')
-                                                    <button class="btn btn-primary btn-sm">{{ucfirst($transaction->status) }}</button>
+                                                    @if(in_array($transaction->status, ['success', 'delivered']))
+                                                    <button class="btn btn-success btn-sm">{{ucfirst($transaction->status) }}</button>
                                                     @else
                                                     <button class="btn btn-danger btn-sm">{{ucfirst($transaction->status) }}</button>
                                                     @endif
