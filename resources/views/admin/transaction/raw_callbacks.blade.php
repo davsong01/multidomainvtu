@@ -41,7 +41,7 @@
                                                     @if($call->status == 'analyzed')
                                                     <strong style="color:green">Date Analyzed:</strong><br><span style="color:green"> {{ date("M jS, Y g:iA", strtotime($call->updated_at)) }}</span>
                                                     @endif  <br>
-                                                    <strong>Provider:  {{$call->gateway->name ?? 'N/A' }}</strong>
+                                                    <strong>Provider:  {{$call->gateway->name ?? 'N/A' }}</strong> <br>
                                                 </small>
                                                 @if($call->status == 'analyzed')
                                                 @if( !empty($call->transaction->id))
