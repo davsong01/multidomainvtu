@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Admin;
 use App\Models\Customer;
+use App\Models\Merchant;
 use App\Scopes\MerchantIdScope;
 use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -43,5 +44,10 @@ class ReservedAccountNumber extends Model
     public function gateway()
     {
         return $this->belongsTo(PaymentGateway::class, 'paymentgateway_id');
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_id');
     }
 }

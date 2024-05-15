@@ -12,11 +12,15 @@ class MonnifyController extends Controller
 {
     private $api;
 
-    public function __construct()
+    public function __construct($provider = null)
     {
-        $this->api = PaymentGateway::where('slug', 'monnify')->first();
+        if (!empty(request()->merchant_id)) {
+            $this->api = PaymentGateway::where('slug', 'monnify')->first();
+        } else {
+            $this->api = $provider;
+        }
     }
-
+    
     public function login()
     {
         $headers = [
