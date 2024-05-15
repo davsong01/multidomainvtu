@@ -17,9 +17,9 @@ class SquadController extends Controller
 
     public function __construct()
     {
-        if(!empty(request()->merchant_id)){
-            $this->api = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('slug', 'squad')->where('merchant_id', request()->merchant_id )->first();
-        }else{
+        if (!empty(request()->merchant_id)) {
+            $this->api = PaymentGateway::where('slug', 'squad')->first();
+        } else {
             $this->api = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('slug', 'squad')->first();
         }
     }

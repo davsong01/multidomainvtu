@@ -70,7 +70,7 @@ class PaymentController extends Controller
 
     public function dumpCallback(Request $request, $provider)
     {
-        return 'kjhg';
+        \Log::info(['webhook' => $request->all()]);
         $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $provider)->first();
         $merchant = Merchant::where('id', $gateway->merchant_id)->first();
         
