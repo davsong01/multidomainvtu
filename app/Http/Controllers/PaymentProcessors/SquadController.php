@@ -146,7 +146,7 @@ class SquadController extends Controller
                     'purpose' => 'WALLET-FUNDING',
                     'bvn' =>  $kycData['BVN'],
                     'response' => json_encode($response),
-                    'merchant_id' => request()->merchant_id,
+                    'merchant_id' => $customer->merchant_id,
                 ]);
 
                 $res = [

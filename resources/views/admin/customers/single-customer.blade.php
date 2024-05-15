@@ -499,7 +499,7 @@ use App\Models\BlackList;
                                                                         {!! getSettings()->currency !!}{{ number_format($account->transactions->sum('total_amount'), 2) }} <small><strong>({{number_format($account->transactions->count())}})</strong></small></a>
                                                                     </td>
                                                                     <td>
-                                                                        <div
+                                                                        <div>
                                                                             @if($account->transactions->count() < 1 && $account->gateway->slug == 'monnify')
                                                                             <a>
                                                                             <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', array_merge(request()->array, ['account' =>$account->id ])) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
