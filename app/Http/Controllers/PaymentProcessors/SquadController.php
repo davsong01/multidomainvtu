@@ -17,7 +17,11 @@ class SquadController extends Controller
 
     public function __construct()
     {
-        $this->api = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('slug', 'squad')->first();
+        if(!empty(request()->merchant_id)){
+            $this->api = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('slug', 'squad')->where('merchant_id', request()->merchant_id )->first();
+        }else{
+            $this->api = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('slug', 'squad')->first();
+        }
     }
 
 
@@ -146,7 +150,7 @@ class SquadController extends Controller
                     'purpose' => 'WALLET-FUNDING',
                     'bvn' =>  $kycData['BVN'],
                     'response' => json_encode($response),
-                    'merchant_id' => $customer->merchant_id,
+                    'merchant_id' => request()->merchant_id,
                 ]);
 
                 $res = [
