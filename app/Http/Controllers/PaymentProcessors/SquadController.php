@@ -23,7 +23,7 @@ class SquadController extends Controller
             $this->api = $provider;
         }
     }
-    
+
     public function verifyTransaction($reference)
     {
         $url = $this->api->base_url . 'virtual-account/merchant/transactions/all?transactionReference=' . $reference;
@@ -75,7 +75,7 @@ class SquadController extends Controller
                 ]
             ];
         } else {
-            $response = $this->makeCall($url, [], [], 'GET');
+            $response = $this->makeCall($url, [], 'GET');
         }
 
         if (isset($response['success']) && isset($response['message']) && $response['success'] == true && $response['message'] == 'Success') {
@@ -214,27 +214,28 @@ class SquadController extends Controller
         }
 
         $response = curl_exec($curl);
+
         curl_close($curl);
         return json_decode($response, true);
     }
 
-//     'transaction_reference' => 'REFC8XVG7L891715795301940_1',
-//     'virtual_account_number' => '6725149329',
-//     'principal_amount' => '2500.00',
-//     'settled_amount' => '2493.75',
-//     'fee_charged' => '6.25',
-//     'transaction_date' => '2024-05-15T18:48:22+01:00',
-//     'customer_identifier' => 'davsong-10',
-//     'transaction_indicator' => 'C',
-//     'remarks' => 'Transfer FROM First Cus | [davsong-10] TO sandbox sandbox',
-//     'currency' => 'NGN',
-//     'channel' => 'virtual-account',
-//     'sender_name' => 'First Cus',
-//     'meta' => 
-//     array (
-//       'freeze_transaction_ref' => NULL,
-//       'reason_for_frozen_transaction' => NULL,
-//     ),
-//     'encrypted_body' => '8zttY2ZEsfmYS0ERV/ATD132eWmhQMav5YcJaXtFs5xKBN9WaecNswDDVVajWWmodsaEBdtyAoBvUV04AJyW86HEg1ZFDzlhpPmol/nZrAE+qiPsshUrMZwcAo+Ri+NyWpVCZIRENN7VHjOzUbjYobJP61P2ge53h7D1yyVa5yjrq2MP8i6i8Olm2VMiJolpzHbtj3R4dtP/qAU4h/Fkxvbp+0h+rIyxiMEQp1SggkpegOJ6LM9uEgY2yR813AYR1PgZC8z3coWXTLTOx6wj3hsvSEUOVBJIdn3gDjq0kGLx9jaEap0BpVd8taQgNAQyBLXhvxTGl3mqHG8/Cp/lN8he8op46ZdLDIYNS4kmngCBir/1c0A1F/jkGK1mhBPFOg/9WyGY+s36w/YXAMk19LmB/AdU4f8L31OAuKz/0R+AUiGKD0e4jN/2ShTrbd0QFp7jts+wAU1KZXRLbi3V0Wjdultd3AaL00NW8I64bBeQQNA8E/Oq1a7HBlIgGN/pbAcVp0oLbA8tbKQDI0b8fNzS6DdCREyjP0mnVzQHgMfUkNREYa16LOkBA7k8dB/Kr8V+NWn9haLnZl6D7qr6ac3mreMfOMrR0uhQ78tR+evZRK+HhB1unEozlMzl8TJko0mXpbi2tvL6U3nN/5hgKBFHpq3IiAJAB4JyhkQXrr0=',
-//   ),
+    //     'transaction_reference' => 'REFC8XVG7L891715795301940_1',
+    //     'virtual_account_number' => '6725149329',
+    //     'principal_amount' => '2500.00',
+    //     'settled_amount' => '2493.75',
+    //     'fee_charged' => '6.25',
+    //     'transaction_date' => '2024-05-15T18:48:22+01:00',
+    //     'customer_identifier' => 'davsong-10',
+    //     'transaction_indicator' => 'C',
+    //     'remarks' => 'Transfer FROM First Cus | [davsong-10] TO sandbox sandbox',
+    //     'currency' => 'NGN',
+    //     'channel' => 'virtual-account',
+    //     'sender_name' => 'First Cus',
+    //     'meta' => 
+    //     array (
+    //       'freeze_transaction_ref' => NULL,
+    //       'reason_for_frozen_transaction' => NULL,
+    //     ),
+    //     'encrypted_body' => '8zttY2ZEsfmYS0ERV/ATD132eWmhQMav5YcJaXtFs5xKBN9WaecNswDDVVajWWmodsaEBdtyAoBvUV04AJyW86HEg1ZFDzlhpPmol/nZrAE+qiPsshUrMZwcAo+Ri+NyWpVCZIRENN7VHjOzUbjYobJP61P2ge53h7D1yyVa5yjrq2MP8i6i8Olm2VMiJolpzHbtj3R4dtP/qAU4h/Fkxvbp+0h+rIyxiMEQp1SggkpegOJ6LM9uEgY2yR813AYR1PgZC8z3coWXTLTOx6wj3hsvSEUOVBJIdn3gDjq0kGLx9jaEap0BpVd8taQgNAQyBLXhvxTGl3mqHG8/Cp/lN8he8op46ZdLDIYNS4kmngCBir/1c0A1F/jkGK1mhBPFOg/9WyGY+s36w/YXAMk19LmB/AdU4f8L31OAuKz/0R+AUiGKD0e4jN/2ShTrbd0QFp7jts+wAU1KZXRLbi3V0Wjdultd3AaL00NW8I64bBeQQNA8E/Oq1a7HBlIgGN/pbAcVp0oLbA8tbKQDI0b8fNzS6DdCREyjP0mnVzQHgMfUkNREYa16LOkBA7k8dB/Kr8V+NWn9haLnZl6D7qr6ac3mreMfOMrR0uhQ78tR+evZRK+HhB1unEozlMzl8TJko0mXpbi2tvL6U3nN/5hgKBFHpq3IiAJAB4JyhkQXrr0=',
+    //   ),
 }

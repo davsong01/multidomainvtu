@@ -137,7 +137,7 @@ class PaymentController extends Controller
 
             foreach ($calls as $call) {
                 DB::beginTransaction();
-                
+
                 $decodeCall = json_decode($call->raw, true);
                 $account = ReservedAccountNumber::withoutGlobalScope(new MerchantIdScope())->with('cron_customer')->where('account_number', $call->account_number)->where('paymentgateway_id', $call->provider_id)->first();
                 $provider = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $call->provider_id)->first();
@@ -148,7 +148,7 @@ class PaymentController extends Controller
 
                 $customer = $account->cron_customer;
                 $user = $account->cron_customer->cron_user;
-                
+
                 if ($provider->slug == 'monnify') {
                     $payment_type = $call->payment_method;
 
@@ -183,7 +183,7 @@ class PaymentController extends Controller
                         $transaction_id = $analyze['data']['transactionReference'] ?? $call->transaction_reference;
                     }
                 }
-                
+
                 if (isset($analyze) && $analyze['status'] == 'success') {
                     // Log Transaction
                     $wallet = new WalletController();
@@ -219,7 +219,7 @@ class PaymentController extends Controller
 
                     // $settings = $call->merchant->setting;
                     $settings->store_name = $call->merchant->store_name;
-                    
+
                     $transaction =  app('App\Http\Controllers\TransactionController')->logTransaction($request);
                     $transaction->update([
                         'balance_after' => $balance + $amount,
@@ -239,15 +239,21 @@ class PaymentController extends Controller
                     ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call['id'])->update(['transaction_id' => $transaction_id]);
 
                     $this->sendTransactionEmail($transaction, $user, $settings);
+
+                    ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call->id)->update(['status' => 'analyzed']);
+                    DB::commit();
+                } else {
+                    ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call->id)->update(['status' => 'pending']);
+                    DB::rollBack();
+
+                    return;
                 }
 
                 //
-                ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call->id)->update(['status' => 'analyzed']);
-                DB::commit();
 
-                return response()->json([],200);
+
+                return response()->json([], 200);
             }
-         
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th->getMessage(), $th->getFile(), $th->getLine());

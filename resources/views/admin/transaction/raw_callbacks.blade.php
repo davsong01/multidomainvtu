@@ -36,9 +36,9 @@
                                                     <strong>Account Number:</strong><br> {{$call->account_number}} <br>
                                                     <strong>Session ID:</strong> <br>{{$call->session_id }} <br>
                                                     <strong>Reference ID:</strong><br> {{$call->transaction_reference }} <br>
-                                                    <strong>Date Created:</strong><br> {{ date("M jS, Y g:iA", strtotime($call->created_at)) }} 
+                                                    <strong>Date Created:</strong><br> {{ date("M jS, Y g:iA", strtotime($call->created_at)) }} <br>
                                                     <strong>Status:</strong><span style="color:{{ $call->status == 'analyzed' ? 'green' : 'red' }}">{{ ucfirst($call->status) }} </span><br>
-                                                    @if($call->status == 'analyzed') <br>
+                                                    @if($call->status == 'analyzed')
                                                     <strong style="color:green">Date Analyzed:</strong><br><span style="color:green"> {{ date("M jS, Y g:iA", strtotime($call->updated_at)) }}</span>
                                                     @endif  <br>
                                                     <strong>Provider:  {{$call->gateway->name ?? 'N/A' }}</strong>
