@@ -83,7 +83,7 @@
       </tr>
     
       <tr>
-        <td class="footer" bgcolor="#44525f">
+        <td class="footer" bgcolor="#44525f" style="padding:10px">
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td align="center" class="footercopy">

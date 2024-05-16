@@ -199,7 +199,7 @@ class DashboardController extends Controller
         // Send email
         $subject = "New Transaction PIN set";
         $body = '<p>Hello! ' . auth()->user()->firstname . '</p>';
-        $body .= '<p style="line-height: 2.0;">You have successfully created a transaction PIN on account ' . request()->store_name . ' Please use your PIN when carrying out transactions.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
+        $body .= '<p style="line-height: 2.0;">You have successfully created a transaction PIN on ' . request()->store_name . '.<br> Please use your PIN when carrying out transactions.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
 
         logEmails(auth()->user()->email, $subject, $body);
         
