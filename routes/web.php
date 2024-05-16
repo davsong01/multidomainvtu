@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\EmailMessages;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIController;
@@ -32,11 +33,11 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ReservedAccountNumberController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\PaymentProcessors\SquadController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Mail\EmailMessages;
 
 /*
 |--------------------------------------------------------------------------
@@ -193,7 +194,8 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                 Route::get('account-transactions/{account}', [ReservedAccountNumberController::class, 'show'])->name('account.transactions');
                 Route::get('admin-callback-analysis', [PaymentController::class, 'callBackAnalysis'])->name('callback.analysis');
                 Route::get('admin-callback-analysis-reset/{callback}', [PaymentController::class, 'resetCallBackResponse'])->name('callback.reset');
-            
+                Route::get('admin-callback-error-logs', [SquadController::class, 'getCallbackLogs'])->name('callback-error-logs');
+                
                 Route::get('reserved-account-delete/{account}', [ReservedAccountNumberController::class, 'delete'])->name('reserved_account.delete');
             
                 Route::get('single-transaction-view/{transaction}', [TransactionController::class, 'singleTransactionView'])->name('admin.single.transaction.view');

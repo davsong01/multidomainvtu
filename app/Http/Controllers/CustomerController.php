@@ -193,7 +193,7 @@ class CustomerController extends Controller
         return back()->with('message', 'Transaction PIN successfully reset to: ' . $request->new_password);
     }
 
-    public function processCustomerUpdateKycInfo(Request $request, Customer $customer)
+    public function processCustomerUpdateKycInfo(Request $request, $merchant, $customer)
     {
         $input = $this->validate($request, [
             "FIRST_NAME" => "nullable",
@@ -204,6 +204,8 @@ class CustomerController extends Controller
             "IDCARDTYPE" => "nullable",
             "IDCARD" => "nullable"
         ]);
+
+        $customer = Customer::where('id', $customer)->first();
 
         $user = $customer->user;
         
@@ -274,8 +276,9 @@ class CustomerController extends Controller
         }
     }
 
-    public function declineCustomerKyc(Customer $customer)
+    public function declineCustomerKyc($merchant, $customer)
     {
+        $customer = Customer::where('id', $customer)->first();
         $customer->update([
             "kyc_status" => 'unverified',
         ]);

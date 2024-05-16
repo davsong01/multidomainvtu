@@ -9,6 +9,9 @@
                     <div class="card-header">
                         <!-- head -->
                         <h5 class="card-title mb-2">Raw Callbacks</h5>
+                        @if(!empty(getSettings()) && getSettings()->payment_gateway == 'squad')
+                        <a href="{{ route('callback-error-logs', request()->array)}}" class="btn btn-dark">Fetch Callbacks from Log</a>
+                        @endif
                         @include('layouts.alerts')
                         <div class="d-inline-block">
                             <!-- chart-1   -->
@@ -50,7 +53,7 @@
                                                 </a>
                                                 @endif
                                                 @else
-                                                <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('callback.reset', $call->id) }}">
+                                                <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('callback.reset', array_merge(request()->array, ['callback' => $call->id])) }}">
                                                     <i class="fa fa-eye"></i><span class="align-middle ml-25">Reset</span>
                                                 </a>
                                                 @endif

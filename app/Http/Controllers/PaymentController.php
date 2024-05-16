@@ -69,9 +69,10 @@ class PaymentController extends Controller
         }
     }
 
-    public function dumpCallback(Request $request, $provider)
+    // {"transaction_reference":"REFC8XVG7L891715795301940_1","virtual_account_number":"6725149329","principal_amount":"2500.00","settled_amount":"2493.75","fee_charged":"6.25","transaction_date":"2024-05-15T18:48:22+01:00","customer_identifier":"davsong-10","transaction_indicator":"C","remarks":"Transfer FROM First Cus | [davsong-10] TO sandbox sandbox","currency":"NGN","channel":"virtual-account","sender_name":"First Cus","meta":{"freeze_transaction_ref":null,"reason_for_frozen_transaction":null},"encrypted_body":"8zttY2ZEsfmYS0ERV\/ATD132eWmhQMav5YcJaXtFs5xKBN9WaecNswDDVVajWWmodsaEBdtyAoBvUV04AJyW86HEg1ZFDzlhpPmol\/nZrAE+qiPsshUrMZwcAo+Ri+NyWpVCZIRENN7VHjOzUbjYobJP61P2ge53h7D1yyVa5yjrq2MP8i6i8Olm2VMiJolpzHbtj3R4dtP\/qAU4h\/Fkxvbp+0h+rIyxiMEQp1SggkpegOJ6LM9uEgY2yR813AYR1PgZC8z3coWXTLTOx6wj3hsvSEUOVBJIdn3gDjq0kGLx9jaEap0BpVd8taQgNAQyBLXhvxTGl3mqHG8\/Cp\/lN8he8op46ZdLDIYNS4kmngCBir\/1c0A1F\/jkGK1mhBPFOg\/9WyGY+s36w\/YXAMk19LmB\/AdU4f8L31OAuKz\/0R+AUiGKD0e4jN\/2ShTrbd0QFp7jts+wAU1KZXRLbi3V0Wjdultd3AaL00NW8I64bBeQQNA8E\/Oq1a7HBlIgGN\/pbAcVp0oLbA8tbKQDI0b8fNzS6DdCREyjP0mnVzQHgMfUkNREYa16LOkBA7k8dB\/Kr8V+NWn9haLnZl6D7qr6ac3mreMfOMrR0uhQ78tR+evZRK+HhB1unEozlMzl8TJko0mXpbi2tvL6U3nN\/5hgKBFHpq3IiAJAB4JyhkQXrr0="}
+
+    public function dumpCallback(Request $request, $provider, $internal='no')
     {
-        \Log::info(['webhook' => $request->all()]);
         $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $provider)->first();
         $merchant = Merchant::where('id', $gateway->merchant_id)->first();
 
@@ -108,9 +109,20 @@ class PaymentController extends Controller
                 'merchant_id' => $merchant->id,
                 'transaction_reference' => $transaction_reference,
             ]);
-        }
 
-        return response()->json(['message' => 'success'], 200);
+            if ($internal == 'yes') {
+                return ['message' => 'success'];
+            } else {
+                return response()->json(['message' => 'success'], 200);
+            }
+        }else{
+            if ($internal == 'yes') {
+                return ['error' => 'Likely duplicate'];
+            } else {
+                return response()->json(['message' => 'success'], 200);
+            }
+        }
+        
     }
 
     public function analyzeCallbackResponse()
@@ -143,12 +155,13 @@ class PaymentController extends Controller
                 $provider = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $call->provider_id)->first();
                 $settings = $call->merchant->setting;
                 if (!$account) {
+                    ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->whereIn('id', $ids)->update(['status' => 'processed']);
                     continue;
                 }
 
                 $customer = $account->cron_customer;
                 $user = $account->cron_customer->cron_user;
-
+                
                 if ($provider->slug == 'monnify') {
                     $payment_type = $call->payment_method;
 
@@ -159,7 +172,7 @@ class PaymentController extends Controller
                     }
                     $monnify = new MonnifyController($provider);
                     $analyze = $monnify->verifyTransaction($call->transaction_reference);
-
+                    
                     ReservedAccountCallback::where('id', $call->id)->update(['raw_requery' => json_encode($analyze['data'])]);
 
                     if (isset($analyze) && $analyze['status'] == 'success') {
@@ -168,12 +181,14 @@ class PaymentController extends Controller
                         // $provider_charge = $provider_charge + $extra_charge;
                         $original_amount = $analyze['data']['amountPaid'] ?? $decodeCall['eventData']['amountPaid'];
                         $transaction_id = $analyze['data']['transactionReference'] ?? $decodeCall['eventData']['transactionReference'];
+                    }else{
+                        ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->whereIn('id', $ids)->update(['status' => 'processed']);
                     }
                 }
                 if ($provider->slug == 'squad') {
                     $monnify = new SquadController($provider);
                     $analyze = $monnify->verifyTransaction($call->transaction_reference);
-
+                    
                     ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call->id)->update(['raw_requery' => json_encode($analyze['data'])]);
 
                     if (isset($analyze) && $analyze['status'] == 'success') {
@@ -181,6 +196,8 @@ class PaymentController extends Controller
                         // $provider_charge = $provider_charge + $extra_charge;
                         $original_amount = $analyze['data']['principal_amount'];
                         $transaction_id = $analyze['data']['transactionReference'] ?? $call->transaction_reference;
+                    } else {
+                        ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->whereIn('id', $ids)->update(['status' => 'processed']);
                     }
                 }
 
@@ -245,12 +262,8 @@ class PaymentController extends Controller
                 } else {
                     ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call->id)->update(['status' => 'pending']);
                     DB::rollBack();
-
-                    return;
+                    return response()->json([], 200);
                 }
-
-                //
-
 
                 return response()->json([], 200);
             }
@@ -344,11 +357,13 @@ class PaymentController extends Controller
         return view('admin.transaction.raw_callbacks', compact('calls'));
     }
 
-    public function resetCallBackResponse(ReservedAccountCallback $callback)
+    public function resetCallBackResponse($merchant, $callback)
     {
+        $callback = ReservedAccountCallback::where('id', $callback)->first();
         $callback->status = 'pending';
         $callback->save();
 
         return back()->with('message', 'Operation Successful');
     }
+
 }

@@ -152,19 +152,21 @@ if (!function_exists("createReservedAccount")) {
     function createReservedAccount($data = null,$admin_id=null)
     {
         $paymentGateway = request()->merchant_settings['payment_gateway'];
+        $provider = PaymentGateway::where('slug', $paymentGateway)->first();
+        
         $reserved = null;
         if (!empty($paymentGateway)) {
             if ($paymentGateway == 'monnify') {
-                $monnify = new MonnifyController();
+                $monnify = new MonnifyController($provider);
                 $reserved = $monnify->createReservedAccount($data, $admin_id);
             }
 
             if ($paymentGateway == 'squad') {
-                $squad = new SquadController();
+                $squad = new SquadController($provider);
                 $reserved = $squad->createReservedAccount($data, $admin_id);
             }
         }
-
+        
         return $reserved;
     }
 }

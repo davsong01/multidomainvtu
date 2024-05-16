@@ -249,7 +249,7 @@ use App\Models\BlackList;
                                                                 <td>{!! getSettings()->currency . number_format($transaction->total_amount) !!}</td>
                                                                 <td>{{ $transaction->unique_element }}</td>
                                                                 <td>{{ $transaction->status }}</td>
-                                                                <td><a class="mr-1 mb-1"  href="{{ route('admin.single.transaction.view', $transaction->id) }}">{{ $transaction->transaction_id }}</a>
+                                                                <td><a class="mr-1 mb-1"  href="{{ route('admin.single.transaction.view', array_merge(request()->array, ['transaction' => $transaction->id])) }}">{{ $transaction->transaction_id }}</a>
                                                                 </td>
                                                             </tr>
                                                         @endforeach

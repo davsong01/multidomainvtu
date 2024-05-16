@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\TransactionLog;
 use App\Models\ReservedAccount;
 use App\Models\ReservedAccountNumber;
+use App\Http\Controllers\PaymentProcessors\SquadController;
+use App\Http\Controllers\PaymentProcessors\MonnifyController;
 
 class ReservedAccountNumberController extends Controller
 {
@@ -22,14 +24,17 @@ class ReservedAccountNumberController extends Controller
     {
         $account = ReservedAccountNumber::where('id',$account)->first();
         $slug = $account->payment_gateway->slug ?? null;
+        $provider = $account->payment_gateway;
         
         if(!empty($slug)){
             if ($slug == 'monnify') {
-                $delete = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->deleteReservedAccount($account->account_reference);
+                $monnify = new MonnifyController($provider);
+                $delete = $monnify->deleteReservedAccount($account->account_reference);
             }
 
             if ($slug == 'squad') {
-                $delete = app('App\Http\Controllers\PaymentProcessors\SquadController')->deleteReservedAccount($account->account_reference);
+                $squad = new SquadController($provider);
+                $delete = $squad->deleteReservedAccount($account->account_reference);
             }
 
             if ($delete['status'] == 'success') {
