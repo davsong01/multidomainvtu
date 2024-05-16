@@ -484,7 +484,8 @@ use App\Models\BlackList;
                                                                         <span style="background-color: yellow;color:black;padding: 5px 3px;margin-top: 19px !important;border-radius: 5px;"><small>{{ ucfirst($account->gateway?->name) }}</small></span>
                                                                     </td>
                                                                     <td>
-                                                                        {{ ucfirst($account->bank_name) }}
+                                                                        {{ ucfirst($account->bank_name) }} <br>
+                                                                        <button class="btn btn-info btn-sm">{{ $account->gateway->name }}</button>
                                                                     </td>
                                                                     <td>{{ ucfirst($account->account_number) }} <br>
                                                                     <small style="color:black"><strong>Created on: {{$account->created_at}} </strong>
