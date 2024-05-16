@@ -98,7 +98,7 @@ class AdminController extends Controller
             ],
             'status' => 'nullable',
         ]);
-
+        
         $admin = User::find($request->id);
 
         if (!empty($request->password)) {

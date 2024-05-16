@@ -71,10 +71,10 @@
                                                         <option value="inactive"  {{ $admin->status == 'inactive' ? 'selected' :''}}>Suspended</option>
                                                     </select>
                                                 </fieldset>
-                                                {{-- <fieldset class="form-group col-md-6">
-                                                    <label class="text-bold-600" for="password">Change Password<span style="color:red"></span></label>
-                                                    <input type="password" class="form-control" name="password" placeholder="Enter password"
-                                                        id="password" autocomplete="off"> --}}
+                                                <fieldset class="form-group col-md-6">
+                                                    <label class="text-bold-600" for="password">Change Password<span style="color:red"> (Leave empty to use current password)</span></label>
+                                                    <input type="text" class="form-control" name="password" placeholder="Enter password"
+                                                        id="password" value="">
                                                 </fieldset>
                                                 <fieldset class="form-group col-sm-6 col-12">
                                                 <label for="file_name">Roles</label>
