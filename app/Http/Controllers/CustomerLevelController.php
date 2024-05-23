@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CustomerLevel;
 use Illuminate\Http\Request;
+use App\Models\CustomerLevel;
+use Illuminate\Validation\Rule;
 
 class CustomerLevelController extends Controller
 {
@@ -33,7 +34,12 @@ class CustomerLevelController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'make_default' => 'nullable',
-            'order' => 'required|unique:customer_levels,order',
+            'order' => [
+                'required', Rule::unique('customer_levels')->where(function ($query) {
+                    $query->where('merchant_id', request()->merchant_id);
+                })
+            ],
+            // 'order' => 'required|unique:customer_levels,order',
             'upgrade_amount' => 'required',
         ]);
 
@@ -82,6 +88,11 @@ class CustomerLevelController extends Controller
 
         $this->validate($request, [
             'name' => 'required',
+            'order' => [
+                'required', Rule::unique('customer_levels')->where(function ($query) {
+                    $query->where('merchant_id', request()->merchant_id);
+                })->ignore($customerlevel->id)
+            ],
             'order' => 'required|unique:customer_levels,order,' . $customerlevel->id,
             'upgrade_amount' => 'required',
             'make_default' => 'nullable',

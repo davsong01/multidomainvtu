@@ -120,7 +120,7 @@ if (!function_exists("getPaymentGatewayReservedAccountCharge")) {
         
         if($gateway->reserved_account_payment_charge_type == 'flat'){
             $charge = $gateway->reserved_account_payment_charge;
-            $display_value = isset(getSettings()->currency) ? getSettings()->currency : '' . number_format($charge, 1);
+            $display_value = isset(getSettings()->currency) ? getSettings()->currency . number_format($charge, 1) : number_format($charge, 1);
             $type = 'flat';
         }else{
             $charge = $gateway->reserved_account_payment_charge;
