@@ -55,6 +55,7 @@ class PaymentController extends Controller
         $request['unique_element'] = 'WALLET-FUNDING';
         $request['provider_charge'] = $provider_charge;
         $request['wallet_funding_provider'] = $provider->id;
+        $request['api_id'] = $provider->id;
 
         $transaction =  app('App\Http\Controllers\TransactionController')->logTransaction($request->all());
 
@@ -177,24 +178,26 @@ class PaymentController extends Controller
 
                     if (isset($analyze) && $analyze['status'] == 'success') {
                         $payment_method = $provider->name . '(' . $decodeCall['eventData']['paymentMethod'] . ')';
-                        $provider_charge = getPaymentGatewayReservedAccountCharge($provider->id) ?? 0;
-                        // $provider_charge = $provider_charge + $extra_charge;
+                        
                         $original_amount = $analyze['data']['amountPaid'] ?? $decodeCall['eventData']['amountPaid'];
+
                         $transaction_id = $analyze['data']['transactionReference'] ?? $decodeCall['eventData']['transactionReference'];
                     }else{
                         ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->whereIn('id', $ids)->update(['status' => 'processed']);
                     }
                 }
+
                 if ($provider->slug == 'squad') {
-                    $monnify = new SquadController($provider);
-                    $analyze = $monnify->verifyTransaction($call->transaction_reference);
+                    $squad = new SquadController($provider);
+                    $analyze = $squad->verifyTransaction($call->transaction_reference);
                     
                     ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->where('id', $call->id)->update(['raw_requery' => json_encode($analyze['data'])]);
 
                     if (isset($analyze) && $analyze['status'] == 'success') {
                         $payment_method = $provider->name . '(BANK_TRANSFER)';
-                        // $provider_charge = $provider_charge + $extra_charge;
+                        
                         $original_amount = $analyze['data']['principal_amount'];
+
                         $transaction_id = $analyze['data']['transactionReference'] ?? $call->transaction_reference;
                     } else {
                         ReservedAccountCallback::withoutGlobalScope(new MerchantIdScope())->whereIn('id', $ids)->update(['status' => 'processed']);
@@ -208,7 +211,8 @@ class PaymentController extends Controller
                     $reference = $this->generateRequestId();
 
                     $provider_charge_setting = getPaymentGatewayReservedAccountCharge($provider->id) ?? 0;
-                    $provider_charge = calculatePaymentGatewayReservedAccountCharge($provider_charge_setting, $analyze['data']['principal_amount']) ?? 0;
+                    $provider_charge = calculatePaymentGatewayReservedAccountCharge($provider_charge_setting, $original_amount) ?? 0;
+                    
                     $amount = $original_amount - $provider_charge;
 
                     $request['type'] = 'credit';
@@ -230,9 +234,10 @@ class PaymentController extends Controller
                     $request['quantity'] = 1;
                     $request['unique_element'] = 'WALLET-FUNDING';
                     $request['provider_charge'] = $provider_charge;
-                    $request['wallet_funding_provider'] = $call['provider_id'];
-                    $request['account_number'] =  $call['account_number'];
-                    $request['merchant_id'] =  $call['merchant_id'];
+                    $request['wallet_funding_provider'] = $call->provider_id;
+                    $request['api_id'] = $call->provider_id;
+                    $request['account_number'] =  $call->account_number;
+                    $request['merchant_id'] =  $call->merchant_id;
 
                     // $settings = $call->merchant->setting;
                     $settings->store_name = $call->merchant->store_name;
