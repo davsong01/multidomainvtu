@@ -21,9 +21,11 @@ class EmailLogController extends Controller
         return view('admin.emails.index', ['emails' => $mails]);
     }
 
-    public function resend(Request $request, EmailLog $id)
+    public function resend(Request $request, $merchant, $id)
     {
-        $this->sendEmailReal($id->toArray());
+        $email = EmailLog::where('id',$id)->first()->toArray();
+        $this->sendEmailReal($email);
+        
         return back()->with('message', 'Email resent successfully!');
     }
 
@@ -62,8 +64,9 @@ class EmailLogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EmailLog $id)
+    public function update(Request $request, $merchant, $id)
     {
+        $id = EmailLog::where('id', $id)->first();
         $id->content = $request->message;
         $id->save();
         return back()->with('message', 'Email has been updated');
@@ -88,10 +91,11 @@ class EmailLogController extends Controller
         return back()->with('message', 'Emails cleared successfully');
     }
 
-    public function send(EmailLog $log)
+    public function send($merchant, $log)
     {
+        $log = EmailLog::where('id', $log)->first();
         $res = $this->sendEmailReal($log->toArray());
-
+        
         if (isset($res) && ($res['message'] && $res['message'] == 'success')) {
             $log->status = 'sent';
             $log->errors = null;

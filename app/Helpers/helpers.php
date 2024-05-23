@@ -9,10 +9,167 @@ use App\Models\Settings;
 use App\Mail\EmailMessages;
 use Illuminate\Support\Arr;
 use App\Models\Announcement;
+use App\Models\PaymentGateway;
+use App\Models\EmailApiSetting;
+use App\Scopes\MerchantIdScope;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\PaymentProcessors\SquadController;
+use App\Http\Controllers\PaymentProcessors\MonnifyController;
+
+if (!function_exists("landingPageCategories")) {
+    function landingPageCategories(): array {
+        $data = [
+            [
+                "display_name" => "Airtime",
+                "status" => "active",
+                "slug" => "mtn-ussd",
+                "description" => "KINGSVTU.NG: Buy Airtime",
+                "icon" => "<svg class='icon' xmlns=\"http://www.w3.org/2000/svg\" fill=\"white\" height=\"24\" viewBox=\"0 -960 960 960\" width=\"24\"><path d=\"M760-480q0-117-81.5-198.5T480-760v-80q75 0 140.5 28.5t114 77q48.5 48.5 77 114T840-480h-80Zm-160 0q0-50-35-85t-85-35v-80q83 0 141.5 58.5T680-480h-80Zm198 360q-125 0-247-54.5T329-329Q229-429 174.5-551T120-798q0-18 12-30t30-12h162q14 0 25 9.5t13 22.5l26 140q2 16-1 27t-11 19l-97 98q20 37 47.5 71.5T387-386q31 31 65 57.5t72 48.5l94-94q9-9 23.5-13.5T670-390l138 28q14 4 23 14.5t9 23.5v162q0 18-12 30t-30 12ZM241-600l66-66-17-94h-89q5 41 14 81t26 79Zm358 358q39 17 79.5 27t81.5 13v-88l-94-19-67 67ZM241-600Zm358 358Z\"/></svg>",
+                "unique_element" => "phone",
+                "discount_type" => "percentage",
+                'class' => 'ion',
+            ],
+            [
+                "display_name" => "Data Subscriptions",
+                "status" => "active",
+                "slug" => "data",
+                "description" => "KINGSVTU.NG: Buy Internet Data",
+                "icon" => "<svg class='icon' xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 -960 960 960\" width=\"24\"><path d=\"M480-120q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM254-346l-84-86q59-59 138.5-93.5T480-560q92 0 171.5 35T790-430l-84 84q-44-44-102-69t-124-25q-66 0-124 25t-102 69ZM84-516 0-600q92-94 215-147t265-53q142 0 265 53t215 147l-84 84q-77-77-178.5-120.5T480-680q-116 0-217.5 43.5T84-516Z\"/></svg>",
+                "unique_element" => "phone",
+                "discount_type" => "flat",
+            ],
+            [
+                "display_name" => "TV Subscriptions",
+                "status" => "active",
+                "slug" => "tv",
+                "description" => "KINGSVTU.NG: Choose from a range of TV subscriptions for your entertainment. Easy payment, quick value delivery",
+                "icon" => "<svg class='icon' xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 -960 960 960\" width=\"24\" fill=\"white\"><path d=\"M320-120v-80h80v-80H160q-33 0-56.5-23.5T80-360v-400q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v400q0 33-23.5 56.5T800-280H560v80h80v80H320ZM160-360h640v-400H160v400Zm0 0v-400 400Z\"/></svg>",
+                "unique_element" => "iuc_number",
+                "discount_type" => "percentage",
+            ],
+            [
+                "display_name" => "Electricity",
+                "status" => "active",
+                "slug" => "electricity",
+                "description" => "Recharge your meter",
+                "icon" => "<svg class='icon' xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" viewBox=\"0 -960 960 960\" width=\"24\"><path d=\"M480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-200v-80h320v80H320Zm10-120q-69-41-109.5-110T180-580q0-125 87.5-212.5T480-880q125 0 212.5 87.5T780-580q0 81-40.5 150T630-320H330Zm24-80h252q45-32 69.5-79T700-580q0-92-64-156t-156-64q-92 0-156 64t-64 156q0 54 24.5 101t69.5 79Zm126 0Z\"/></svg>",
+                "unique_element" => "meter_number",
+                "discount_type" => "percentage",
+            ],
+            [
+                "display_name" => "Education E-PINs",
+                "status" => "active",
+                "slug" => "education",
+                "description" => "KINGSVTU.NG: Education E-PINs",
+                "icon" => "<svg class='icon' xmlns=\"http://www.w3.org/2000/svg\" height=\"24\" fill=\"white\" viewBox=\"0 -960 960 960\" width=\"24\"><path d=\"M480-120 200-272v-240L40-600l440-240 440 240v320h-80v-276l-80 44v240L480-120Zm0-332 274-148-274-148-274 148 274 148Zm0 241 200-108v-151L480-360 280-470v151l200 108Zm0-241Zm0 90Zm0 0Z\"/></svg>",
+                "unique_element" => "phone",
+                "discount_type" => "flat",
+            ]
+        ];
+
+        return $data;
+    }
+}
+
+if (!function_exists("extractKeyValuesFromMultiDimensionalArray")) {
+    function extractKeyValuesFromMultiDimensionalArray($search_column,$value_column, $arr): array
+    {
+        $modified = [];
+        if(!empty($arr) && !empty($arr)){
+            foreach($arr as $r){
+                if(isset($r[$search_column]) && isset($r[$value_column])){
+                    $modified[$r[$search_column]] = $r[$value_column];                
+                }
+            }
+        }
+        return $modified;
+    }
+}
+
+
+if (!function_exists("getPaymentGateways")) {
+    function getPaymentGateways()
+    {
+        $gateways = [
+            [
+                'name' => 'monnify',
+                'status' => 'inactive',
+            ],
+            [
+                'name' => 'squad',
+                'status' => 'active',
+            ] 
+        ];
+
+        return json_decode(json_encode($gateways), FALSE);
+    }
+}
+
+if (!function_exists("getPaymentGatewayReservedAccountCharge")) {
+    function getPaymentGatewayReservedAccountCharge($provider = null)
+    {
+        if(!empty($provider)){
+            $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('status', 'active')->where('id', $provider)->first();
+        }else{
+            $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('status', 'active')->first();
+        }
+        
+        if($gateway->reserved_account_payment_charge_type == 'flat'){
+            $charge = $gateway->reserved_account_payment_charge;
+            $display_value = isset(getSettings()->currency) ? getSettings()->currency . number_format($charge, 1) : number_format($charge, 1);
+            $type = 'flat';
+        }else{
+            $charge = $gateway->reserved_account_payment_charge;
+            $display_value = $charge.'%';
+            $type = 'percentage';
+        }
+
+        return [
+            'type' => $type,
+            'value' => $charge,
+            'display_value' => $display_value
+        ];
+    }
+}
+
+if (!function_exists("calculatePaymentGatewayReservedAccountCharge")) {
+    function calculatePaymentGatewayReservedAccountCharge($data, $amount)
+    {
+        if ($data['type'] == 'flat') {
+            $charge = $data['value'];
+        } else {
+            $charge =  $data['value'] / 100 * $amount;
+        }
+        return $charge;
+    }
+}
+
+if (!function_exists("createReservedAccount")) {
+    function createReservedAccount($data = null,$admin_id=null)
+    {
+        $paymentGateway = request()->merchant_settings['payment_gateway'];
+        $provider = PaymentGateway::where('slug', $paymentGateway)->first();
+        
+        $reserved = null;
+        if (!empty($paymentGateway)) {
+            if ($paymentGateway == 'monnify') {
+                $monnify = new MonnifyController($provider);
+                $reserved = $monnify->createReservedAccount($data, $admin_id);
+            }
+
+            if ($paymentGateway == 'squad') {
+                $squad = new SquadController($provider);
+                $reserved = $squad->createReservedAccount($data, $admin_id);
+            }
+        }
+        
+        return $reserved;
+    }
+}
 
 if (!function_exists("logEmails")) {
     function logEmails($email_to, $subject, $body)
@@ -23,6 +180,7 @@ if (!function_exists("logEmails")) {
                 'subject' => $subject,
                 'recipient' => $email_to,
                 'content' => $body,
+                'merchant_id' => request()->merchant_id
             ]);
            
         } catch (\Exception $e) {}
@@ -30,7 +188,63 @@ if (!function_exists("logEmails")) {
 }
 
 if (!function_exists("sendEmails")) {
-    function sendEmails($email_to, $subject, $body)
+    function sendEmails($email_to, $subject, $body, $merchant_id = null)
+    {
+        $email_settings = [];
+        try {
+            if(!empty($merchant_id)){
+                $provider = EmailApiSetting::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $merchant_id)->first();
+                $settings = Settings::with('merchant')->withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $merchant_id)->first();
+
+                $email_settings = [
+                    'logo' => $settings->logo,
+                    'merchant_id' => $settings->merchant->id,
+                    'store_slug' => $settings->merchant->store_slug,
+                    'store_name' => $settings->merchant->store_name,
+                ];
+            }else{
+                $provider = EmailApiSetting::first();
+                $email_settings = $request['merchant_settings'] ?? [];
+            }
+            
+            config([
+                'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
+                'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
+                'mail.port' => $provider->MAIL_PORT ?? env('MAIL_PORT'),
+                'mail.encryption' => $provider->MAIL_ENCRYPTION ?? env('MAIL_ENCRYPTION'),
+                'mail.username' => $provider->MAIL_USERNAME ?? env('MAIL_USERNAME'),
+                'mail.password' => $provider->MAIL_PASSWORD ?? env('MAIL_PASSWORD'),
+                'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME ?? env('MAIL_REPLY_TO_NAME'),
+                'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS ?? env('MAIL_REPLY_TO_ADDRESS'),
+                'mail.from' => [
+                    'address' => $provider->MAIL_FROM_ADDRESS ?? env('MAIL_FROM_ADDRESS'),
+                    'name' => $provider->MAIL_FROM_NAME ?? env('MAIL_FROM_NAME'),
+                ],
+            ]);
+
+            $data = [
+                'subject' => $subject,
+                'body' => $body,
+                'email_settings' => $email_settings ?? []
+            ];
+
+            Mail::to($email_to)->send(new EmailMessages($data));
+            
+            return [
+                'message' => 'success',
+            ];
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return [
+                'message' => 'error',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+}
+
+if (!function_exists("sendAuthEmails")) {
+    function sendAuthEmails($email_to, $subject, $body)
     {
         $data = [
             'subject' => $subject,
@@ -38,12 +252,34 @@ if (!function_exists("sendEmails")) {
         ];
 
         try {
+            $provider = EmailApiSetting::first();
+            config([
+                'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
+                'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
+                'mail.port' => $provider->MAIL_PORT ?? env('MAIL_PORT'),
+                'mail.encryption' => $provider->MAIL_ENCRYPTION ?? env('MAIL_ENCRYPTION'),
+                'mail.username' => $provider->MAIL_USERNAME ?? env('MAIL_USERNAME'),
+                'mail.password' => $provider->MAIL_PASSWORD ?? env('MAIL_PASSWORD'),
+                'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME ?? env('MAIL_REPLY_TO_NAME'),
+                'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS ?? env('MAIL_REPLY_TO_ADDRESS'),
+                'mail.from' => [
+                    'address' => $provider->MAIL_FROM_ADDRESS ?? env('MAIL_FROM_ADDRESS'),
+                    'name' => $provider->MAIL_FROM_NAME ?? env('MAIL_FROM_NAME'),
+                ],
+            ]);
 
+            $data = [
+                'subject' => $subject,
+                'body' => $body,
+            ];
+            
+            // $current['provider'] = $provider->toArray();
             Mail::to($email_to)->send(new EmailMessages($data));
-            return true;
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
         }
+
+        return true;
     }
 }
 
@@ -100,14 +336,15 @@ if (!function_exists("referralBalance")) {
 if (!function_exists("getSettings")) {
     function getSettings()
     {
-        return Settings::first();
+        $settings = json_decode(json_encode(request()->merchant_settings), FALSE);
+        return $settings;
     }
 }
 
 if (!function_exists("staffDefaultPassword")) {
     function staffDefaultPassword()
     {
-        return '550523';
+        return '550523@'.request()->merchant_id;
     }
 }
 
@@ -1214,6 +1451,7 @@ if (!function_exists("kycStatus")) {
         return $data;
     }
 }
+
 
 if (!function_exists("getFinalKycStatus")) {
     function getFinalKycStatus($customer_id)

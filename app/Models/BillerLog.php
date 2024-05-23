@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BillerLog extends Model
 {
-    use HasFactory, MerchantIdTrait;
+    use HasFactory;
     protected $guarded = [];
 }

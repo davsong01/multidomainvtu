@@ -237,7 +237,6 @@ class KingsVtuController extends Controller
             'Accept' =>  'application/json',
         ];
 
-
         try {
             $url = env('ENV') == 'local' ? $this->api->sandbox_base_url : $this->api->live_base_url;
             $url = $url . "get-balance";
@@ -249,7 +248,7 @@ class KingsVtuController extends Controller
             ];
 
             $response = $this->basicApiCall($url, [], $headers, 'GET');
-        
+       
             if (isset($response['status']) && $response['status'] == 'success' && !empty($response['data'])) {
                 $result = $response;
                 $balance = '#' . number_format($response['data']['wallet_balance'], 2);

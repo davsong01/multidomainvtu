@@ -5,7 +5,7 @@
                 <div class="card-content">
                     <div class="card-body text-center pb-0">
                         <span class="text-muted">Wallet Balance</span>
-                        <h2 style="color: black;">{{$balance = auth()->user()->type == 'customer' ? getSettings()->currency . number_format(walletBalance(auth()->user())) : 0}}</h2>
+                        <h2 style="color: black;">{!! $balance = auth()->user()->type == 'customer' ? getSettings()->currency . number_format(walletBalance(auth()->user())) : 0 !!}</h2>
                     </div>
                 </div>
             </div>

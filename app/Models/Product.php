@@ -13,7 +13,7 @@ class Product extends Model
 {
     use HasFactory, MerchantIdTrait;
     protected $guarded = [];
-
+    
     public function variations()
     {
         return $this->hasMany(Variation::class)->orderBy('created_at', 'DESC');

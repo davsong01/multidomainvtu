@@ -10,7 +10,7 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
                                     <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Products</a>
                                     </li>
@@ -126,7 +126,7 @@
                                                                                     <input type="text" class="form-control"  name="seo_keywords" placeholder="Enter SEO Keywords" id="seo_keywords" value="{{ old('seo_keywords')}}">
                                                                                 </fieldset>
                                                                                  <fieldset class="form-group">
-                                                                                    <label for="seo_description">SEO Description</label>
+                                                                                    <label for="seo_description">SEO Description (Supports HTML tags)</label>
                                                                                     <textarea class="form-control" id="seo_description" rows="3" name="seo_description" placeholder="SEO Description">{{ old('seo_description') }}</textarea>
                                                                                 </fieldset>
                                                                                
@@ -170,7 +170,7 @@
                                                                                 </fieldset>
                                                                                 @foreach($customerlevel as $level)
                                                                                 <fieldset class="form-group">
-                                                                                    <label for="name">{{ $level->name }} Price ({!! getSettings()['currency']!!})</label>
+                                                                                    <label for="name">{{ $level->name }} Price ({!! getSettings()->currency!!})</label>
                                                                                     <input type="number" class="form-control tiny" id="productlevel" name="productlevel[{{ $level->id }}]"  value="">
                                                                                 </fieldset>
                                                                                 @endforeach

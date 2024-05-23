@@ -10,10 +10,10 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
                                     <li class="breadcrumb-item"><a
-                                            href="{{ route('customer-blacklist.index') }}">Blacklists</a>
+                                            href="{{ route('customer-blacklist.index', request()->array) }}">Blacklists</a>
                                     </li>
                                     <li class="breadcrumb-item active">New Blacklist
                                     </li>
@@ -36,11 +36,11 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('customer-blacklist.store') }}" method="POST"
+                                        <form action="{{ route('customer-blacklist.store', request()->array) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <fieldset class="form-group">
                                                         <label for="type">Type</label>
                                                         <select class="form-control" name="type" id="type" required>

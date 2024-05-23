@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Settings;
+use App\Models\CustomerLevel;
+use App\Scopes\MerchantIdScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Merchant extends Model
 {
@@ -16,6 +19,18 @@ class Merchant extends Model
         'location',
         'status',
         'subscription_start',
-        'subscription_end'
+        'subscription_end',
+        'custom_domain'
     ];
+
+    public function setting()
+    {
+        return $this->hasOne(Settings::class)->withoutGlobalScope(new MerchantIdScope());
+    }
+
+    public function default_customer_level()
+    {
+        return $this->hasOne(CustomerLevel::class)->where('make_default','yes')->withoutGlobalScope(new MerchantIdScope());
+    }
+
 }

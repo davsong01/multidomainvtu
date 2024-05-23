@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'All APIs')
+@section('title', 'All Categories')
 
 @section('page-css')
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/vendors.min.css') }}">
@@ -22,9 +22,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('category.index') }}">Categories</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('category.index', request()->array) }}">Categories</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Categories
                                     </li>
@@ -44,9 +44,9 @@
                                     <h4 class="card-title">All Categories</h4> <br>
                                    
                                     @if($categories->count() < 1)
-                                        <a href="{{ route('category.pull') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Categories</button></a>
+                                        <a href="{{ route('category.pull', request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Categories</button></a>
                                     @else    
-                                        <a href="{{ route('category.repull') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Repull Categories</button></a>
+                                        <a href="{{ route('category.repull', request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Repull Categories</button></a>
                                     @endif
                                     @include('layouts.alerts')
                                 </div>
@@ -68,6 +68,7 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach ( $categories as $category )
+                                                    
                                                     <tr>
                                                         <td>{{ $category->name }}</td>
                                                         <td>{{ $category->order }}</td>
@@ -77,11 +78,11 @@
                                                         @if(hasAccess('category.edit') || hasAccess('category.destroy'))
                                                         <td>
                                                             @if(hasAccess('category.edit'))
-                                                            <a href="{{ route('category.edit', $category->id) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
+                                                            <a href="{{ route('category.edit', ['category' => $category->id,'merchant' => getMerchantDetails()->store_slug]) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
                                                             @endif
                                                             @if($category->products_count < 1)
                                                             @if(hasAccess('category.destroy'))
-                                                            <form action="{{ route('category.destroy', $category->id) }}"
+                                                            <form action="{{ route('category.destroy', ['category' => $category->id, 'merchant' => getMerchantDetails()->store_slug]) }}"
                                                                 class="btn btn-custon-four btn-bg-cl-social" method="POST"
                                                                 onsubmit="return confirm('Are you sure you want to delete forever?');">
                                                                 {{ csrf_field() }}

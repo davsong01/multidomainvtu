@@ -11,7 +11,7 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
                                     </li>
                                     <li class="breadcrumb-item active">Edit Email Setting
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('email.setup.update')}}" method="POST">
+                                        <form action="{{route('email.setup.update', request()->array)}}" method="POST">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-md-6">

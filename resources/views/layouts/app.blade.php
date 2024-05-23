@@ -20,7 +20,7 @@
         @include('layouts.menu')
     @endif
     <!-- END: Main Menu-->
-
+    @include('layouts.shop_details')
     @yield('content')
     <!-- demo chat-->
     @include('layouts.chat')

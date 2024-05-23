@@ -21,9 +21,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Products</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('product.index',request()->array) }}">Products</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Products
                                     </li>
@@ -43,9 +43,9 @@
                                 <div class="card-header">
                                     <h4 class="card-title">All products</h4> <br>
                                     @if($products->count() < 1)
-                                    <a href="{{ route('product.pull') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Products</button></a>
+                                    <a href="{{ route('product.pull', request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Pull Products</button></a>
                                     @else      
-                                    <a href="{{ route('product.repull') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; RePull Products</button></a>
+                                    <a href="{{ route('product.repull', request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; RePull Products</button></a>
                                     @endif
                                 </div>
                                 <div class="card-content">
@@ -79,10 +79,10 @@
                                                         <td>{{ $product->created_at }}</td>
                                                         @if(hasAccess('product.edit'))
                                                         <td>
-                                                            <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('product.edit', $product->id) }}"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View</span></button></a>
-                                                            <a class="btn btn-info btn-sm mr-1 mb-1" onclick="return confirm('{{$product->name}} will be duplicated!')" href="{{ route('duplicate.product', $product->id) }}"><i class="bx bxs-copy"></i><span class="align-middle ml-25">Duplicate</span></button></a>
+                                                            <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('product.edit', array_merge(['product'=>$product->id], request()->array)) }}"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View</span></button></a>
+                                                            <a class="btn btn-info btn-sm mr-1 mb-1" onclick="return confirm('{{$product->name}} will be duplicated!')" href="{{ route('duplicate.product', array_merge(['product'=>$product->id], request()->array)) }}"><i class="bx bxs-copy"></i><span class="align-middle ml-25">Duplicate</span></button></a>
                                                             @if($product->has_variations == 'yes')
-                                                            <a class="btn btn-dark btn-sm mr-1 mb-1" href="{{ route('product.edit', $product->id) }}"><i class="bx bxs-copy"></i><span class="align-middle ml-25">Edit Variations</span></button></a>
+                                                            <a class="btn btn-dark btn-sm mr-1 mb-1" href="{{ route('product.edit', array_merge(['product'=>$product->id], request()->array)) }}"><i class="bx bxs-copy"></i><span class="align-middle ml-25">Edit Variations</span></button></a>
                                                             @endif
                                                         </td>
                                                         @endif

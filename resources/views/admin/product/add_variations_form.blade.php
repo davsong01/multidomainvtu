@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route('manual.variations.add', $product->id)}}" method="POST" enctype="multipart/form-data">
+                <form action="{{route('manual.variations.add', array_merge(['product'=>$product->id], request()->array))}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <section id="mode-holder">
                         <div class="row" id="mode-0">
@@ -60,7 +60,7 @@
                             </div>
                             <div class="col-md-2">
                                 <fieldset class="form-group">
-                                    <label for="name">System Price ({!! getSettings()['currency']!!})</label>
+                                    <label for="name">System Price ({!! getSettings()->currency!!})</label>
                                     <input type="number" class="form-control tiny" id="system_price" name="system_price[]"  value="" placeholder="Variation price" required>
                                 </fieldset>
                             </div>
@@ -68,7 +68,7 @@
                             <div class="col-md-3">
                                 <fieldset class="form-group">
                                     {{-- {{dd($product->category->discount_type== 'flat')}} --}}
-                                    <label for="name">{{ $level->name }} @if($product->category->discount_type == 'flat') Discounted Price ({!! getSettings()['currency']!!}) @else Discounted Percentage (%) @endif</label>
+                                    <label for="name">{{ $level->name }} @if($product->category->discount_type == 'flat') Discounted Price ({!! getSettings()->currency!!}) @else Discounted Percentage (%) @endif</label>
                                     <input type="number" class="form-control tiny" id="level" step=".01" name="level[{{ $level->id }}][]" value="" required>
                                 </fieldset>
                             </div>

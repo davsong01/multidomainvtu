@@ -10,7 +10,7 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
                                     <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Products</a>
                                     </li>
@@ -163,7 +163,7 @@
                                                                                 </fieldset>
                                                                                 @foreach($customerlevel as $level)
                                                                                 <fieldset class="form-group">
-                                                                                    <label for="name">{{ $level->name }} Price ({!! getSettings()['currency']!!})</label>
+                                                                                    <label for="name">{{ $level->name }} Price ({!! getSettings()->currency!!})</label>
                                                                                     <input type="number" class="form-control tiny" id="productlevel" name="productlevel[{{ $level->id }}]"  value="">
                                                                                 </fieldset>
                                                                                 @endforeach

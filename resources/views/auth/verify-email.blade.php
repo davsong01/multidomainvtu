@@ -2,6 +2,7 @@
 @section('body')
 <div class="col-md-12 col-12 px-0">
     <div class="card disable-rounded-right d-flex justify-content-center">
+        @include('layouts.auth_shop_details')
         <div class="card-header pb-1">
             <div class="card-title">
                 <h4 class="text-center mb-2">Email Verification</h4>
@@ -10,7 +11,7 @@
         <div class="card-content">
             <div class="card-body">
                @include('layouts.alerts')
-               <form method="POST" action="{{ route('verification.send') }}" class="text-center center">
+               <form method="POST" action="{{ route('verification.send', request()->array) }}" class="text-center center">
                             @csrf
                             <p class="text-center text-muted">
                                 Thanks for signing up! Before getting started, please verify your email address by clicking on the link that was sent to your registered email account. If you didn't receive the email, you can click the button bellow to resend verification email.
@@ -20,9 +21,10 @@
                                     Resend Verification Email
                                 </button>
                             </div>
+                            <input type="hidden" name="type" value="resend">
                         </form>
                 <hr>
-                <div class="text-center"><small class="mr-25">Don't have an account?</small><a href="{{ route('register') }}"><small>Sign up</small></a></div>
+                <div class="text-center"><small class="mr-25">Don't have an account?</small><a href="{{ route('register', request()->array) }}"><small>Sign up</small></a></div>
                 @include('layouts.support')
             </div>
         </div>

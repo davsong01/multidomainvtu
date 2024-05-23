@@ -27,7 +27,7 @@ use App\Models\PaymentGateway;
                                                     </div>
                                                     <div class="card-content">
                                                         <div class="card-body">
-                                                            <form action="{{route('settings.update')}}" method="POST" enctype="multipart/form-data">
+                                                            <form action="{{route('settings.update', request()->array)}}" method="POST" enctype="multipart/form-data">
                                                                 @csrf
                                                                 <div class="row">
                                                                     <div class="col-md-6">
@@ -66,18 +66,19 @@ use App\Models\PaymentGateway;
                                                                                 @endforeach
                                                                             </select>
                                                                         </fieldset>
-                                                                        <fieldset class="form-group">
+                                                                        <input type="hidden" name="allow_fund_with_card" value="no">
+                                                                        {{-- <fieldset class="form-group">
                                                                             <label for="allow_fund_with_card" style="color:blue">Allow Wallet Funding with card</label>
                                                                             <select name="allow_fund_with_card" class="form-control" id="allow_fund_with_card">
                                                                                 <option value="">Select</option>
                                                                                 <option value="yes"{{ $settings->allow_fund_with_card == 'yes' ? 'selected' : ''}}>Yes</option>
                                                                                 <option value="no" {{ $settings->allow_fund_with_card == 'no' ? 'selected' : ''}}>No</option>
                                                                             </select>
-                                                                        </fieldset>
-                                                                        <fieldset class="form-group">
+                                                                        </fieldset> --}}
+                                                                        {{-- <fieldset class="form-group">
                                                                             <label for="card_funding_extra_charge" style="color:blue">Card Funding Extra Charge({!! getSettings()->currency !!})</label>
                                                                             <input type="number" name="card_funding_extra_charge" value="{{ $settings->card_funding_extra_charge ?? old('card_funding_extra_charge') }}" class="form-control">
-                                                                        </fieldset>
+                                                                        </fieldset> --}}
                                                                         <fieldset class="form-group">
                                                                             <label for="allow_fund_with_reserved_account">Allow Wallet Funding with reserved account</label>
                                                                             <select name="allow_fund_with_reserved_account" class="form-control" id="allow_fund_with_reserved_account">
@@ -94,15 +95,30 @@ use App\Models\PaymentGateway;
                                                                                 <option value="inactive" {{ $settings->referral_system_status == 'inactive' ? 'selected' : ''}}>InActive</option>
                                                                             </select>
                                                                         </fieldset>
-                                                                        {{-- <fieldset class="form-group" style="display:{{ $settings->referral_system_status == 'active' ? 'block' : 'none'}}" id="referral_percentage_div">
+                                                                        <fieldset class="form-group">
+                                                                            <label for="seo_title">SEO Title</label>
+                                                                            <input type="text" class="form-control" id="seo_title" name="seo_title" value="{{ $settings->seo_title ?? old('seo_title') }}" placeholder="SEO Title">
+                                                                        </fieldset>
+                                                                        <fieldset class="form-group">
+                                                                            <label for="support_link">Support Link</label>
+                                                                            <input type="text" class="form-control" id="support_link" name="support_link" value="{{ $settings->support_link ?? old('support_link') }}" placeholder="Support Link">
+                                                                        </fieldset>
+                                                                        <fieldset class="form-group" style="display:{{ $settings->referral_system_status == 'active' ? 'block' : 'none'}}" id="referral_percentage_div">
                                                                             <label for="referral_percentage">Referral Percentage(%)</label>
                                                                             <input type="number" class="form-control" id="referral_percentage" step="0.01" name="referral_percentage" value="{{ $settings->referral_percentage ?? old('referral_percentage') }}" placeholder="Enter percentage for referral earnings">
-                                                                        </fieldset> --}}
+                                                                        </fieldset>
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <fieldset class="form-group">
-                                                                            <label for="">Payment Gateway</label>
-                                                                            <input type="text" class="form-control" id="" value="{{ PaymentGateway::where('status', 'active')->value('name') }}" disabled>
+                                                                        <label for="payment_gateway">Payment Gateway</label>
+                                                                        <select name="payment_gateway" class="form-control" id="payment_gateway" required>
+                                                                            <option value="">Select</option>
+                                                                            @foreach(getPaymentGateways() as $gateway)
+                                                                            @if($gateway->status == 'active')
+                                                                            <option value="{{ $gateway->name }}" {{ $settings->payment_gateway == $gateway->name ? 'selected' : ''}}>{{ ucfirst($gateway->name) }}</option>
+                                                                            @endif
+                                                                            @endforeach                                                                            
+                                                                        </select>
                                                                         </fieldset>
                                                                         <div class="row">
                                                                             <div class="col-md-8">
@@ -153,23 +169,16 @@ use App\Models\PaymentGateway;
                                                                                 @endif
                                                                             </div>
                                                                         </div>
-                                                                        <fieldset class="form-group">
-                                                                            <label for="seo_title">SEO Title</label>
-                                                                            <input type="text" class="form-control" id="seo_title" name="seo_title" value="{{ $settings->seo_title ?? old('seo_title') }}" placeholder="SEO Title">
-                                                                        </fieldset>
-                                                                        <fieldset class="form-group">
-                                                                            <label for="support_link">Support Link</label>
-                                                                            <input type="text" class="form-control" id="support_link" name="support_link" value="{{ $settings->support_link ?? old('support_link') }}" placeholder="Support Link">
-                                                                        </fieldset>
+                                                                        
                                                                         
                                                                         <fieldset class="form-group">
-                                                                            <label for="seo_description">SEO Description</label>
+                                                                            <label for="seo_description">SEO Description (Supports HTML tags)</label>
                                                                             <textarea class="form-control" id="seo_description" rows="3" name="seo_description" value="{{ $settings->seo_description ?? old('seo_description') }}" placeholder="SEO Description" required>{{ $settings->seo_description ?? old('seo_description') }}</textarea>
                                                                         </fieldset>
-                                                                        <fieldset class="form-group">
+                                                                        {{-- <fieldset class="form-group">
                                                                             <label for="google_ad_code">Google Ad Code</label>
                                                                             <textarea class="form-control" id="google_ad_code" rows="3" name="google_ad_code" value="{{ $settings->google_ad_code ?? old('google_ad_code') }}" placeholder="Google ad code">{{ $settings->google_ad_code ?? old('google_ad_code') }}</textarea>
-                                                                        </fieldset>
+                                                                        </fieldset> --}}
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">

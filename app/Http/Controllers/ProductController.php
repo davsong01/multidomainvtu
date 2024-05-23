@@ -23,7 +23,7 @@ class ProductController extends Controller
         $categories = Category::all();
         foreach ($categories as $category) {
             $products = app("App\Http\Controllers\Providers\KingsVtuController")->getProducts($category->slug);
-            
+
             if (isset($products['status']) && $products['status'] == 'success') {
                 $products = $products['data']['products'] ?? [];
                 if (!empty($products)) {
@@ -36,7 +36,7 @@ class ProductController extends Controller
                                     "name" => $product['display_name'],
                                     "display_name" => $product['display_name'],
                                     "slug" => $product['slug'],
-                                    "status" => 'inactive',
+                                    "status" => 'active',
                                     "description" => $product['description'] ?? null,
                                     "min" => $product['min'] ?? null,
                                     "max" => $product['max'] ?? null,
@@ -44,7 +44,8 @@ class ProductController extends Controller
                                     "fixed_price" => $product['fixed_price'] ?? null,
                                     "allow_subscription_type" => $product['allow_subscription_type'] ?? null,
                                     "has_variations" => $product['has_variations'] ?? null,
-                                    "image" => $product['image'] ?? null ,
+                                    "image" => $product['image'] ?? null,
+                                    "merchant_id" => request()->merchant_id
                                 ]
                             );
                         }
@@ -126,6 +127,7 @@ class ProductController extends Controller
                 "servercode" => $request->servercode,
                 "allow_subscription_type" => $request->allow_subscription_type ?? 'no',
                 'referral_percentage' => $request->referral_percentage,
+                'merchant_id' => $request()->merchant_id,
             ]
         );
 
@@ -139,7 +141,8 @@ class ProductController extends Controller
                     'status' => 'active',
                     'customer_level' => $key,
                     'product_id' => $product->id,
-                    'price' => $price ?? 0
+                    'price' => $price ?? 0,
+                    'merchant_id' => $request()->merchant_id
                 ]);
             }
         }
@@ -158,8 +161,9 @@ class ProductController extends Controller
         return back()->with('message', 'Product Duplicated succesfully');
     }
 
-    public function edit(Product $product)
+    public function edit($merchant,$product )
     {
+        $product = Product::where('id', $product)->first();
         $categories = Category::where('status', 'active')->where('type', 'general')->get();
         $variations = Variation::where('product_id', $product->id)->where('api_id', $product->api_id)->get();
         $apis = API::where('status', 'active')->get();
@@ -168,8 +172,9 @@ class ProductController extends Controller
         return view('admin.product.edit', compact('categories', 'apis', 'product', 'variations', 'customerlevel'));
     }
 
-    public function update(Product $product, Request $request)
+    public function update(Request $request, $merchant, $product, )
     {
+        $product = Product::where('id', $product)->first();
         $this->validate($request, [
             "name" => "required",
             "display_name" => "required",
@@ -222,7 +227,6 @@ class ProductController extends Controller
             "servercode" => $request->servercode,
             "quantity_graduation" => $request->quantity_graduation,
             "allow_subscription_type" => $request->allow_subscription_type,
-            
             'referral_percentage' => $request->referral_percentage,
         ]);
 
@@ -237,7 +241,8 @@ class ProductController extends Controller
                 ], [
                     'customer_level' => $key,
                     'product_id' => $product->id,
-                    'price' => $price ?? 0
+                    'price' => $price ?? 0,
+                    'merchant_id' => $request()->merchant_id
                 ]);
             }
         }

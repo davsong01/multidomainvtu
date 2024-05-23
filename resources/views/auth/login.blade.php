@@ -1,9 +1,11 @@
 @extends('layouts.auth')
+@section('title', 'Login')
 @section('body')
 <!-- left section-login -->
 
 <div class="col-md-12 col-12 px-0">
     <div class="card disable-rounded-right d-flex justify-content-center">
+        @include('layouts.auth_shop_details')
         <div class="card-header pb-1">
             <div class="card-title">
                 <h4 class="text-center mb-2">Welcome Back</h4>
@@ -13,7 +15,7 @@
         <div class="card-content">
             <div class="card-body">
                 @include('layouts.alerts')
-                <form action="{{ route('login', ['merchant' => getMerchantDetails()->store_slug ]) }}" method="POST">
+                <form action="{{ route('login', request()->array ) }}" method="POST">
                     @csrf
                     <div class="row">
 
@@ -32,12 +34,12 @@
                                 <label class="checkboxsmall" for="exampleCheck1"><small>Keep me logged in</small></label>
                             </div>
                         </div>
-                        <div class="text-right"><a href="{{ route('password.request', ['merchant' => getMerchantDetails()->store_slug ]) }}" class="card-link"><small>Forgot Password?</small></a></div>
+                        <div class="text-right"><a href="{{ route('password.request', request()->array ) }}" class="card-link"><small>Forgot Password?</small></a></div>
                     </div>
                     <button type="submit" class="btn btn-primary glow w-100 position-relative">Login<i id="icon-arrow" class="bx bx-right-arrow-alt"></i></button>
                 </form>
                 <hr>
-                <div class="text-center"><small class="mr-25">Don't have an account?</small><a href="{{ route('register', ['merchant' => getMerchantDetails()->store_slug ]) }}"><small>Sign up</small></a></div>
+                <div class="text-center"><small class="mr-25">Don't have an account?</small><a href="{{ route('register', request()->array ) }}"><small>Sign up</small></a></div>
                 @include('layouts.support')
             </div>
         </div>

@@ -29,8 +29,7 @@
                             <div class="card-body pb-0">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <form action="{{ route('customer.transaction.history') }}" method="GET">
-                                            @csrf
+                                        <form action="{{ route('customer.transaction.history', request()->array) }}" method="GET">
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <fieldset class="form-group">
@@ -134,7 +133,7 @@
                                                         </small> <br>
                                                        
                                                         <span class="title">Amount</span> <br>
-                                                        <small class="{{$transaction->type == 'debit' ? 'red' : 'green' }}">{{$transaction->type == 'debit' ? '- ' : '+ '}}{!! getSettings()['currency']!!}{{ number_format($transaction->total_amount, 2) }}
+                                                        <small class="{{$transaction->type == 'debit' ? 'red' : 'green' }}">{{$transaction->type == 'debit' ? '- ' : '+ '}}{!! getSettings()->currency!!}{{ number_format($transaction->total_amount, 2) }}
                                                         {{$transaction->type == 'debit' ? '(Debit)' : '(Credit)' }}
                                                         </small> <br>
                                                         <span class="title">Transaction Id</span> <br>
@@ -154,9 +153,9 @@
 
                                                     <div class="statistics-date">
                                                         <small class="text-muted">
-                                                            <a target="_blank" href="{{ route('transaction.status', $transaction->transaction_id) }}" class="btn btn-sm btn-primary glow mt-md-2 mb-1">View</a></small> <small class="text-muted">
+                                                            <a target="_blank" href="{{ route('transaction.status', array_merge(request()->array, ['transaction_id' => $transaction->transaction_id])) }}" class="btn btn-sm btn-primary glow mt-md-2 mb-1">View</a></small> <small class="text-muted">
                                                             @if(!in_array($transaction->reason, ['LEVEL-UPGRADE','WALLET-FUNDING']) && !in_array($transaction->status, ['failed']))
-                                                            <a target="_blank" href="{{ route('transaction.receipt.download', $transaction->id) }}" class="btn btn-sm btn-info glow mt-md-2 mb-1">Download Transaction Receipt</a>
+                                                            <a target="_blank" href="{{ route('transaction.receipt.download', ['transaction_id' => $transaction->transaction_id]) }}" class="btn btn-sm btn-info glow mt-md-2 mb-1">Download Transaction Receipt</a>
                                                             @endif
                                                         </small>
                                                     </div>

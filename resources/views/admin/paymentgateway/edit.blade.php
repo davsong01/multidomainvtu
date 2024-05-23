@@ -11,9 +11,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('paymentgateway.index') }}">Payment Gateways</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('paymentgateway.index',request()->array) }}">Payment Gateways</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{ $paymentgateway->name }}
                                     </li>
@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('paymentgateway.update', $paymentgateway->id)}}" method="POST">
+                                        <form action="{{route('paymentgateway.update', array_merge(request()->array, ['paymentgateway' => $paymentgateway->id]))}}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <div class="row">
@@ -57,10 +57,10 @@
                                                         <label for="secret_key">Secret key</label>
                                                         <input type="text" class="form-control" id="secret_key" name="secret_key" value="{{ $paymentgateway->secret_key ?? old('secret_key') }}" placeholder="Enter Secret Key">
                                                     </fieldset>
-                                                    {{-- <fieldset class="form-group">
+                                                    <fieldset class="form-group">
                                                         <label for="public_key">Public key</label>
                                                         <input type="text" class="form-control" id="public_key" name="public_key" value="{{ $paymentgateway->public_key ?? old('public_key') }}" placeholder="Enter Public Key">
-                                                    </fieldset> --}}
+                                                    </fieldset>
                                                     <fieldset class="form-group">
                                                         <label for="contract_id">Contract ID</label>
                                                         <input type="text" class="form-control" id="contract_id" name="contract_id" value="{{ $paymentgateway->contract_id ?? old('contract_id') }}" placeholder="Enter Contract Id">
@@ -76,15 +76,22 @@
                                                         <label for="base_url">Base URL</label>
                                                         <input type="text" class="form-control" id="base_url" name="base_url" value="{{ $paymentgateway->base_url ?? old('base_url') }}" placeholder="Enter base URL" required>
                                                     </fieldset>
-                                                    <fieldset class="form-group">
+                                                    {{-- <fieldset class="form-group">
                                                         <label for="charge">Gateway Charge for card funding <span style="color:red">(%)</span></label>
                                                         <input type="number" class="form-control" id="charge" name="charge" step=".10" value="{{ $paymentgateway->charge ?? old('charge') }}" placeholder="Enter gatway charge in percentage" required>
+                                                    </fieldset> --}}
+                                                    <fieldset class="form-group">
+                                                        <label for="reserved_account_payment_charge_type">Gateway Reserved Account Payment Charge Type</label>
+                                                        <select class="form-control" name="reserved_account_payment_charge_type" id="reserved_account_payment_charge_type" required>
+                                                            <option value="">Select</option>
+                                                            <option value="flat" {{ $paymentgateway->reserved_account_payment_charge_type == 'flat' ? 'selected' : ''}}>Flat</option>
+                                                            <option value="percentage" {{ $paymentgateway->reserved_account_payment_charge_type == 'percentage' ? 'selected' : ''}}>Percentage</option>
+                                                        </select>
                                                     </fieldset>
                                                     <fieldset class="form-group">
-                                                        <label for="reserved_account_payment_charge">Gateway Reserved Account Payment Charge <span style="color:red">({!! getSettings()->currency !!})</span></label>
+                                                        <label for="reserved_account_payment_charge">Gateway Reserved Account Payment Charge <span style="color:red">({{ getPaymentGatewayReservedAccountCharge($paymentgateway->id)['type'] }}) </span></label>
                                                         <input type="number" class="form-control" id="reserved_account_payment_charge" name="reserved_account_payment_charge" step=".10" value="{{ $paymentgateway->reserved_account_payment_charge ?? old('reserved_account_payment_charge') }}" placeholder="Enter flat reserved account payment charge" required>
                                                     </fieldset>
-                                                    
                                                     <fieldset class="form-group">
                                                         <label for="status">Gateway Status</label>
                                                         <select class="form-control" name="status" id="status" required>

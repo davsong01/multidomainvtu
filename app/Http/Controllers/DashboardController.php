@@ -22,7 +22,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        dd('dashborad');
         $customer = $this->customerOfTheMonth();
         
         if (auth()->user()->type == 'admin') {
@@ -170,12 +169,12 @@ class DashboardController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             // \Log::error(['Upgrade Error' => 'Message: '.$th->getMessage().' File: '.$th->getFile().' Line: '.$th->getLine()]);
-            return redirect(route('dashboard'))->with('error', 'An error occured while trying to upgrade, please try again later');
+            return redirect(route('dashboard', request()->array))->with('error', 'An error occured while trying to upgrade, please try again later');
         }
 
         // Log transaction email
         $this->sendTransactionEmail($transaction, auth()->user());
-        return redirect(route('dashboard'))->with('message', 'Upgrade successful');
+        return redirect(route('dashboard', request()->array))->with('message', 'Upgrade successful');
     }
 
     public function processCreateTransactionPin(Request $request)
@@ -200,11 +199,11 @@ class DashboardController extends Controller
         // Send email
         $subject = "New Transaction PIN set";
         $body = '<p>Hello! ' . auth()->user()->firstname . '</p>';
-        $body .= '<p style="line-height: 2.0;">You have successfully created a transaction PIN on account ' . config('app.name') . ' Please use your PIN when carrying out transactions.<b><hr/><br>Warm Regards. (' . config('app.name') . ')<br/></p>';
+        $body .= '<p style="line-height: 2.0;">You have successfully created a transaction PIN on ' . request()->store_name . '.<br> Please use your PIN when carrying out transactions.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
 
         logEmails(auth()->user()->email, $subject, $body);
         
-        return redirect(route('dashboard'))->with('message', 'You have successfully created a transaction PIN');
+        return redirect(route('dashboard', request()->array))->with('message', 'You have successfully created a transaction PIN');
     }
 
     public function processResetTransactionPin(Request $request)
@@ -247,13 +246,14 @@ class DashboardController extends Controller
             'user_id' => $user->id,
             'token' => $token,
             'expiry' => $expiry,
+            'merchant_id' => request()->merchant_id,
         ]);
 
         // Send email
         $subject = "You requested a Transaction PIN Reset Link";
         $body = '<p>Hello! ' . $user->firstname . '</p>';
         $reset_link = url('/') . "/confirm_reset_pin?token=" . $hashedToken;
-        $body .= '<p style="line-height: 2.0;">Please <strong>login</strong> to your account on ' . config('app.name') . ' and click the button below to reset your transaction pin. <br> <a class="btn btn-info" target="_blank" href="' . $reset_link . '" style="position: margin:5px; relative;margin-bottom:50px;color: #fff;font-weight: 500;padding: 8px 20px;font-size: 13px;line-height: 24px;letter-spacing: 0.01em;border-radius: 4px;border: 1px solid;transition: all .4s ease;background:#950eb3;text-align: center;white-space: nowrap;vertical-align: middle;text-decoration:none">RESET PIN</a><br/><br><strong>Please note that this link expires after ' . $expiry->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . config('app.name') . ')<br/></p>';
+        $body .= '<p style="line-height: 2.0;">Please <strong>login</strong> to your account on ' . request()->store_name . ' and click the button below to reset your transaction pin. <br> <a class="btn btn-info" target="_blank" href="' . $reset_link . '" style="position: margin:5px; relative;margin-bottom:50px;color: #fff;font-weight: 500;padding: 8px 20px;font-size: 13px;line-height: 24px;letter-spacing: 0.01em;border-radius: 4px;border: 1px solid;transition: all .4s ease;background:#950eb3;text-align: center;white-space: nowrap;vertical-align: middle;text-decoration:none">RESET PIN</a><br/><br><strong>Please note that this link expires after ' . $expiry->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
     
         logEmails($user->email, $subject, $body);
     }
@@ -303,7 +303,7 @@ class DashboardController extends Controller
         // Send email
         $subject = "New Transaction Pin";
         $body = '<p>Hello! ' . auth()->user()->firstname . '</p>';
-        $body .= '<p style="line-height: 2.0;">You have successfully changed your Transaction PIN on ' . config('app.name') . ' on ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . config('app.name') . ')<br/></p>';
+        $body .= '<p style="line-height: 2.0;">You have successfully changed your Transaction PIN on ' . request()->store_name . ' on ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
 
         logEmails(auth()->user()->email, $subject, $body);
 
@@ -329,63 +329,24 @@ class DashboardController extends Controller
             "PHONE_NUMBER" => "required",
             "BVN" => "required|string|min:11|max:11",
             "IDCARD" => "required|image|max:1024",
-            "IDCARDTYPE" => "required"
+            "IDCARDTYPE" => "required",
+            "ADDRESS" => "required",
+            "DOB" => "required",
         ]);
-
+        
         if (!empty($request->IDCARD)) {
             $input['IDCARD'] = $this->uploadFile($request->IDCARD, 'kyc');
         }
 
-
-        // $instantVerify = ['FIRST_NAME', 'LAST_NAME', 'MIDDLE_NAME', 'DOB', 'PHONE_NUMBER', 'COUNTRY', 'STATE', 'LGA', 'DOB', 'IDCARD', 'IDCARDTYPE'];
-        // foreach ($input as $key => $value) {
-        //     if (in_array($key, $instantVerify)) {
-        //         $this->updateKycData($key, $value, auth()->user()->customer->id, 'verified');
-        //     } else {
-        //         $this->updateKycData($key, $value, auth()->user()->customer->id, 'unverified');
-        //     }
-        // }
-
-        // $firstname = $input['FIRST_NAME'] ?? auth()->user()->firstname;
-        // $lastname = $input['LAST_NAME'] ?? auth()->user()->lastname;
-        // $middlename = $input['MIDDLE_NAME'] ?? auth()->user()->middlename;
-
-        // auth()->user()->update([
-        //     "firstname" => $firstname,
-        //     "middlename" => $middlename,
-        //     "lastname" => $lastname,
-        // ]);
         foreach ($input as $key => $value) {
             $this->updateKycData($key, $value, auth()->user()->customer->id, 'unverified');
         }
-
-        // verify BVN automatically
-        // $this->updateKycData('BVN', $request->BVN, auth()->user()->customer->id, 'verified');
 
         auth()->user()->customer->update([
             "kyc_status" => 'awaiting-approval',
         ]);
         
-        // Create reserved account
-        // $name = $firstname . ' ' . $lastname . ' ' . $middlename;
-
-        // $data = [
-        //     'BVN' => $request->BVN ?? kycStatus('BVN', auth()->user()->customer->id)['value'],
-        //     'customerName' => $name,
-        //     'accountName' => $firstname,
-        //     'customerEmail' => auth()->user()->email,
-        //     'customer_id' => auth()->user()->customer->id,
-        //     'getAllAvailableBanks' => true,
-        // ];
-
-        // $reserved = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->createReservedAccount($data);
         
-        // if ($reserved['status'] && $reserved['status'] == 'success') {
-        //     return back()->with('message', 'KYC Update completed and reserved accounts created');
-        // } else {
-        //     $error = $reserved['data'] ?? 'Please refresh this page';
-        //     return back()->with('error', 'Error: ' . $error);
-        // }
         return back()->with('message', 'KYC Info Update. Awaiting Admin approval');
 
     }
@@ -400,7 +361,8 @@ class DashboardController extends Controller
                 'customer_id' => $customer_id,
                 'key' => $key,
                 'value' => $value,
-                'status' => $status
+                'status' => $status,
+                'merchant_id' => request()->merchant_id
             ]);
         }else{
             KycData::updateOrCreate([
@@ -410,30 +372,17 @@ class DashboardController extends Controller
                 'customer_id' => $customer_id,
                 'key' => $key,
                 'value' => $value,
+                'merchant_id' => request()->merchant_id
             ]);
         }
 
-        // if (!$check) {
-        //     KycData::updateOrCreate([
-        //         'customer_id' => $customer_id,
-        //         'key' => $key,
-        //         'value' => $value,
-
-        //     ], [
-        //         'customer_id' => $customer_id,
-        //         'key' => $key,
-        //         'value' => $value,
-        //         'status' => $status
-        //     ]);
-        // }
-        
         return;
     }
 
     public function getKycStatus($user)
     {
         $kyc_data = KycData::where(['customer_id' => $user->customer->id])->first();
-
+        
         return [
             'nin' => $kyc_data->nin ?? 'unverified',
             'bvn' => $kyc_data->bvn ?? 'unverified',

@@ -11,9 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Category extends Model
 {
     use HasFactory, MerchantIdTrait;
-
     protected $guarded = [];
-    
+
     protected function createdAt(): Attribute
     {
         return Attribute::make(
@@ -21,6 +20,7 @@ class Category extends Model
         );
     }
 
+   
     public function products()
     {
         return $this->hasMany(Product::class);

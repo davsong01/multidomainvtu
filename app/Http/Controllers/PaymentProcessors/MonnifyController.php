@@ -12,11 +12,15 @@ class MonnifyController extends Controller
 {
     private $api;
 
-    public function __construct()
+    public function __construct($provider = null)
     {
-        $this->api = PaymentGateway::where('id', 1)->first();
+        if (!empty(request()->merchant_id)) {
+            $this->api = PaymentGateway::where('slug', 'monnify')->first();
+        } else {
+            $this->api = $provider;
+        }
     }
-
+    
     public function login()
     {
         $headers = [
@@ -114,6 +118,8 @@ class MonnifyController extends Controller
             return [
                 'status' => 'failed',
                 'status_code' => 0,
+                'data' => 'Invalid Provider Authentication',
+
             ];
         } else {
             $url = $this->api->base_url . 'v2/bank-transfer/reserved-accounts';
@@ -159,11 +165,13 @@ class MonnifyController extends Controller
                             'account_name' => $account['accountName'] ?? null,
                             'bank_name' => $account['bankName'] ?? null,
                             'bank_code' => $account['bankCode'] ?? null,
-                            'paymentgateway_id' => 1,
+                            'paymentgateway_id' => $this->api->id,
                             'status' => $response['responseBody']['status'] ?? null,
                             'purpose' => 'WALLET-FUNDING',
                             'bvn' => $response['responseBody']['bvn'],
-                            'response' => json_encode($response)
+                            'response' => json_encode($response),
+                            'merchant_id' => request()->merchant_id,
+
                         ]);
                     }
                     

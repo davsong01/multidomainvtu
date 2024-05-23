@@ -11,9 +11,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('category.index') }}">Categories</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('category.index',  request()->array) }}">Categories</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{ $category->name }}
                                     </li>
@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('category.update', $category->id)}}" method="POST">
+                                        <form action="{{route('category.update', array_merge(request()->array, ['category' => $category->id]))}}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <div class="row">
@@ -45,7 +45,7 @@
                                                         <label for="name">Name</label>
                                                         <input type="text" class="form-control" id="name" name="name" value="{{ $category->name ?? old('name') }}" placeholder="Enter name" required>
                                                     </fieldset>
-                                                     <fieldset class="form-group">
+                                                    <fieldset class="form-group">
                                                         <label for="icon">SVG code</label>
                                                         <input type="text" class="form-control" id="icon" name="icon" value="{{ $category->icon ?? old('icon') }}" placeholder="Enter icon" required>
                                                     </fieldset>

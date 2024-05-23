@@ -33,8 +33,7 @@
                             <div class="card-body pb-0">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <form action="{{ route('customer.transaction.report') }}" method="GET">
-                                            @csrf
+                                        <form action="{{ route('customer.transaction.report', request()->array ) }}" method="GET">
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <fieldset class="form-group">

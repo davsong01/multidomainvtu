@@ -22,9 +22,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('api.index') }}">API Provider</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('api.index',request()->array) }}">API Provider</a>
                                     </li>
                                     
                                 </ol>
@@ -61,7 +61,7 @@
                                                         @if(hasAccess('api.edit') || hasAccess('api.balance'))
                                                         <td>
                                                             @if(hasAccess('api.edit'))
-                                                            <a href="{{ route('api.edit', $api->id) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View/Edit</span></button></a>
+                                                            <a href="{{ route('api.edit', ['api' => $api->id, 'merchant' => getMerchantDetails()->store_slug]) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View/Edit</span></button></a>
                                                             @endif
                                                             @if(hasAccess('api.balance'))
                                                             <a id="api-{{$api->id}}" onclick="getBalance('{{$api->id}}')" style="color:white" class="btn btn-info btn-sm mr-1 mb-1"><span id="icon-{{ $api->id }}"><i class="fa fa-refresh"></i></span><span class="align-middle ml-25">Check balance</span></a>
@@ -89,9 +89,8 @@
 @section('page-script')
 
 <script>
-     function getBalance(id){
-        var url = "{{ url('admin/api-balance') }}/"+id;
-        
+    function getBalance(id){
+        var url = "{{ url('/') .'/'.request()->store_slug }}/"+'admin/api-balance/'+id;
         $.ajax({
             url: url,
             method: 'GET',
@@ -112,22 +111,6 @@
             }
         });
     }
-        // function getBalance(id){
-        //     alert('sd');
-        //     let url = "{{url('/')}}"+"api-balance/"+id;
-        //     $.ajax({
-        //         type: "GET",
-        //         url: url,
-        //         dataType: 'json',
-        //         beforeSend: function () {
-        //             $("#icon-"+id).html("<i class='fa fa-spinner fa-spin'></i>");
-        //         },
-        //         success: function (data) {
-        //             $("#api-"+id).html(data.message);
-        //         }
-        //     });
-        // }
-        
     </script>
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>

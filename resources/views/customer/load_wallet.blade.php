@@ -63,7 +63,7 @@
                                                                     <p>Credit your wallet now, and spend from it later. No Need to enter card details everytime you want to make a Payment. Make Faster Payments. 
                                                                     <br>  <small style="color:red"><b>NOTE: </b>A charge of <strong>{{number_format($gateway->charge, 1)}}% @if(getSettings()->card_funding_extra_charge > 0)+ {!!getSettings()->currency !!}{{getSettings()->card_funding_extra_charge}} @endif </strong>is applicable to this method of wallet funding</small>
                                                                     </p>
-                                                                    <form action="{{ route('process-customer-load-wallet') }}" method="POST" id="wallet_load">
+                                                                    <form action="{{ route('process-customer-load-wallet',request()->array ) }}" method="POST" id="wallet_load">
                                                                         @csrf
                                                                         <div class="row">
                                                                             <div class="col-md-12">
@@ -84,14 +84,18 @@
                                                                         @if(auth()->user()->customer->reserved_accounts->count() > 0)
                                                                             <p>To fund your wallet, make payment into any of the accounts below. Your Wallet will be credited automatically. Account number is dedicated to crediting your wallet.<br><br><strong style="color:red">IMPORTANT:</strong><br> Payments made into any of these account are automated. This means that once you transfer, your wallet is credited automatically. <br>
                                                                             P.S: Just like every other transfers, you could experience a slight delay in wallet funding. You only need to hold on patiently as your wallet would be credited once processed. You do not need to contact support after funding your wallet, It is automated. <br>
-                                                                            <small style="color:red"><b>NOTE: </b>A charge of <strong>{{ getSettings()->currency }}{{number_format($gateway->reserved_account_payment_charge, 1)}} </strong>is applicable to this method of wallet funding</small>
+                                                                            <small style="color:red"><b>NOTE: </b>A charge of <strong>{{ getPaymentGatewayReservedAccountCharge()['display_value'] }} </strong>is applicable to this method of wallet funding</small>
                                                                             </p>    
                                                                             <div>
+                                                                                @php
+                                                                                    $count = 1;
+                                                                                @endphp
                                                                                 <h5>Wallet Funding Account Details</h5>
                                                                                 <div class="table-responsive mt-2">
                                                                                     <table class="table table-striped">
                                                                                         <thead>
                                                                                             <tr>
+                                                                                                <th style="color:#495463;">S/N</th>
                                                                                                 <th style="color:#495463;">Account Name</th>
                                                                                                 <th style="color:#495463;">Bank Name</th>
                                                                                                 <th style="color:#495463;">Account Number</th>
@@ -99,11 +103,14 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             @foreach(auth()->user()->customer->reserved_accounts as $account)
+                                                                                            @if($account->paymentgateway_id == $gateway->id)
                                                                                             <tr>
+                                                                                                <td style="color:#173D52;">{{$count ++}}</td>
                                                                                                 <td style="color:#173D52;">{{$account->account_name}}</td>
                                                                                                 <td style="color:#173D52;">{{$account->bank_name}}</td>
                                                                                                 <td style="color:#173D52;">{{$account->account_number}}</td>
                                                                                             </tr>
+                                                                                            @endif
                                                                                             @endforeach                                                       
                                                                                         </tbody>
                                                                                     </table>
@@ -150,6 +157,5 @@
         $.LoadingOverlay("show");
         document.forms["wallet_load"].submit();
     }
-       
 </script>
 @endsection

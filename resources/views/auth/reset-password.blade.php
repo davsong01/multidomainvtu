@@ -1,9 +1,12 @@
 @extends('layouts.auth')
+@section('title', 'Reset Password')
+
 @section('body')
 <!-- left section-login -->
 
 <div class="col-md-12 col-12 px-0">
     <div class="card disable-rounded-right d-flex justify-content-center">
+        @include('layouts.auth_shop_details')
         <div class="card-header pb-1">
             <div class="card-title">
                 <h4 class="text-center mb-2">Reset Password</h4>
@@ -12,7 +15,7 @@
         <div class="card-content">
             <div class="card-body">
                @include('layouts.alerts')
-                <form action="{{ route('password.store') }}" method="POST">
+                <form action="{{ route('password.store', request()->array) }}" method="POST">
                     @csrf
                     <div class="row">
 
@@ -31,11 +34,11 @@
                     </div>
                     
                     <button type="submit" class="btn btn-primary glow w-100 position-relative">Reset Password<i id="icon-arrow" class="bx bx-right-arrow-alt"></i></button>
-                <input type="hidden" name="token" value="{{ $request->route('token') }}">
+                    <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
                 </form>
                 <hr>
-                <div class="text-center"><small class="mr-25">I remember my passsword</small><a href="{{ route('register') }}"><small>Sign up</small></a></div>
+                <div class="text-center"><small class="mr-25">I remember my passsword</small><a href="{{ route('register', request()->array) }}"><small>Sign up</small></a></div>
             </div>
         </div>
     </div>

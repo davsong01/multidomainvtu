@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\TransactionLog;
 use App\Models\ReservedAccount;
 use App\Models\ReservedAccountNumber;
+use App\Http\Controllers\PaymentProcessors\SquadController;
+use App\Http\Controllers\PaymentProcessors\MonnifyController;
 
 class ReservedAccountNumberController extends Controller
 {
@@ -18,16 +20,31 @@ class ReservedAccountNumberController extends Controller
         return view('admin.customers.reserved_account_numbers', compact('numbers'));
     }
 
-    public function delete(ReservedAccountNumber $account)
+    public function delete($merchant, $account)
     {
-        if ($account->paymentgateway_id == 1) {
-            $delete = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->deleteReservedAccount($account->account_reference);
-        }
+        $account = ReservedAccountNumber::where('id',$account)->first();
+        $slug = $account->payment_gateway->slug ?? null;
+        $provider = $account->payment_gateway;
+        
+        if(!empty($slug)){
+            if ($slug == 'monnify') {
+                $monnify = new MonnifyController($provider);
+                $delete = $monnify->deleteReservedAccount($account->account_reference);
+            }
 
-        if ($delete['status'] == 'success') {
-            return back()->with('message', 'Reserved Account Deleted successfully');
-        } else {
-            return back()->with('error', $delete['data']);
+            if ($slug == 'squad') {
+                $squad = new SquadController($provider);
+                $delete = $squad->deleteReservedAccount($account->account_reference);
+            }
+
+            if ($delete['status'] == 'success') {
+                return back()->with('message', 'Reserved Account Deleted successfully');
+            } else {
+                return back()->with('error', $delete['data']);
+            }
+
+        }else{
+            return back()->with('message', 'Invalid Payment gateway selected');
         }
     }
 
@@ -50,8 +67,10 @@ class ReservedAccountNumberController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ReservedAccountNumber $account)
+    public function show($merchant, $account)
     {
+        $account = ReservedAccountNumber::where('id', $account)->first();
+
         $transactions = TransactionLog::where('account_number', $account->account_number)->orderBy('created_at', 'DESC')->get();
         
         return view('admin.customers.reserved_account_number_transactions', compact('transactions','account'));

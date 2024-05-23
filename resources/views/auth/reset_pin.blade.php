@@ -21,6 +21,7 @@
                     <div class="col-md-12">
                         <div class="card">
                                 <div class="content-body">
+                                @include('layouts.auth_shop_details')
                                 <!-- Nav Filled Starts -->
                                 <section id="nav-filled">
                                     <div class="row">

@@ -21,6 +21,7 @@ class CategoryController extends Controller
         $categories = app("App\Http\Controllers\Providers\KingsVtuController")->getCategories();
         if (isset($categories['status']) && $categories['status'] == 'success') {
             $categories = $categories['data'] ?? [];
+            $merchant_id = request()->merchant_id;
             if(!empty($categories)){
                 foreach ($categories as $key=>$category) {
                     $categories = Category::pluck('slug')->toArray();
@@ -35,6 +36,8 @@ class CategoryController extends Controller
                                 "description" => $category['description'],
                                 "unique_element" => $category['unique_element'] ?? '',
                                 "discount_type" => $category['discount_type'] ?? '',
+                                "status" => 'active',
+                                "merchant_id" => $merchant_id,
                             ]
                         );
                     }
@@ -46,7 +49,8 @@ class CategoryController extends Controller
                 return back()->with('error', 'Categories could not be pulled from provider');
             }
         } else {
-            return back()->with('error', 'Error while pulling categories'.$categories['errors'] ?? '');
+            $errors = $categories['errors'] ?? '';
+            return back()->with('error', 'Error while pulling categories '.$errors);
         }
         
         return view('admin.category.index', compact('categories'));
@@ -88,18 +92,21 @@ class CategoryController extends Controller
             "seo_keywords" => $request->seo_keywords,
             "unique_element" => $request->unique_element,
             "discount_type" => $request->discount_type,
+            "merchant_id" => $request()->merchant_id
         ]);
 
-        return redirect(route('category.index'))->with('message', 'Added successfully');
+        return redirect(route('category.index', request()->array))->with('message', 'Added successfully');
     }
 
-    public function edit(Category $category)
+    public function edit($id,$category)
     {
+        $category = Category::find($category);
         return view('admin.category.edit', compact('category'));
     }
-
-    public function update(Request $request, Category $category)
+    
+    public function update(Request $request, $category, $id)
     {
+        $category = Category::find($id);
         $this->validate($request, [
             "name" => "required",
             "icon" => "required",
@@ -113,7 +120,6 @@ class CategoryController extends Controller
             "seo_title" => "nullable",
             "seo_keywords" => "nullable",
             "discount_type" => "nullable",
-
         ]);
 
         $category->update([
@@ -134,7 +140,8 @@ class CategoryController extends Controller
         return back()->with('message', 'Updated successfully');
     }
 
-    public function destroy(Category $category){
+    public function destroy($category, $id){
+        $category = Category::find($id);
         if($category->products->count() < 1){
             $category->delete();
         }else{

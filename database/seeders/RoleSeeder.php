@@ -21,7 +21,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->addMerchantIdToAllTables();
+        // $this->addMerchantIdToAllTables();
         $this->createPermissions();
         // Create new Settings here
         // $this->defaultSettings();
@@ -223,20 +223,20 @@ class RoleSeeder extends Seeder
         }
     }
 
-    public function addMerchantIdToAllTables(){
-        $tables = \DB::select('SHOW TABLES');
+    // public function addMerchantIdToAllTables(){
+    //     $tables = \DB::select('SHOW TABLES');
        
-        foreach ($tables as $t) {
-            // dd($t->Tables_in_multivtu);
-            $name = $t->Tables_in_multivtu;
-            if (!Schema::hasColumn($name, 'merchant_id')) {
-                Schema::table($name, function (Blueprint $table) {
-                    $table->integer('merchant_id')->before('created_at');
-                });
-            }
-        }
+    //     foreach ($tables as $t) {
+    //         // dd($t->Tables_in_multivtu);
+    //         $name = $t->Tables_in_multivtu;
+    //         if (!Schema::hasColumn($name, 'merchant_id')) {
+    //             Schema::table($name, function (Blueprint $table) {
+    //                 $table->integer('merchant_id')->before('created_at');
+    //             });
+    //         }
+    //     }
         
-    }
+    // }
 
     public function defaultSettings(){
 

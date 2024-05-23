@@ -37,7 +37,7 @@
                                                 </div>
                                                 <div class="card-content">
                                                     <div class="card-body">
-                                                        <form action="{{route('customer.process.create.pin')}}" method="POST">
+                                                        <form action="{{route('customer.process.create.pin', request()->array)}}" method="POST">
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-md-12">   

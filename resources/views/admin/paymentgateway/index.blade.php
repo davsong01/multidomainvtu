@@ -22,9 +22,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('category.index') }}">Payment Gateways</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('paymentgateway.index', request()->array) }}">Payment Gateways</a>
                                     </li>
                                     
                                 </ol>
@@ -49,6 +49,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Name</th>
+                                                        <th>Webhook Notification URL</th>
                                                         <th>Status</th>
                                                         @if(hasAccess('paymentgateway.edit'))
                                                         <th>Actions</th>
@@ -59,10 +60,11 @@
                                                     @foreach ( $paymentgateway as $gateway )
                                                     <tr>
                                                         <td>{{ $gateway->name }}</td>
+                                                        <td><a href="{{ url('/').'/log-p-callback/'.$gateway->id }}">{{ url('/').'/log-p-callback/'.$gateway->id }}</a></td>
                                                         <td style="color:{{ $gateway->status == 'active' ? 'green' : 'red'}}">{{ ucfirst($gateway->status) }}</td>
                                                         @if(hasAccess('paymentgateway.edit'))
                                                         <td>
-                                                            <a href="{{ route('paymentgateway.edit', $gateway->id) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View/Edit</span></button></a>
+                                                            <a href="{{ route('paymentgateway.edit', array_merge(request()->array, ['paymentgateway' => $gateway->id])) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View/Edit</span></button></a>
                                                         </td>
                                                         @endif
                                                     </tr>

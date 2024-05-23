@@ -21,9 +21,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('billerlog.index') }}">Biller Logs</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('billerlog.index', request()->array) }}">Biller Logs</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Biller's Information
                                     </li>
@@ -42,7 +42,7 @@
                                 @include('layouts.alerts')
                                 <div class="card-header">
                                     <h4 class="card-title">All Biller's code</h4> <br>
-                                    <p>List of all Biller's verified on {{config('app.name')}}</p>
+                                    <p>List of all Biller's verified on {{request()->store_name}}</p>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
@@ -82,7 +82,7 @@
                                                             {{ $biller->created_at}}
                                                         </td>
                                                         <td>
-                                                            <form action="{{ route('billerlog.destroy', $biller->id) }}"
+                                                            <form action="{{ route('billerlog.destroy', array_merge(request()->array, ['billerlog' => $biller->id])) }}"
                                                                 class="btn btn-custon-four btn-bg-cl-social" method="POST"
                                                                 onsubmit="return confirm('Are you sure you want to delete forever?');">
                                                                 {{ csrf_field() }}

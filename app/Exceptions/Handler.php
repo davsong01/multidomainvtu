@@ -2,29 +2,50 @@
 
 namespace App\Exceptions;
 
+use Exception;
+use App\Services\MerchantPrefixService;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Session\TokenMismatchException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
-    /**
-     * The list of the inputs that are never flashed to the session on validation exceptions.
-     *
-     * @var array<int, string>
-     */
-    protected $dontFlash = [
-        'current_password',
-        'password',
-        'password_confirmation',
-    ];
+    // ...
 
-    /**
-     * Register the exception handling callbacks for the application.
-     */
-    public function register(): void
+    public function render($request, \Throwable $exception)
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        // dd($exception);
+        $request = Request::createFrom($request);
+        
+        $merchantPrefix = new MerchantPrefixService($request);
+        $merchant = $merchantPrefix->getMerchantCustomerInfo($request);
+        
+        if ($exception instanceof TokenMismatchException) {
+            // Handle CSRF token mismatch (419 error) here
+            \Log::error(['419 Error' => $exception->getMessage(), 'Merchant' => $merchant]);
+            return response()->view('errors.404', ['merchant' => $merchant, 'exception' => $exception], 419);
+        }else
+
+        if ($exception instanceof NotFoundHttpException) {
+            // Handle 404 errors here
+            \Log::error(['404 Error' => $exception->getMessage(), 'Merchant' => $merchant]);
+            return response()->view('errors.404', ['merchant' => $merchant, 'exception' => $exception], 404);
+        }else
+
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            // Handle Method Not Allowed errors here
+            \Log::error(['405 Error' => $exception->getMessage(), 'Merchant' => $merchant]);
+            return response()->view('errors.404', ['merchant' => $merchant, 'exception' => $exception], 405);
+        }
+
+        else{
+            \Log::error($exception->getMessage());
+        }
+
+        return parent::render($request, $exception);
     }
+
+    // ...
 }

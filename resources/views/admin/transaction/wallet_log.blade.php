@@ -43,7 +43,7 @@
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
-                            <form action="{{ route('admin.walletlog') }}" method="GET">
+                            <form action="{{ route('admin.walletlog', request()->array) }}" method="GET">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <fieldset class="form-group">
@@ -107,7 +107,7 @@
                                                     {{ $transaction->customer->user->phone }}
                                                 </td>
                                                 <td>
-                                                    <a target="_blank" href="{{ route('admin.single.transaction.view', $transaction->transaction_id) }}">
+                                                    <a target="_blank" href="{{ route('admin.single.transaction.view', array_merge(request()->array, ['transaction' => $transaction->transaction_id])) }}">
                                                         {{ $transaction->transaction_id }}
                                                     </a>
                                                 </td>
@@ -117,7 +117,6 @@
                                                 <td>{{ date("M jS, Y g:iA", strtotime($transaction->created_at)) }}</td>
                                                 
                                             </tr>
-                                            {{-- @dump($transaction) --}}
                                         @endforeach
                                     </tbody>
                                 </table>

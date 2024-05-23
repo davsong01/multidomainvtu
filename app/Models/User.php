@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Customer;
+use App\Scopes\MerchantIdScope;
 use App\Traits\MerchantIdTrait;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\TransactionPinResetToken;
@@ -66,5 +67,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function downlines()
     {
         return $this->hasMany(User::class, 'referral', 'username');
+    }
+
+    public function cron_customer()
+    {
+        return $this->hasOne(Customer::class)->withoutGlobalScope(new MerchantIdScope());
     }
 }

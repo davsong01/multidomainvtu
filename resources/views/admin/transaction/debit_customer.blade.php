@@ -10,9 +10,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array) }}">Dashboard</a>
                                     </li>
                                     <li class="breadcrumb-item active">Debit Customer
                                     </li>
@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{route('admin.process.credit.debit')}}" method="POST" enctype="multipart/form-data">
+                                        <form action="{{route('admin.process.credit.debit', request()->array)}}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-md-12">

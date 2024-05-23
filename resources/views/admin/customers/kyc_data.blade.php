@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@section('title', 'KYC Data')
+
 @section('page-css')
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/vendors.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/tables/datatable/datatables.min.css') }}"> 
@@ -19,6 +21,8 @@
                     <div class="card-header">
                         <!-- head -->
                         <h5 class="card-title">KYC Data</h5>
+                        @include('layouts.alerts')
+
                     </div>
 
                     <div class="card-body">
@@ -33,21 +37,23 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($customers as $customer)
+                                    @if(!empty($customer->user))
                                         <tr>
                                             <td>
                                                 <P>
-                                                    <a target="_blank" href="{{ request()->route()->getPrefix() }}/customer/edit/{{ $customer->id }}">
-                                                        {{ $customer->user->firstname . ' ' . $customer->user->lastname }}</a> <br>
-                                                        {{ $customer->user->email }} <br>
-                                                        {{ $customer->user->phone }}
+                                                    <a target="_blank" href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->id]))}}">
+                                                        {{ $customer->user?->firstname . ' ' . $customer->user?->lastname }}</a> <br>
+                                                        {{ $customer->user?->email }} <br>
+                                                        {{ $customer->user?->phone }}
                                                 </P>
                                             </td>
                                             <td style="">{{ ucfirst($customer->kyc_status) }}</td>
                                             <td>
-                                                <a href="{{ route('customers.edit', $customer->user->id) }}"><button type="button" class="btn btn-info btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View</span></button>
+                                                <a href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->user?->id]))}}"><button type="button" class="btn btn-info btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View</span></button>
                                                 </a>
                                             </td>
                                         </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -59,6 +65,7 @@
             </section>
         </div>
     </div>
+@endsection
 @section('page-script')
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js') }}"></script>

@@ -10,9 +10,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('role.index') }}">Roles</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('role.index', request()->array) }}">Roles</a>
                                     </li>
                                     <li class="breadcrumb-item active">Edit {{ $role->name }}
                                     </li>
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('role.update', $role->id) }}" method="POST"
+                                        <form action="{{ route('role.update', array_merge(request()->array, ['role'=> $role->id])) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
                                             @method('PATCH')

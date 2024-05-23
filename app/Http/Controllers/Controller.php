@@ -9,6 +9,7 @@ use App\Models\BillerLog;
 use App\Mail\EmailMessages;
 use App\Models\GeneralSetting;
 use App\Models\EmailApiSetting;
+use App\Scopes\MerchantIdScope;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Routing\Controller as BaseController;
@@ -43,7 +44,7 @@ class Controller extends BaseController
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec($ch);
-       
+     
         // \Log::info(['response' => $response, 'url' => $url, 'method' => $method, 'headers'=> $headers]);
         return json_decode($response, true);
     }
@@ -70,7 +71,6 @@ class Controller extends BaseController
                 }
             }
         }
-
         $imageFile->save($folder . '/' . $name);
 
         return $folder . '/' . $name;
@@ -95,6 +95,8 @@ class Controller extends BaseController
         }
 
         // 
+        $location = 'media/'.request()->store_slug.'/'.$location;
+        
         if (!is_dir($path . '/' . $location)) {
             mkdir($path . '/' . $location, 0777, true);
         }
@@ -127,16 +129,18 @@ class Controller extends BaseController
         return $trx;
     }
 
-    public function sendTransactionEmail($transaction, $user)
+    public function sendTransactionEmail($transaction, $user, $settings=null)
     {
-        if (getSettings()->transaction_email_notification == 'yes') {
+        $settings = $settings ?? getSettings();
+
+        if ($settings->transaction_email_notification == 'yes') {
             $variation_name =  isset($transaction->variation) ? ' | ' . $transaction->variation->system_name : '';
             $product =  $transaction->product->name ?? '' .  $variation_name;
             $extras = isset($transaction->extras) ? $transaction->extras : '';
             $name = $user->firstname ?? 'Customer';
             $subject = "Transaction Alert";
             $body = '<p>Hello! ' . $name . ',</p>';
-            $body .= '<p style="line-height: 2.0;">A transaction has just occured on your account on ' . config('app.name') . ' <br>Please find below the details of the transaction: <br>
+            $body .= '<p style="line-height: 2.0;">A transaction has just occured on your account on ' . request()->store_name . ' <br>Please find below the details of the transaction: <br>
             <strong>Transaction Purpose:</strong> ' . $transaction->reason . '<br>
             <strong>Transaction Status:</strong> ' . ucfirst($transaction->user_status) . '<br>
             <strong>Transaction Id:</strong> ' . $transaction->transaction_id . '<br>
@@ -161,18 +165,18 @@ class Controller extends BaseController
                 }
             }
 
-            $body .= '<strong>Unit Price:</strong> ' . getSettings()->currency . $transaction->unit_price . '<br>';
+            $body .= '<strong>Unit Price:</strong> ' . $settings->currency . $transaction->unit_price . '<br>';
 
             if (!empty($transaction->provider_charge)) {
-                $body .= '<strong>Convenience Fee:</strong> ' . getSettings()->currency . number_format($transaction->provider_charge, 2) . '<br>';
+                $body .= '<strong>Convenience Fee:</strong> ' . $settings->currency . number_format($transaction->provider_charge, 2) . '<br>';
             }
 
             $body .= '<strong>Quantity:</strong> ' . $transaction->quantity . '<br>
-            <strong>Discount Applied:</strong> ' . getSettings()->currency . number_format($transaction->discount, 2) . '<br>
-            <strong>Total Amount Paid:</strong> ' . getSettings()->currency . number_format($transaction->total_amount, 2) . '<br>
-            <strong>Initial Balance:</strong> ' . getSettings()->currency . number_format($transaction->balance_before, 2) . '<br>
-            <strong>Final Balance: </strong>' . getSettings()->currency . number_format($transaction->balance_after, 2) . '<br>
-            <br>Warm Regards. (' . config('app.name') . ')<br/>
+            <strong>Discount Applied:</strong> ' . $settings->currency . number_format($transaction->discount, 2) . '<br>
+            <strong>Total Amount Paid:</strong> ' . $settings->currency . number_format($transaction->total_amount, 2) . '<br>
+            <strong>Initial Balance:</strong> ' . $settings->currency . number_format($transaction->balance_before, 2) . '<br>
+            <strong>Final Balance: </strong>' . $settings->currency . number_format($transaction->balance_after, 2) . '<br>
+            <br>Warm Regards. (' . request()->store_name . ')<br/>
             </p>';
 
             $email = $user->email;
@@ -186,7 +190,7 @@ class Controller extends BaseController
         if ($api->warning_threshold_status == 'active' && $api->warning_threshold > $api->balance ) {
             $email = getSettings()->official_email;
 
-            $subject = "Low balance alert for " . $api->name . " on " . config('app.name');
+            $subject = "Low balance alert for " . $api->name . " on " . request()->store_name;
             $body = '<p>Hello Admin,</p>';
             $body .= '<p style="line-height: 2.0;">Your wallet balance for ' .$api->name. ' on '. config("app.name") . ' is running low.<br>
             You currently have '.getSettings()->currency.number_format($api->balance, 2).' remaning in your '.$api->name.' wallet. Please recharge<br></p><br><br>Warm Regards';
@@ -248,8 +252,8 @@ class Controller extends BaseController
         ini_set('max_execution_time', 600); //5 minutes
         // $this->purgeSentEmails();
         // Check how many have been sent within the hour
-        $sentWithinTheHour = EmailLog::where('status', 'sent')->whereBetween('sent_at', [$oneHourAgo, now()])->count();
-      
+        $sentWithinTheHour = EmailLog::withoutGlobalScope(new MerchantIdScope())->where('status', 'sent')->whereBetween('sent_at', [$oneHourAgo, now()])->count();
+        
         // \Log::info('Emails sending start at: ' .now());
         if ($sentWithinTheHour >= $hourlyRate) {
             \Log::info(now() . ' : Hourly email rate exceeded on server. ' . $sentWithinTheHour . ' emails already sent this hour');
@@ -257,17 +261,19 @@ class Controller extends BaseController
         } else {
             $pick = $hourlyRate - $sentWithinTheHour;
 
-            $emails = EmailLog::where('status', 'pending')->whereNull('sent_at')->take($pick)->get();
+            $emails = EmailLog::withoutGlobalScope(new MerchantIdScope())->where('status', 'pending')->whereNull('sent_at')->take($pick)->get();
+            
             $count = 0;
             
             foreach ($emails as $email) {
                 $data['recipient'] = $email->recipient;
                 $data['content'] = $email->content;
                 $data['subject'] = $email->subject;
-
+                $data['merchant_id'] = $email->merchant_id;
+                
                 $res = $this->sendEmailReal($data);
 
-                if (isset($res) && ($res['message'] && $res['message'] == 'success')) {
+                if (isset($res) && $res['message'] == 'success') {
                     $count++;
                     $email->status = 'sent';
                     $email->sent_at = now();
@@ -283,42 +289,7 @@ class Controller extends BaseController
 
     public function sendEmailReal($current)
     {
-        $provider = EmailApiSetting::first();
-       
-        if(!empty($provider)){
-            config([
-                'mail.driver' => $provider->MAIL_DRIVER,
-                'mail.host' => $provider->MAIL_HOST,
-                'mail.port' => $provider->MAIL_PORT,
-                'mail.encryption' => $provider->MAIL_ENCRYPTION,
-                'mail.username' => $provider->MAIL_USERNAME,
-                'mail.password' => $provider->MAIL_PASSWORD,
-                'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME,
-                'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS,
-                'mail.from' => [
-                    'address' => $provider->MAIL_FROM_ADDRESS,
-                    'name' => $provider->MAIL_FROM_NAME,
-                ],
-            ]);
-            $current['provider'] = $provider->toArray();
-        }
-        
-        try {
-            Mail::to($current['recipient'])->send(new EmailMessages([
-                'subject' => $current['subject'],
-                'body' => $current['content'],
-                'provider' => $current['provider'] ?? [],
-            ]));
-            
-            return [
-                'message' => 'success',
-            ];
-        } catch (\Exception $e) {
-            return [
-                'message' => 'error',
-                'error' => $e->getMessage(),
-            ];
-        }
+        return sendEmails($current['recipient'], $current['subject'], $current['content'],$current['merchant_id']);
     }
 
     public function checkRequestIDFormat($requestId) {

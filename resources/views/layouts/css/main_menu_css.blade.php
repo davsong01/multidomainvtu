@@ -1,7 +1,7 @@
 {{-- {{ getSettings()->menu_text_color }}
 {{ getSettings()->secondary_color }}
 {{ getSettings()->active_hover_color }} --}}
-
+{{-- {{dd(getSettings())}} --}}
 <style>
     /* Main Menu Base */
     /* -------------- */
@@ -38,7 +38,7 @@
     }
 
     .semi-dark-layout .main-menu {
-      background-color: {{ getSettings()->main_menu_background }} !important;
+      background-color: {{ getSettings()->menu_background_color }} !important;
     }
 
     /* Scroll bacr */
@@ -47,7 +47,7 @@
     }
 
     .customer-details .main-menu {
-      background-color: {{ getSettings()->customer_details }} !important;
+      background-color: {{ getSettings()->dasboard_customer_details_color }} !important;
     }
 
     .main-menu.menu-dark .navigation > li.active:not(.sidebar-group-active) > a {

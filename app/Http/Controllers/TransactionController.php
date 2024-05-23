@@ -52,7 +52,7 @@ class TransactionController extends Controller
         $banks = Bank::all();
 
         if (walletBalance(auth()->user()) <= env('BANK_TRANSFER_CHARGES')) {
-            return redirect(route('dashboard'))->with('error', 'You need above ' . getSettings()['currency'] . number_format(env('BANK_TRANSFER_CHARGES')) . ' wallet balance to use this feature!');
+            return redirect(route('dashboard'))->with('error', 'You need above ' . getSettings()->currency . number_format(env('BANK_TRANSFER_CHARGES')) . ' wallet balance to use this feature!');
         }
         if (!empty($product) && $product->status == 'active') {
             return view('customer.wallet2bank_transfer_page', compact('product', 'banks'));
@@ -540,6 +540,7 @@ class TransactionController extends Controller
             'account_number' => $data['account_number'] ?? null,
             'ip_address' => Session::get('ip_address') ?? null,
             'domain_name' => Session::get('domain_name') ?? null,
+            'merchant_id' => $data['merchant_id'] ?? request()->merchant_id,
         ];
 
         $trans = TransactionLog::create($pre);
@@ -995,8 +996,9 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function singleTransactionView(TransactionLog $transaction)
+    public function singleTransactionView($merchant, $transaction)
     {
+        $transaction = TransactionLog::where('id',$transaction)->first();
         return view('admin.transaction.single_transaction', compact('transaction'));
     }
 
@@ -1086,8 +1088,9 @@ class TransactionController extends Controller
         }
     }
 
-    public function queryWallet(Request $request, TransactionLog $transactionlog)
+    public function queryWallet(Request $request, $merchant, $transactionlog)
     {
+        $transactionlog = TransactionLog::where('id', $transactionlog)->first();
         $type = $request->type;
         $check = Wallet::where('transaction_id', $transactionlog->transaction_id)
             ->where('type', $type)

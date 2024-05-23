@@ -2,6 +2,7 @@
 use App\Models\BlackList;
 ?>
 @extends('layouts.app')
+@section('title', 'Edit '.$user->firstname)
 @section('page-css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
@@ -45,9 +46,9 @@ use App\Models\BlackList;
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array) }}">Dashboard</a>
                                     </li>
                                     <li class="breadcrumb-item active">Customer Profile</li>
                                 </ol>
@@ -162,9 +163,7 @@ use App\Models\BlackList;
                                             <h5 class="card-title mt-3">
                                                 Profile Info
                                             </h5>
-                                            <form
-                                                action="{{ request()->route()->getPrefix() }}/customer/update/{{ $user->id }}"
-                                                method="POST">
+                                            <form action="{{ route('customers.update', array_merge(request()->array, ['id' => $user->id])) }}" method="POST">
                                                 <fieldset class="form-group">
                                                     <label for="firstname">First Name</label>
                                                     <input type="text" class="form-control" id="firstname"
@@ -191,7 +190,7 @@ use App\Models\BlackList;
                                                 <fieldset class="form-group">
                                                     <label for="customerlevel">Customer Level</label>
                                                     <select name="customerlevel" class="form-control" id="customerlevel">
-                                                        <option value="">Select Customerlevel</option>
+                                                        <option value="">Select Customer level</option>
                                                         @foreach ($customerLevels as $level)
                                                         <option value="{{ $level->id }}" {{$user->customer->customer_level == $level->id ? 'selected':''}}>{{ $level->name}}</option>
                                                         @endforeach
@@ -243,14 +242,14 @@ use App\Models\BlackList;
                                                         @foreach ($trans as $transaction)
                                                             <tr>
                                                                 <td>
-                                                                    {{ $transaction->product_name }} <br><br>
-                                                                   <span><small>{{ $transaction->created_at->toDateString('en-GB') }}</small></span>
+                                                                {{ $transaction->product_name }} <br><br>
+                                                                <span><small>{{ $transaction->created_at->toDateString('en-GB') }}</small></span>
                                                                 </td>
                                                                 <td>{!! getSettings()->currency . number_format($transaction->amount) !!}</td>
                                                                 <td>{!! getSettings()->currency . number_format($transaction->total_amount) !!}</td>
                                                                 <td>{{ $transaction->unique_element }}</td>
                                                                 <td>{{ $transaction->status }}</td>
-                                                                <td><a class="mr-1 mb-1"  href="{{ route('admin.single.transaction.view', $transaction->id) }}">{{ $transaction->transaction_id }}</a>
+                                                                <td><a class="mr-1 mb-1"  href="{{ route('admin.single.transaction.view', array_merge(request()->array, ['transaction' => $transaction->id])) }}">{{ $transaction->transaction_id }}</a>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -272,7 +271,6 @@ use App\Models\BlackList;
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                 
                                                     @if($downlines->count() > 0)
                                                     @foreach ($downlines as $ref)
                                                         <tr>
@@ -299,7 +297,7 @@ use App\Models\BlackList;
                                                
                                             {{-- </div> --}}
                                            
-                                            <form action="{{ route('admin.customer.update.kyc', $user->customer->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to update these details?');" enctype="multipart/form-data">
+                                            <form action="{{ route('admin.customer.update.kyc', array_merge(request()->array, ['customer' => $user->customer->id])) }}" method="POST" onsubmit="return confirm('Are you sure you want to update these details?');" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="card-content">
                                                     <div class="row">
@@ -309,8 +307,8 @@ use App\Models\BlackList;
                                                         </div>
                                                         <div class="col-md-6">
                                                             {{-- @if(getFinalKycStatus($user->customer->id) == 'unverified' || getFinalKycStatus($user->customer->id) == 'declined') --}}
-                                                            <a onclick="return confirm('You are about to approve KYC details');" href="{{ route('admin.customer.approve.kyc', $user->customer->id) }}" class="btn btn-dark btn-sm"><i class="fa fa-check"></i> Approve and create reserved accounts</a>
-                                                            <a onclick="return confirm('You are about to decline KYC details');" href="{{ route('admin.customer.decline.kyc', $user->customer->id) }}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i> Decline</a>
+                                                            <a onclick="return confirm('You are about to approve KYC details');" href="{{ route('admin.customer.approve.kyc', array_merge(request()->array, ['customer' => $user->customer->id])) }}" class="btn btn-dark btn-sm"><i class="fa fa-check"></i> Approve and create reserved accounts</a>
+                                                            <a onclick="return confirm('You are about to decline KYC details');" href="{{ route('admin.customer.decline.kyc', array_merge(request()->array, ['customer' => $user->customer->id])) }}" class="btn btn-danger btn-sm"><i class="fa fa-times"></i> Decline</a>
                                                             {{-- @endif --}}
                                                         </div>
                                                         <hr>
@@ -480,10 +478,15 @@ use App\Models\BlackList;
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($accounts as $key => $account)
-                                                            @if ($account->paymentgateway_id == 1)
+                                                            {{-- @if ($account->paymentgateway_id == 1) --}}
                                                                 <tr>
-                                                                    <td>{{ ucfirst($account->account_name) }}</td>
-                                                                    <td>{{ ucfirst($account->bank_name) }}</td>
+                                                                    <td>{{ ucfirst($account->account_name) }} <br>
+                                                                        <span style="background-color: yellow;color:black;padding: 5px 3px;margin-top: 19px !important;border-radius: 5px;"><small>{{ ucfirst($account->gateway?->name) }}</small></span>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ ucfirst($account->bank_name) }} <br>
+                                                                        <button class="btn btn-info btn-sm">{{ $account->gateway->name }}</button>
+                                                                    </td>
                                                                     <td>{{ ucfirst($account->account_number) }} <br>
                                                                     <small style="color:black"><strong>Created on: {{$account->created_at}} </strong>
                                                                         @if(!empty($account->admin_id)) <br>
@@ -493,19 +496,19 @@ use App\Models\BlackList;
                                                                         @endif
                                                                     </small></td>
                                                                     <td>
-                                                                        <a title ="View Transactions" href="{{route('account.transactions', $account->id)}}">
+                                                                        <a title ="View Transactions" href="{{route('account.transactions', array_merge(request()->array, ['account' =>$account->id ]))}}">
                                                                         {!! getSettings()->currency !!}{{ number_format($account->transactions->sum('total_amount'), 2) }} <small><strong>({{number_format($account->transactions->count())}})</strong></small></a>
                                                                     </td>
                                                                     <td>
-                                                                        <div
-                                                                            @if($account->transactions->count() < 1)
+                                                                        <div>
+                                                                            @if($account->transactions->count() < 1 && $account->gateway->slug == 'monnify')
                                                                             <a>
-                                                                            <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', $account->id) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
+                                                                            <a onclick="return confirm('You are about to delete a reserved account!')"class="btn btn-danger btn-sm mr-1 mb-1" href="{{ route('reserved_account.delete', array_merge(request()->array, ['account' =>$account->id ])) }}"><i class="bx bxs-trash"></i><span class="align-middle ml-25">Delete</span></button></a>
                                                                             @endif
                                                                         </div>
                                                                     </td>
                                                                 </tr>
-                                                            @endif
+                                                            {{-- @endif --}}
                                                         @endforeach
                                                     </tbody>
                                                 </table>
@@ -542,7 +545,7 @@ use App\Models\BlackList;
                                                                         </label>
                                                                     </div>
                                                                 @else
-                                                                    <form action="{{ route('customer-blacklist.store') }}"
+                                                                    <form action="{{ route('customer-blacklist.store', request()->array) }}"
                                                                         method="POST">
                                                                         @csrf
                                                                         <input type="hidden" name="type"
@@ -585,7 +588,7 @@ use App\Models\BlackList;
                                                                         </label>
                                                                     </div>
                                                                 @else
-                                                                    <form action="{{ route('customer-blacklist.store') }}"
+                                                                    <form action="{{ route('customer-blacklist.store', request()->array) }}"
                                                                         method="POST">
                                                                         
                                                                         @csrf
@@ -650,7 +653,7 @@ use App\Models\BlackList;
                         <i class="bx bx-x"></i>
                     </button>
                 </div>
-                <form action="{{route('create.reserved.account', $user->customer->id)}}" method="POST">
+                <form action="{{route('create.reserved.account', array_merge(request()->array, ['customer' => $user->customer->id]))}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -660,9 +663,11 @@ use App\Models\BlackList;
                                     
                                     <select class="form-control js-example-basic-single" name="bank[]" id="bank" required multiple>
                                         <option value="">Select</option>
+                                        @if(getSettings()->payment_gateway == 'monnify')
                                         <option value="50515" {{ old('bank') == '50515' ? 'selected' : ''}}>Moniepoint</option>
                                         <option value="035" {{ old('bank') == '035' ? 'selected' : ''}}>Wema Bank</option>
                                         <option value="232" {{ old('bank') == '232' ? 'selected' : ''}}>Sterling Bank</option>
+                                        @endif
                                         <option value="058" {{ old('bank') == '058' ? 'selected' : ''}}>Guaranty Trust Bank</option> 
                                     </select>
                                 </fieldset>
@@ -693,7 +698,7 @@ use App\Models\BlackList;
                         <i class="bx bx-x"></i>
                     </button>
                 </div>
-                <form action="{{route('admin.transaction.pin.reset', $user->id)}}" method="POST">
+                <form action="{{route('admin.transaction.pin.reset', array_merge(request()->array, ['user' => $user]))}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -728,7 +733,7 @@ use App\Models\BlackList;
                         <i class="bx bx-x"></i>
                     </button>
                 </div>
-                <form action="{{route('admin.password.reset', $user->id)}}" method="POST">
+                <form action="{{route('admin.password.reset', array_merge(request()->array, ['user' => $user]))}}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row">

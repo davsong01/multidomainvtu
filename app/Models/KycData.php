@@ -12,4 +12,8 @@ class KycData extends Model
     use HasFactory, MerchantIdTrait;
 
     protected $guarded = [];
+
+    public function customer(){
+        return $this->belongsTo(Customer::class);
+    }
 }

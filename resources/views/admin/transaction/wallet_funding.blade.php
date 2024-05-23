@@ -70,7 +70,7 @@
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
-                            <form action="{{ route('admin.walletfundinglog') }}" method="GET">
+                            <form action="{{ route('admin.walletfundinglog',request()->array) }}" method="GET">
                                 {{-- @csrf --}}
                                 <div class="row">
                                     <div class="col-md-3">
@@ -143,8 +143,8 @@
                                                 <td>{{ $transaction->customer_name }} <br>
                                                     <a href="">{{ $transaction->customer_email  }}</a> <br>
                                                     {{ $transaction->customer_phone }} <br>
-                                                    @if($transaction->status == 'success')
-                                                    <button class="btn btn-primary btn-sm">{{ucfirst($transaction->status) }}</button>
+                                                    @if(in_array($transaction->status, ['success', 'delivered']))
+                                                    <button class="btn btn-success btn-sm">{{ucfirst($transaction->status) }}</button>
                                                     @else
                                                     <button class="btn btn-danger btn-sm">{{ucfirst($transaction->status) }}</button>
                                                     @endif
@@ -171,7 +171,7 @@
                                                 </td>
                                             
                                                 <td>
-                                                    <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.transaction.view', $transaction->id) }}">
+                                                    <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.transaction.view', array_merge(request()->array, ['transaction' => $transaction->id])) }}">
                                                         <i class="fa fa-eye"></i>
                                                         <span class="align-middle ml-25">View</span>
                                                     </a>

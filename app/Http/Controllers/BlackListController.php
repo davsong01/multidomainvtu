@@ -37,7 +37,9 @@ class BlackListController extends Controller
 
         BlackList::create([
             'type' => $request->type,
-            'value' => $request->value
+            'value' => $request->value,
+            'status' => $request->status,
+            'merchant_id' => request()->merchant_id
         ]);
         return back()->with('message', 'Item added to blacklist successfully');
     }

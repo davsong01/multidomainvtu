@@ -22,9 +22,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('permission.index') }}">Permissions</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('permission.index',request()->array) }}">Permissions</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Permissions
                                     </li>
@@ -42,7 +42,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">All Permissions</h4> <br>
-                                    <a href="{{ route('permission.create') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Add permission
+                                    <a href="{{ route('permission.create',request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Add permission
                                     </button></a>
                                     @include('layouts.alerts')
                                 </div>
@@ -67,7 +67,7 @@
                                                         
                                                         <td>
                                                             @if(hasAccess('permission.edit'))
-                                                            <a href="{{ route('permission.edit', $permission->id) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
+                                                            <a href="{{ route('permission.edit', array_merge(request()->array, ['permission' => $permission->id])) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
                                                             @endif
                                                         </td>
                                                     </tr>

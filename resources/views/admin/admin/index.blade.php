@@ -22,9 +22,9 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper col-12">
                                 <ol class="breadcrumb p-0 mb-0">
-                                    <li class="breadcrumb-item"><a href="/"><i class="bx bx-home-alt"></i></a>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('admins') }}">Admins</a>
+                                    <li class="breadcrumb-item"><a href="{{ route('admins',request()->array) }}">Admins</a>
                                     </li>
                                     <li class="breadcrumb-item active">All Admins
                                     </li>
@@ -42,7 +42,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">All Admins</h4> <br>
-                                    <a href="{{ route('newAdmin') }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Add Admin
+                                    <a href="{{ route('newAdmin',request()->array) }}"><button id="addRow" class="btn btn-primary mb-2 d-flex align-items-center"><i class="bx bx-plus"></i>&nbsp; Add Admin
                                     </button></a>
                                     @include('layouts.alerts')
                                 </div>
@@ -70,7 +70,7 @@
                                                         <td>{{ $admin->created_at }}</td>
                                                         @if(hasAccess('viewAdmin'))
                                                         <td>
-                                                            <a href="{{ route('viewAdmin', ['admin'=>$admin->user->id]) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
+                                                            <a href="{{ route('viewAdmin', array_merge(request()->array, ['admin'=>$admin->user->id])) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bxs-pencil"></i><span class="align-middle ml-25">View/Edit</span></button></a>
                                                         </td>
                                                         @endif
                                                     </tr>

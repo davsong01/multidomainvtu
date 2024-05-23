@@ -9,6 +9,9 @@
                     <div class="card-header">
                         <!-- head -->
                         <h5 class="card-title mb-2">Raw Callbacks</h5>
+                        @if(!empty(getSettings()) && getSettings()->payment_gateway == 'squad')
+                        <a href="{{ route('callback-error-logs', request()->array)}}" class="btn btn-dark">Fetch Callbacks from Log</a>
+                        @endif
                         @include('layouts.alerts')
                         <div class="d-inline-block">
                             <!-- chart-1   -->
@@ -36,18 +39,21 @@
                                                     <strong>Account Number:</strong><br> {{$call->account_number}} <br>
                                                     <strong>Session ID:</strong> <br>{{$call->session_id }} <br>
                                                     <strong>Reference ID:</strong><br> {{$call->transaction_reference }} <br>
-                                                    <strong>Date Created:</strong><br> {{ date("M jS, Y g:iA", strtotime($call->created_at)) }} 
-                                                    @if($call->status == 'analyzed') <br>
+                                                    <strong>Date Created:</strong><br> {{ date("M jS, Y g:iA", strtotime($call->created_at)) }} <br>
+                                                    <strong>Status:</strong><span style="color:{{ $call->status == 'analyzed' ? 'green' : 'red' }}">{{ ucfirst($call->status) }} </span><br>
+                                                    @if($call->status == 'analyzed')
                                                     <strong style="color:green">Date Analyzed:</strong><br><span style="color:green"> {{ date("M jS, Y g:iA", strtotime($call->updated_at)) }}</span>
                                                     @endif  <br>
-                                                    <strong>Status:</strong><span style="color:{{ $call->status == 'analyzed' ? 'green' : 'red' }}">{{ ucfirst($call->status) }} </span><br>
+                                                    <strong>Provider:  {{$call->gateway->name ?? 'N/A' }}</strong> <br>
                                                 </small>
                                                 @if($call->status == 'analyzed')
-                                                <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.transaction.view', $call->transaction->id) }}">
+                                                @if( !empty($call->transaction->id))
+                                                <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('admin.single.transaction.view', array_merge(request()->array, ['transaction' => $call->transaction->id ])) }}">
                                                     <i class="fa fa-eye"></i><span class="align-middle ml-25">View Transaction</span>
                                                 </a>
+                                                @endif
                                                 @else
-                                                <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('callback.reset', $call->id) }}">
+                                                <a class="btn btn-primary btn-sm mr-1 mb-1" href="{{ route('callback.reset', array_merge(request()->array, ['callback' => $call->id])) }}">
                                                     <i class="fa fa-eye"></i><span class="align-middle ml-25">Reset</span>
                                                 </a>
                                                 @endif

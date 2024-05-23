@@ -1,9 +1,12 @@
 @extends('layouts.auth')
+@section('title', 'Forgot Password')
+
 @section('body')
 <!-- left section-login -->
 
 <div class="col-md-12 col-12 px-0">
     <div class="card disable-rounded-right d-flex justify-content-center">
+        @include('layouts.auth_shop_details')
         <div class="card-header pb-1">
             <div class="card-title">
                 <h4 class="text-center mb-2">Forgot your password?</h4>
@@ -13,7 +16,7 @@
         <div class="card-content">
             <div class="card-body">
                @include('layouts.alerts')
-                <form action="{{ route('password.email') }}" method="POST">
+                <form action="{{ route('password.email', request()->array) }}" method="POST">
                     @csrf
                     <div class="row">
 
@@ -25,7 +28,7 @@
                     
                     <button type="submit" class="btn btn-primary glow w-100 position-relative">Email Password Reset Link<i id="icon-arrow" class="bx bx-right-arrow-alt"></i></button>
                 </form>
-                <div class="text-center mt-2"><small class="mr-25">I remember my password</small><a href="{{ route('login') }}"><small>Sign In</small></a></div>
+                <div class="text-center mt-2"><small class="mr-25">I remember my password</small><a href="{{ route('login', request()->array) }}"><small>Sign In</small></a></div>
                 @include('layouts.support')
             </div>
         </div>
