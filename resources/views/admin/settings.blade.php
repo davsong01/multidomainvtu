@@ -114,9 +114,9 @@ use App\Models\PaymentGateway;
                                                                         <select name="payment_gateway" class="form-control" id="payment_gateway" required>
                                                                             <option value="">Select</option>
                                                                             @foreach(getPaymentGateways() as $gateway)
-                                                                            @if($gateway->status == 'active')
+                                                                            {{-- @if($gateway->status == 'active') --}}
                                                                             <option value="{{ $gateway->name }}" {{ $settings->payment_gateway == $gateway->name ? 'selected' : ''}}>{{ ucfirst($gateway->name) }}</option>
-                                                                            @endif
+                                                                            {{-- @endif --}}
                                                                             @endforeach                                                                            
                                                                         </select>
                                                                         </fieldset>

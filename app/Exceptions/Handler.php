@@ -16,7 +16,7 @@ class Handler extends ExceptionHandler
 
     public function render($request, \Throwable $exception)
     {
-        // dd($exception);
+        dd($exception);
         $request = Request::createFrom($request);
         
         $merchantPrefix = new MerchantPrefixService($request);
