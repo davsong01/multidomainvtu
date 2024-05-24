@@ -350,7 +350,7 @@ class PaymentController extends Controller
         if (empty($provider)) {
             return false;
         }
-
+        
         $verify = app('App\Http\Controllers\PaymentProcessors\MonnifyController')->verifyTransaction($reference);
 
         return $verify;

@@ -659,8 +659,7 @@ use App\Models\BlackList;
                         <div class="row">
                             <div class="col-md-12">
                                 <fieldset class="form-group">
-                                    <label for="bank" style="display: block">Bank(s)</label>
-                                    
+                                    <label for="bank" style="display: block">Bank(s)</label>                                    
                                     <select class="form-control js-example-basic-single" name="bank[]" id="bank" required multiple>
                                         <option value="">Select</option>
                                         @if(getSettings()->payment_gateway == 'monnify')
