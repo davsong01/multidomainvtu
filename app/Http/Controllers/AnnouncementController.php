@@ -49,7 +49,7 @@ class AnnouncementController extends Controller
                 'message' => $request->message[$key],
                 'status' => $val,
                 'title' => $request->title[$key],
-                'merchant_id' => $request()->merchant_id
+                'merchant_id' => request()->merchant_id
             ]);
         }
         return back()->with('message', 'Announcement updated successfully!');

@@ -127,7 +127,7 @@ class ProductController extends Controller
                 "servercode" => $request->servercode,
                 "allow_subscription_type" => $request->allow_subscription_type ?? 'no',
                 'referral_percentage' => $request->referral_percentage,
-                'merchant_id' => $request()->merchant_id,
+                'merchant_id' => request()->merchant_id,
             ]
         );
 
@@ -142,7 +142,7 @@ class ProductController extends Controller
                     'customer_level' => $key,
                     'product_id' => $product->id,
                     'price' => $price ?? 0,
-                    'merchant_id' => $request()->merchant_id
+                    'merchant_id' => request()->merchant_id
                 ]);
             }
         }
@@ -242,7 +242,7 @@ class ProductController extends Controller
                     'customer_level' => $key,
                     'product_id' => $product->id,
                     'price' => $price ?? 0,
-                    'merchant_id' => $request()->merchant_id
+                    'merchant_id' => request()->merchant_id
                 ]);
             }
         }

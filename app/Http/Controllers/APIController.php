@@ -42,7 +42,7 @@ class APIController extends Controller
             "public_key" => $request->public_key,
             "sandbox_base_url" => $request->sandbox_base_url,
             "live_base_url" => $request->live_base_url,
-            'merchant_id' => $request()->merchant_id
+            'merchant_id' => request()->merchant_id
         ]);
 
         return redirect(route('api.index', request()->array))->with('message', 'Added successfully');
