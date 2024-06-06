@@ -14,7 +14,7 @@
                         </div>
                         @if(!empty($customer))
                         <div class="col-xl-3 col-12 dashboard-users">
-                            <a href="{{ route('customers.edit', $customer->customer_id)}}">
+                            <a href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->customer_id]))}}">
                             <div class="card text-center">
                                 <div class="card-content">
                                     <div class="card-body py-1" style="min-height: 133px;">
