@@ -99,7 +99,7 @@ class DefaultController extends Controller
                 $sandbox = env('KINGSVTU_API_REMOTE_SANDBOX_BASE_URL');
                 $live = env('KINGSVTU_API_REMOTE_LIVE_BASE_URL');
             }
-
+            
             API::Create([
                 "name" => 'KingsVTU',
                 "warning_threshold_status" => 'inactive',
