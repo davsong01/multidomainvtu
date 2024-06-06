@@ -114,7 +114,7 @@
                         
                         if (data && data.length > 0) {
                             for (t = 0; t <= data.length; t++) {
-                                console.log(data[t]);
+                                
                                 $('#variation').append(
                                     `<option value="${data[t].id}" data-isFixed="${data[t].fixed_price}" data-amount="${data[t].system_price}"> ${data[t].system_name}</option>`
                                     );

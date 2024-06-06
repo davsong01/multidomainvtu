@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -119,7 +120,7 @@
 									<?php 
 										$image = !empty($transaction['product']) ? $transaction['product']['image'] : 'site/upgrade.jpg';
 									?>
-									<img src="{{ url('/').'/'.getSettings()['logo']}}" style="width: 20%; max-width: 500px"/>
+									<img src="{{ url('/').'/'.getSettings()->logo}}" style="width: 20%; max-width: 500px"/>
 									@if(in_array($transaction['reason'], ['LEVEL-UPGRADE','WALLET-FUNDING']))
 								
 									@else
@@ -225,7 +226,7 @@
 					<td>Discount Applied</td>
 					<td>#{{ number_format($transaction['discount'], 2) }}</td>
 				</tr>
-				@if(!empty($transaction->provider_charge))
+				@if(!empty($transaction['provider_charge']))
                 <tr class="item">
 					<td>Convenience Fee</td>
 					<td>#{{ number_format($transaction['provider_charge'], 2) }}</td>

@@ -94,7 +94,7 @@
                                                                     <span class="data-details-info">{{ $transaction->unique_element }} </span> <br/>
                                                                     <span class="data-details-info"><strong style="color:#174159;">Amount: {!! getSettings()->currency !!}{{ number_format($transaction->amount, 2) }}</strong></span> <br>
                                                                     @if(!in_array($transaction->reason, ['LEVEL-UPGRADE','WALLET-FUNDING']) && !in_array($transaction->status, ['failed']))
-                                                                    <a href="{{ route('transaction.receipt.download', $transaction->id)}}" target="_blank" class="btn btn-primary mt-1 mb-1" style="color:#fff;width:100%;"><i class="fa fa-download"></i>Download Transaction Receipt</a>
+                                                                    <a href="{{ route('transaction.receipt.download', array_merge(request()->array, ['transaction_id' => $transaction->id]))}}" target="_blank" class="btn btn-primary mt-1 mb-1" style="color:#fff;width:100%;"><i class="fa fa-download"></i>Download Transaction Receipt</a>
                                                                     @endif
                                                                 </div>
                                                                 <div class="col-md-3">

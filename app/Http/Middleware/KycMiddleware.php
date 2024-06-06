@@ -18,9 +18,13 @@ class KycMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check()){
-            $kyc_status = getFinalKycStatus(auth()->user()->customer->id);
-            if($kyc_status != 'verified'){
-                return redirect(route('dashboard', request()->array))->with('unverified', 'You need to complete your KYC to be able to use this resource, Click <a href="'. route("update.kyc.details", request()->array). '"><b>HERE</b></a>');
+            if(auth()->user()->type == 'customer'){
+                $kyc_status = getFinalKycStatus(auth()->user()->customer->id);
+                if($kyc_status != 'verified'){
+                    return redirect(route('dashboard', request()->array))->with('unverified', 'You need to complete your KYC to be able to use this resource, Click <a href="'. route("update.kyc.details", request()->array). '"><b>HERE</b></a>');
+                }else{
+                    return $next($request);
+                }
             }else{
                 return $next($request);
             }

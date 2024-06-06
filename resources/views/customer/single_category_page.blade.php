@@ -42,7 +42,7 @@
                                                 </div>
                                                 <div class="card-content">
                                                     <div class="card-body">
-                                                        <form action="{{route('initialize.transaction')}}" method="POST"  id="initialize">
+                                                        <form action="{{route('initialize.transaction', request()->array)}}" method="POST"  id="initialize">
                                                             @csrf
 
                                                             <div class="row">
@@ -116,7 +116,7 @@
                                                                         <div class="col-md-6">
                                                                             <fieldset class="form-group">
                                                                                 <label for="phone">Phone Number</label>
-                                                                                <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone')}}" required>
+                                                                                <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone')}}" maxlength="11" required>
                                                                             </fieldset>
                                                                         </div>
                                                                         {{-- <fieldset class="form-group position-relative has-icon-left">
@@ -143,7 +143,7 @@
                                                                         @if (auth()->user()->transaction_pin)
                                                                         <div class="col-md-6">
                                                                             <fieldset class="form-group">
-                                                                                <label for="transaction_pin">Transaction PIN</label><span class="reset-pin"><a href="{{ route('customer.reset.pin') }}"> Reset Transaction Pin</a></span>
+                                                                                <label for="transaction_pin">Transaction PIN</label><span class="reset-pin"><a href="{{ route('customer.reset.pin', request()->array) }}"> Reset Transaction Pin</a></span>
                                                                                 <input type="password" class="form-control" id="transaction_pin" name="transaction_pin" required>
                                                                             </fieldset>
                                                                         </div>
@@ -183,7 +183,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="closeModal()">Close</button>
     </div>
     </form>
     </div>
@@ -194,6 +194,10 @@
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 
 <script>
+    function closeModal(){
+        $('#verify-modal').modal('hide');
+    }
+
     function verify(e){
         $("#amount").attr({
             "required": true,
@@ -211,19 +215,22 @@
         $('#verify-modal').modal('hide');
         var amount = $('#amount').val();
 
-        var url = "{{ url('customer-verify') }}";
         var element = "{{ $category->unique_element }}";
         var allow_subscription_type = $('#product').find(':selected').data('allow_subscription_type');
-
+        
         var formData =  {
             category_id: {{ $category->id }},
             unique_element: $("#unique_element").val(),
             variation: $("#variation").val(),
             product_id: $("#product").val(),
         };
-
+        $.ajaxSetup({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         $.ajax({
-            url: url,
+            url: "{{ route('verify.unique.element', ['merchant' => request()->merchant]) }}",
             method: 'POST',
             dataType: 'json',
             data:formData,
@@ -313,7 +320,7 @@
     $(document).ready(function () {
         $("#amount").val('');
         $('#product').val('');
-                
+    
         var variations = [];
 
         $('#product').on('change', function () {
@@ -364,9 +371,10 @@
                 $("#amount").val('');
 
                 $('#variation').find('option').not(':first').remove();
-
+               
+                
                 $.ajax({
-                    url: "{{ url('customer-get-variations') }}/" + product,
+                    url: "{{ route('get.customer.variations', ['merchant' => request()->merchant, 'product' => '']) }}" + product,
                     success: function (data) {
                         if (data && data.length > 0) {
                             for (t = 0; t <= data.length; t++) {

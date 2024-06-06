@@ -155,7 +155,7 @@
                                                         <small class="text-muted">
                                                             <a target="_blank" href="{{ route('transaction.status', array_merge(request()->array, ['transaction_id' => $transaction->transaction_id])) }}" class="btn btn-sm btn-primary glow mt-md-2 mb-1">View</a></small> <small class="text-muted">
                                                             @if(!in_array($transaction->reason, ['LEVEL-UPGRADE','WALLET-FUNDING']) && !in_array($transaction->status, ['failed']))
-                                                            <a target="_blank" href="{{ route('transaction.receipt.download', ['transaction_id' => $transaction->transaction_id]) }}" class="btn btn-sm btn-info glow mt-md-2 mb-1">Download Transaction Receipt</a>
+                                                            <a target="_blank" href="{{ route('transaction.receipt.download', array_merge(request()->array, ['transaction_id' => $transaction->id]))}}" class="btn btn-sm btn-info glow mt-md-2 mb-1">Download Transaction Receipt</a>
                                                             @endif
                                                         </small>
                                                     </div>

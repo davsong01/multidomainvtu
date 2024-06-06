@@ -25,14 +25,14 @@ use Illuminate\Contracts\Database\Query\Builder;
 
 class TransactionController extends Controller
 {
-    public function showProductsPage($slug)
+    public function showProductsPage($merchant, $slug)
     {
         $category = Category::with([
             'products' => function ($query) {
                 return $query->where('status', 'active')->get();
             }
         ])->where('status', 'active')->where('slug', $slug)->first();
-
+        
         if (!empty($category) && $category->status == 'active') {
             return view('customer.single_category_page', compact('category'));
         } else {
@@ -64,7 +64,7 @@ class TransactionController extends Controller
     public function initializeTransaction(Request $request)
     {
         $blacklist = $this->bounceBlacklist($request->phone ?? $request->unique_element, auth()->user()->email, $request->email);
-
+        
         if ($blacklist) {
             return back()->with('error', 'Account blacklisted!, kindly reach out to support!');
         }
@@ -195,21 +195,22 @@ class TransactionController extends Controller
 
         // Log Transaction Email
         $this->sendTransactionEmail($transaction, auth()->user());
-        return redirect(route('transaction.status', $transaction->transaction_id));
+        return redirect(route('transaction.status', array_merge(request()->array, ['transaction_id' => $transaction->transaction_id])));
     }
 
     
-    public function transactionStatus($transaction_id)
+    public function transactionStatus($merchant, $transaction_id)
     {
         $transaction = TransactionLog::where('transaction_id', $transaction_id)->first();
         return view('customer.transaction_status', compact('transaction'));
     }
 
-    public function transactionReceipt($transaction_id)
+    public function transactionReceipt($merchant, $transaction_id)
     {
         $transaction = TransactionLog::with(['product', 'category', 'variation'])->where('id', $transaction_id)->first()->toArray();
-
+        
         $pdf = Pdf::loadView('customer.receipts.transaction_receipt', ['transaction' => $transaction])->setPaper('a4', 'portrait');
+        
         return $pdf->download($transaction['transaction_id'] . '.pdf');
         // return view('customer.receipts.transaction_receipt', compact('transaction'));
     }
@@ -312,7 +313,7 @@ class TransactionController extends Controller
     public function verify(Request $request, $admin = null)
     {
         $variation = Variation::where('id', $request->variation)->first();
-
+        
         if (in_array($variation->slug, array_keys(specialVerifiableVariations()))) {
             $element = specialVerifiableVariations()[$variation->slug];
         } else {
@@ -340,7 +341,7 @@ class TransactionController extends Controller
 
         $product = $variation->product;
         $api = $variation->api;
-
+        
         $request['product_name'] = $product->name ?? null;
         $request['variation_name'] = $variation->slug ?? null;
         $request['category_id'] = $product->category->id ?? null;
@@ -355,10 +356,10 @@ class TransactionController extends Controller
             'api' => $api,
             'request' => $request
         ];
-
+        
         // Get Api
         $verify = app("App\Http\Controllers\Providers\KingsVtuController")->verify($data);
-
+        
         if (isset($verify) && $verify['status_code'] == 1) {
             $res = [
                 'status' => $verify['status_code'],
@@ -368,7 +369,7 @@ class TransactionController extends Controller
             ];
 
             if (isset($verify['raw_response'])) {
-                $this->refineAndLogBiller($verify, $variation->category, $request['unique_element'], $request['product_slug']);
+                $real_response = $this->refineAndLogBiller($verify, $variation->category, $request['unique_element'], $request['product_slug']);
             }
         } else if (isset($query) && $query['status_code'] == 0) {
             $res = [
@@ -718,7 +719,7 @@ class TransactionController extends Controller
         }
 
 
-        $products = Product::where('status', 'active')->where('type', 'geneeral')->get();
+        $products = Product::where('status', 'active')->where('type', 'general')->get();
         $categories = Category::where('status', 'active')->get();
         return view('customer.reports', compact('products', 'categories'));
     }

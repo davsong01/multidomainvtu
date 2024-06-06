@@ -50,7 +50,7 @@ class KingsVtuController extends Controller
             'Content-Type' => 'application/json',
             'Accept' =>  'application/json',
         ];
-
+        
         return $this->basicApiCall($url, [], $headers, 'GET');
     }
 
@@ -309,15 +309,16 @@ class KingsVtuController extends Controller
                 'url' => $url
             ];
 
-            $response = $this->basicApiCall($url, $payload, $headers, 'POST');
             
+            $response = $this->basicApiCall($url, $payload, $headers, 'POST');
             if (isset($response['status']) && $response['status'] == 'success' && !empty($response['data']) && !empty($response['data']['Customer_Name'])) {
+                
                 $message = '';
-                $message .= isset($response['data']['Customer Name']) ? 'Account Name: ' . $response['data']['Customer_Name'] : '';
+                $message .= isset($response['data']['Customer_Name']) ? 'Account Name: ' . $response['data']['Customer_Name'] : '';
                 $message .= isset($response['data']['Address']) ? '<br/>Address: ' . $response['data']['Address'] : '';
                 $message .= isset($response['data']['Status']) ? '<br/>Status: ' . $response['data']['Status'] : '';
-                $message .= isset($response['data']['Meter Number']) ? '<br/>Meter Number: ' . $response['data']['Meter_Number'] : '';
-                $message .= isset($response['data']['Meter Type']) ? '<br/>Meter Type: ' . $response['data']['Meter_Type'] : '';
+                $message .= isset($response['data']['Meter_Number']) ? '<br/>Meter Number: ' . $response['data']['Meter_Number'] : '';
+                $message .= isset($response['data']['Meter_Type']) ? '<br/>Meter Type: ' . $response['data']['Meter_Type'] : '';
                 $message .= isset($response['data']['Customer_Arrears']) ? '<br/>Customer Arrears: ' . $response['data']['Customer_Arrears'] : '';
                 $message .= isset($response['data']['Customer_Account_Type']) ? '<br/>Customer Account Type: ' . $response['data']['Customer_Account_Type'] : '';
                 $message .= isset($response['data']['Min_Purchase_Amount']) ? '<br/>Minimum Purchase Amount: ' . $response['data']['Min_Purchase_Amount'] : '';
@@ -362,7 +363,7 @@ class KingsVtuController extends Controller
                 'raw_response' => $th->getMessage().' '.$th->getFile(). ' Line: '.$th->getLine(),
             ];
         }
-
+        
         return $final_response;
     }
 }

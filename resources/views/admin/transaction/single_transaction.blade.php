@@ -93,7 +93,7 @@
                                                                     {{ $transaction->created_at }}
                                                                     @if(!in_array($transaction->reason, ['LEVEL-UPGRADE','WALLET-FUNDING']))
                                                                      <br>
-                                                                     <a href="{{ route('transaction.receipt.download', $transaction->id)}}" target="_blank" class="btn btn-primary btn-sm" style="color:#fff;"><i class="fa fa-download"></i> Download Receipt</a> <br>
+                                                                     <a href="{{ route('transaction.receipt.download', array_merge(request()->array, ['transaction_id' => $transaction->id]))}}" target="_blank" class="btn btn-primary btn-sm" style="color:#fff;"><i class="fa fa-download"></i> Download Receipt</a> <br>
                                                                     @endif
                                                                 </div>
                                                                 <div class="col-md-3">

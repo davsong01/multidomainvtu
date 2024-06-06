@@ -113,9 +113,9 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                 // Route::post('change-pin', [HomeController::class, 'processResetPin'])->name('pin.process.reset');
                 Route::get('customer/{slug}', [TransactionController::class, 'showProductsPage'])->name('open.transaction.page');
                 Route::get('airtime-to-cash', [TransactionController::class, 'airtimeToCash'])->name('airtime-to-cash');
-                Route::get('wallet-to-bank/{sluhg}', [TransactionController::class, 'walletToBank'])->name('wallet-to-bank');
+                Route::get('wallet-to-bank/{slug}', [TransactionController::class, 'walletToBank'])->name('wallet-to-bank');
                 
-                Route::get('customer-get-variations/{product}', [VariationController::class, 'getCustomerVariations'])->name('get.customer.variations');
+                Route::get('customer-get-variations', [VariationController::class, 'getCustomerVariations'])->name('get.customer.variations');
             
                 Route::middleware(['kyc'])->group(function () {
                     Route::post('customer-initialize-transaction', [TransactionController::class, 'initializeTransaction'])->name('initialize.transaction');
@@ -218,7 +218,8 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                 Route::get('delete-variations/{variation}', [VariationController::class, 'deleteVariations'])->name('variation.delete');
 
                 Route::post('create-reserved-account/{customer}', [CustomerController::class, 'addReservedAccounts'])->name('create.reserved.account');
-            
+                Route::get('admin-download-transaction-receipt/{transaction_id}', [TransactionController::class, 'transactionReceipt'])->name('admin.transaction.receipt.download');
+                
                 Route::controller(AdminController::class)->group(function () {
                     Route::get('admins', 'index')->name('admins');
                     Route::get('admin/new', 'create')->name('newAdmin');

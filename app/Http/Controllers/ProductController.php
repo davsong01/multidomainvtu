@@ -21,6 +21,8 @@ class ProductController extends Controller
     public function pullProducts()
     {
         $categories = Category::all();
+        $api = API::first();
+        
         foreach ($categories as $category) {
             $products = app("App\Http\Controllers\Providers\KingsVtuController")->getProducts($category->slug);
 
@@ -29,10 +31,17 @@ class ProductController extends Controller
                 if (!empty($products)) {
                     foreach ($products as $key => $product) {
                         $allproducts = Product::pluck('slug')->toArray();
-                        if(!in_array($product['slug'], $allproducts)){
-                            Product::create(
+                        // if(!in_array($product['slug'], $allproducts)){
+                            Product::updateOrcreate(
                                 [
                                     "category_id" => $category->id,
+                                    "slug" => $product['slug'],
+                                    "merchant_id" => request()->merchant_id,
+                                    'api_id' => $api->id
+                                ],
+                                [
+                                    "category_id" => $category->id,
+                                    'api_id' => $api->id,
                                     "name" => $product['display_name'],
                                     "display_name" => $product['display_name'],
                                     "slug" => $product['slug'],
@@ -48,7 +57,7 @@ class ProductController extends Controller
                                     "merchant_id" => request()->merchant_id
                                 ]
                             );
-                        }
+                        // }
                     }
 
                 } 

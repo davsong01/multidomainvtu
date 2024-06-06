@@ -9,6 +9,7 @@
     <meta name="keywords" content="@yield('keywords')">
     <meta name="author" content="{{ request()->store_name }}">
     <title>{{request()->store_name }} - @yield('title', getSettings()->seo_title )</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="apple-touch-icon" href="{{ asset(getSettings()->favicon) }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset(getSettings()->favicon) }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" integrity="" crossorigin="anonymous">

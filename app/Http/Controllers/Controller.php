@@ -206,26 +206,26 @@ class Controller extends BaseController
             //code...
             $refinedData = [];
             if (isset($data['raw_response'])) {
-                $dataX = $data['raw_response']['content'];
-
+                $dataX = $data['raw_response']['content'] ?? $data['raw_response']['data'];
+                
                 if ($category->unique_element == 'profile_id') {
-                    $refinedData['Profile_Id'] = $data['raw_response']['content']['profile_Id'] ?? null;
+                    $refinedData['Profile_Id'] = $dataX['profile_Id'] ?? null;
                 }
 
                 if ($category->unique_element == 'meter_number') {
-                    $refinedData["Customer Name"] = $data['raw_response']['content']['Customer_Name'] ?? null;
-                    $refinedData["Address"] = $data['raw_response']['content']['Address'] ?? null;
-                    $refinedData["Meter Number"] = $data['raw_response']['content']['Meter_Number'] ?? null;
+                    $refinedData["Customer Name"] = $dataX['Customer_Name'] ?? null;
+                    $refinedData["Address"] = $dataX['Address'] ?? null;
+                    $refinedData["Meter Number"] = $dataX['Meter_Number'] ?? null;
                 }else
 
                 if ($category->unique_element == 'iuc_number') {
-                    $refinedData["Customer Name"] = $data['raw_response']['content']['Customer_Name'] ?? null;
-                    $refinedData["IUC Number"] = $data['raw_response']['content']['Customer_Number'] ?? null;
+                    $refinedData["Customer Name"] = $dataX['Customer_Name'] ?? null;
+                    $refinedData["IUC Number"] = $dataX['Customer_Number'] ?? null;
                 }else
 
                 if ($category->unique_element == 'account_id') {
-                    $refinedData["Customer Name"] = $data['raw_response']['content']['Customer_Name'] ?? null;
-                    $refinedData["Account ID"] = $data['raw_response']['content']['Customer_Number'] ?? null;
+                    $refinedData["Customer Name"] = $dataX['Customer_Name'] ?? null;
+                    $refinedData["Account ID"] = $dataX['Customer_Number'] ?? null;
                 }
 
                 $refinedData = array_unique(array_filter($refinedData));
@@ -236,7 +236,7 @@ class Controller extends BaseController
                     'refined_data' => json_encode($refinedData),
                     'raw_data' => json_encode($data['raw_response'])
                 ]);
-
+                
                 return $refinedData;
             }
         } catch (\Throwable $th) {

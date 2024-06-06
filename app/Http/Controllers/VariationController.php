@@ -13,13 +13,18 @@ class VariationController extends Controller
     public function pullVariations($merchant, $product)
     {
         $product = Product::where('id', $product)->first();
+        
         $variations = app("App\Http\Controllers\Providers\KingsVtuController")->getVariations($product->slug);
         
         if (isset($variations['status']) && $variations['status'] == 'success') {
             $variations = $variations['data']['variations'] ?? [];
             if (!empty($variations)) {
+                
                 foreach ($variations as $key => $variation) {
                     $variation = Variation::updateOrCreate([
+                        'product_id' => $product->id,
+                        'category_id' => $product->category_id,
+                        'api_id' => $product->api_id,
                         'slug' => $variation['variation_slug'],
                     ], [
                         'product_id' => $product->id,
@@ -50,9 +55,11 @@ class VariationController extends Controller
 
         return view('admin.category.index', compact('categories'));
     }
-    public function getCustomerVariations(Product $product)
+    public function getCustomerVariations(Request $request)
     {
+        $product = Product::where('id', $request->product)->first();
         $variations = Variation::where('product_id', $product->id)->where('status', 'active')->orderBy('system_price', 'ASC')->get();
+        
         foreach ($variations as $key => $variation) {
             $req = new Request([
                 'variation_id' => $variation->id,
