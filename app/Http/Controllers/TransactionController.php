@@ -151,10 +151,17 @@ class TransactionController extends Controller
         }
 
         // Log Wallet
+        $requestId = $controller->generateRequestId();
+        $first = strtoupper(substr(request()->store_slug, 0, 1));
+        $last = strtoupper(substr(request()->store_slug, -1));
+        $prefix = $first . $last;
+
+        $tid = $requestId . '/' . $prefix;
+        
         $request_id = $this->generateRequestId();
         $request['type'] = 'debit';
         $request['customer_id'] = auth()->user()->customer->id;
-        $request['transaction_id'] = 'A2C-' . $request_id;
+        $request['transaction_id'] = $tid;
         $request['request_id'] = $request_id;
         $request['payment_method'] = 'wallet';
         $request['balance_before'] = $balance;
@@ -1044,7 +1051,12 @@ class TransactionController extends Controller
         }
 
         $requestId = $controller->generateRequestId();
-        $tid = 'A2C-' . $requestId;
+        $first = strtoupper(substr(request()->store_slug, 0, 1));
+        $last = strtoupper(substr(request()->store_slug, -1));
+        $prefix = $first.$last;
+
+        $tid = $requestId. '/'.$prefix;
+        
         $reason = $type == 'debit' ? 'ADMIN-DEBIT' : 'ADMIN-CREDIT';
         try {
             //code...

@@ -299,16 +299,20 @@
                     amount:amount
                 };
             }
-            
+            $.ajaxSetup({
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             $.ajax({
-                url: "{{ url('customer-get-discount') }}",
+                url: "{{ route('get.customer.discount', ['merchant' => request()->merchant]) }}",
                 method: 'POST',
                 dataType: 'json',
                 data:formData,
                 success: function (data) {
                     if(data.discount > 0){
                         $('#discount').show();
-                        var amount = $('#discount').html(data.message);
+                        $('#discount').html(data.message);
                     }
                 }
             });

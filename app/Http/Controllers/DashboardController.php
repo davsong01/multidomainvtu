@@ -433,7 +433,13 @@ class DashboardController extends Controller
         }
 
         $requestId = $controller->generateRequestId();
-        $tid = 'A2C-' . $requestId;
+        $requestId = $controller->generateRequestId();
+        $first = strtoupper(substr(request()->store_slug, 0, 1));
+        $last = strtoupper(substr(request()->store_slug, -1));
+        $prefix = $first . $last;
+
+        $tid = $requestId . '/' . $prefix;
+
         $customer = auth()->user()->customer;
 
         try {

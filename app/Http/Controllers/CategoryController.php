@@ -33,7 +33,7 @@ class CategoryController extends Controller
                                 "display_name" => $category['display_name'],
                                 "slug" => $category['slug'],
                                 "order" => $key + 1,
-                                "description" => $category['description'],
+                                "description" => ' ',
                                 "unique_element" => $category['unique_element'] ?? '',
                                 "discount_type" => $category['discount_type'] ?? '',
                                 "status" => 'active',
