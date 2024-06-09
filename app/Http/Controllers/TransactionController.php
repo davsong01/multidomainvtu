@@ -151,17 +151,12 @@ class TransactionController extends Controller
         }
 
         // Log Wallet
-        $requestId = $controller->generateRequestId();
-        $first = strtoupper(substr(request()->store_slug, 0, 1));
-        $last = strtoupper(substr(request()->store_slug, -1));
-        $prefix = $first . $last;
-
-        $tid = $requestId . '/' . $prefix;
         
-        $request_id = $this->generateRequestId();
+        $request_id = $requestId = $this->generateRequestId('prefix');
+        
         $request['type'] = 'debit';
         $request['customer_id'] = auth()->user()->customer->id;
-        $request['transaction_id'] = $tid;
+        $request['transaction_id'] = $requestId;
         $request['request_id'] = $request_id;
         $request['payment_method'] = 'wallet';
         $request['balance_before'] = $balance;
@@ -184,7 +179,7 @@ class TransactionController extends Controller
 
         // Log basic transaction
         $transaction = $this->logTransaction($request->all());
-
+        
         // Log wallet
         $wal = $wallet->logWallet($request->all());
 
@@ -1050,12 +1045,8 @@ class TransactionController extends Controller
             $data['balance_after'] = $currAmount - $amount;
         }
 
-        $requestId = $controller->generateRequestId();
-        $first = strtoupper(substr(request()->store_slug, 0, 1));
-        $last = strtoupper(substr(request()->store_slug, -1));
-        $prefix = $first.$last;
-
-        $tid = $requestId. '/'.$prefix;
+        $requestId = $controller->generateRequestId('prefix');
+        $tid = $requestId;
         
         $reason = $type == 'debit' ? 'ADMIN-DEBIT' : 'ADMIN-CREDIT';
         try {

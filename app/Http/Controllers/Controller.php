@@ -122,10 +122,19 @@ class Controller extends BaseController
     // public function settings(){
     //     return GeneralSetting::first();
     // }
-    public function generateRequestId()
+    public function generateRequestId($prefix=null)
     {
         date_default_timezone_set("Africa/Lagos");
-        $trx = date("YmdHi") . rand(1000000, 9999999);
+        if(!$prefix){
+            $trx = date("YmdHi") . rand(1000000, 9999999);
+        }else{
+            $first = strtoupper(substr(request()->store_slug, 0, 1));
+            $last = strtoupper(substr(request()->store_slug, -1));
+            $prefix = $first . $last;
+        
+            $trx = date("YmdHi") . rand(1000000, 9999999). '/' . $prefix;
+        }
+
         return $trx;
     }
 
