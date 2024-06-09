@@ -27,19 +27,17 @@ class Handler extends ExceptionHandler
         
         if ($exception instanceof TokenMismatchException) {
             // Handle CSRF token mismatch (419 error) here
-            \Log::error(['419 Error' => $exception->getMessage(), 'Merchant' => $merchant]);
+            // \Log::error(['419 Error' => $exception->getMessage(), 'merchant' => $merchant]);
             return response()->view('errors.404', ['merchant' => $merchant, 'exception' => $exception], 419);
-        }else
-
-        if ($exception instanceof NotFoundHttpException) {
+        }else if ($exception instanceof NotFoundHttpException) {
             // Handle 404 errors here
-            \Log::error(['404 Error' => $exception->getMessage(), 'Merchant' => $merchant]);
+            // \Log::error(['404 Error' => $exception->getMessage(), 'merchant' => $merchant]);
             return response()->view('errors.404', ['merchant' => $merchant, 'exception' => $exception], 404);
         }else
 
         if ($exception instanceof MethodNotAllowedHttpException) {
             // Handle Method Not Allowed errors here
-            \Log::error(['405 Error' => $exception->getMessage(), 'Merchant' => $merchant]);
+            // \Log::error(['405 Error' => $exception->getMessage(), 'merchant' => $merchant]);
             return response()->view('errors.404', ['merchant' => $merchant, 'exception' => $exception], 405);
         }
 

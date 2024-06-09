@@ -140,7 +140,6 @@ class DefaultController extends Controller
             DB::rollBack();
             return response()->json(['status' => 'failed', 'message' => $th->getMessage()], 412);
         }
-        
     }
 
     public function createPermissions($merchant, $admin){
@@ -151,7 +150,8 @@ class DefaultController extends Controller
             'permissions' => implode(",", $ids),
             'status' => 'active',
             'role_type' => 'superadmin',
-            'merchant_id' => $merchant->id
+            'merchant_id' => $merchant->id,
+            'is-admin' => 1
         ]);
 
         $admin->update(['permissions' => $role->id]);

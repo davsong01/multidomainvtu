@@ -196,21 +196,24 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                 Route::get('admin-callback-error-logs', [SquadController::class, 'getCallbackLogs'])->name('callback-error-logs');
                 
                 Route::get('reserved-account-delete/{account}', [ReservedAccountNumberController::class, 'delete'])->name('reserved_account.delete');
-            
+                
                 Route::get('single-transaction-view/{transaction}', [TransactionController::class, 'singleTransactionView'])->name('admin.single.transaction.view');
                 Route::get('query-wallet/{transactionlog?}', [TransactionController::class, 'queryWallet'])->name('admin.query.wallet');
                 Route::get('requery-transaction/{transactionlog?}', [TransactionController::class, 'requery'])->name('admin.requery.transaction');
                 
                 Route::post('change-transaction-method/{transaction}', [TransactionController::class, 'changeTransactionMethod'])->name('admin.changetransactionmethod');
-            
+                
                 Route::post('verify-bank-details', [TransactionController::class, 'verifyBankDetails'])->name('admin.verify.bank.details');
-            
+                
                 Route::get('customers/{status?}', [CustomerController::class, 'customers'])->name('customers');
                 Route::get('customers-active/{status}', [CustomerController::class, 'customers'])->name('customers.active');
                 Route::get('customers-suspended/{status}', [CustomerController::class, 'customers'])->name('customers.suspended');
+                Route::get('customers-unverified', [CustomerController::class, 'unverifiedCustomers'])->name('customers.unverified');
+                Route::get('customers-verify/{customer}', [CustomerController::class, 'verifyCustomer'])->name('customer.verify');
+                
                 Route::get('customer/edit/{id}', [CustomerController::class, 'singleCustomer'])->name('customers.edit');
                 Route::post('customer/update/{id}', [CustomerController::class, 'updateCustomer'])->name('customers.update');
-            
+                
                 Route::get('pull-variations/{product}', [VariationController::class, 'pullVariations'])->name('variations.pull');
                 Route::post('update-variations/{product}', [VariationController::class, 'updateVariations'])->name('variations.update');
                 Route::post('manual-variations-add/{product}', [VariationController::class, 'addManualVariations'])->name('manual.variations.add');

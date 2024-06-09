@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use App\Models\KycData;
 use App\Models\Category;
 use App\Models\Customer;
@@ -19,6 +20,14 @@ use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\PaymentProcessors\SquadController;
 use App\Http\Controllers\PaymentProcessors\MonnifyController;
+
+
+if (!function_exists("getAdminRoleId")) {
+    function getAdminRoleId()
+    {
+        return Role::whereNotNull('is_admin')->value('id');
+    }
+}
 
 if (!function_exists("landingPageCategories")) {
     function landingPageCategories(): array {
@@ -1490,7 +1499,7 @@ if (!function_exists("announcements")) {
         {
             $routes = auth()->user()->admin->rolepermissions();
             
-            if (in_array($route, $routes)|| in_array(1, auth()->user()->admin->roleIds())) {
+            if (in_array($route, $routes)|| in_array(getAdminRoleId(), auth()->user()->admin->roleIds())) {
                 return true;
             }else{
                 return false;

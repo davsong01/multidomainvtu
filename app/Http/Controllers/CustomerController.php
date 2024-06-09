@@ -50,6 +50,25 @@ class CustomerController extends Controller
         return view('admin.customers.index', ['customers' => $customers]);
     }
 
+    function unverifiedCustomers(Request $request, $merchant, $status = null)
+    {
+        $customers = User::whereNull('email_verified_at')->get();
+        return view('admin.customers.unverified', ['customers' => $customers]);
+    }
+
+    function verifyCustomer($merchant, $customer){
+        $customer = User::where('id', $customer)->first();
+        if($customer){
+            $customer->update([
+                'email_verified_at' => Carbon::now(),
+            ]);
+
+            return back()->with('message', 'Operation successful');
+        }else{
+            return back()->with('error', 'Customer not found');
+        }
+    }
+
     public function addReservedAccounts(Request $request, $merchant, $customer)
     {
         $customer = Customer::where('id',$customer)->first();

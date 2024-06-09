@@ -517,11 +517,9 @@ use App\Models\BlackList;
                                         <div class="tab-pane" id="actions" aria-labelledby="about-tab"
                                             role="tabpanel">
                                             <div class="row">
-                                                
                                                 @php
                                                     // check blacklist status
                                                     $mail = BlackList::where('value', $user->email)->first();
-                                                  
                                                 @endphp
                                                 <div class="col-md-6 col-sm-6">
                                                     <div class="card bg-lighten-2 p-0 bg-dark">

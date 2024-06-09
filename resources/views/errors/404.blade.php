@@ -51,11 +51,14 @@
                 <section class="row flexbox-container">
                     <div class="col-xl-6 col-md-7 col-9">
                         <!-- w-100 for IE specific -->
+                        {{-- {{dd(request()->array, $merchant)}} --}}
                         <div class="card bg-transparent shadow-none">
                             <div class="card-content">
                                 <div class="card-body text-center bg-transparent miscellaneous">
                                     <h6 style="color:black"><strong>An error occured: </strong> | <span style="color:red" class="message">{{ $exception->getMessage() }}</span></h6>
-                                    <a href="{{ route('welcome', request()->array)}}" class="btn btn-primary btn-lg round glow">GO BACK</a>
+                                    @if(isset($merchant['store_slug']))
+                                    <a href="{{ route('welcome', ['merchant' => $merchant['store_slug']])}}" class="btn btn-primary btn-lg round glow">GO BACK</a>
+                                    @endif
                                 </div>
                             </div>
                         </div>

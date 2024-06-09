@@ -62,7 +62,8 @@ class RoleSeeder extends Seeder
             'KYC Management',
             'Payment Gateway Settings',
             'General Settings',
-            'Email Setup'
+            'Email Setup',
+            'Unverified Customers'
         ];
 
         $permissions = [
@@ -185,7 +186,9 @@ class RoleSeeder extends Seeder
             'customerlevel.create',
             'admin.transaction.pin.reset',
             'admin.password.reset',
-            'admin.airtime.2.cash.log'
+            'admin.airtime.2.cash.log',
+            'customers.unverified',
+            'customers.verify'
         ];
 
         // RolePermission::truncate();
