@@ -55,7 +55,10 @@
                                                 Wallet: {!! getSettings()->currency !!}{{ number_format(walletBalance($customer)) }} <br>
                                                 Referral:  {!! getSettings()->currency !!}{{ number_format(referralBalance($customer)) }} <br>
                                             </td>
-                                            <td>{{ $customer->created_at->toDateString('en-GB') }}</td>
+                                            <td>
+                                                Registerd: {{ $customer->created_at->toDateString('en-GB') }} <br>
+                                                Verified: {{ $customer->email_verified_at->toDateString('en-GB') }}
+                                            </td>
                                             @if(hasAccess('customers.edit'))
                                             <td>
                                                 <a href="{{ route('customers.edit', array_merge(request()->array, ['id' => $customer->id])) }}"><button type="button" class="btn btn-info btn-sm mr-1 mb-1"><i class="fa fa-edit"></i><span class="align-middle ml-25">View</span></button>
