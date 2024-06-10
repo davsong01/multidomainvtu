@@ -132,7 +132,7 @@ class Controller extends BaseController
             $last = strtoupper(substr(request()->store_slug, -1));
             $prefix = $first . $last;
         
-            $trx = date("YmdHi") . rand(1000000, 9999999). '/' . $prefix;
+            $trx = date("YmdHi") . rand(1000000, 9999999). '-' . $prefix;
         }
 
         return $trx;
