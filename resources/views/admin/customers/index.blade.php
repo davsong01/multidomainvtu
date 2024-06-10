@@ -56,8 +56,8 @@
                                                 Referral:  {!! getSettings()->currency !!}{{ number_format(referralBalance($customer)) }} <br>
                                             </td>
                                             <td>
-                                                Registerd: {{ $customer->created_at->toDateString('en-GB') }} <br>
-                                                Verified: {{ $customer->email_verified_at->toDateString('en-GB') }}
+                                                Registerd: {{ $customer->created_at }} <br>
+                                                Verified: {{ $customer->email_verified_at }}
                                             </td>
                                             @if(hasAccess('customers.edit'))
                                             <td>

@@ -469,7 +469,6 @@ class TransactionController extends Controller
         if ($resource->fixed_price == 'Yes') {
             $discounted_price = $discounted_price <= $resource->system_price ? $discounted_price : $resource->system_price;
         }
-        // dd($resource->category->discount_type, $amount, $discount, $discounted_price);
         $discounted_price = $discounted_price <= 0 ? $resource->system_price : $discounted_price;
 
         if (!empty($getRate)) {

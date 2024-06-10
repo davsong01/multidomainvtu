@@ -46,7 +46,7 @@
                                             
                                             <td>{{ $customer->username }}</td>
                                             <td> <small><strong>{{ ucfirst($customer->status) }}</strong></small></td>
-                                            <td>{{ $customer->created_at->toDateString('en-GB') }}</td>
+                                            <td>{{ $customer->created_at }}</td>
                                             @if(hasAccess('customers.verify'))
                                             <td>
                                                 <a onclick="return confirm('Are you sure you want to verify this user?');" href="{{ route('customer.verify', array_merge(request()->array, ['customer' => $customer->id])) }}"><button type="button" class="btn btn-primary btn-sm mr-1 mb-1"><i class="bx bx-check"></i><span class="align-middle ml-25">Verify Email</span></button>
