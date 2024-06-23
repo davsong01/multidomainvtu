@@ -403,26 +403,6 @@
 		});
 		e.preventDefault();
     }
-
-    // $('#qw-transaction').click(function () {
-    //     let id = $(this).data('id')
-    //     $.ajax({
-	// 		url : `/admin/requery-transaction/${id}`,
-	// 		beforeSend: function (){
-	// 			$('.validate-div').show();
-	// 			$('#img_loading2').show();
-	// 			$('#validate-biller').html('Processing....');
-	// 		},
-	// 		success:function (data) {
-	// 			$('#validate-biller').html('Validate Biller <i class="fa fa-check"></i>');
-	// 			$('#img_loading2').hide();
-	// 			$('#validate-div').show();
-	// 			$('#q_res2').show();
-	// 			$('#q_res2').html(data.message);
-	// 		}
-	// 	});
-    // });
 </script>
 @endsection
 
-{{-- $('#response').html(JSON.stringify(response.response, null, 3)); --}}

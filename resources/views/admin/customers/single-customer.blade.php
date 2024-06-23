@@ -663,7 +663,6 @@ use App\Models\BlackList;
                                         @if(getSettings()->payment_gateway == 'monnify')
                                         <option value="50515" {{ old('bank') == '50515' ? 'selected' : ''}}>Moniepoint</option>
                                         <option value="035" {{ old('bank') == '035' ? 'selected' : ''}}>Wema Bank</option>
-                                        <option value="232" {{ old('bank') == '232' ? 'selected' : ''}}>Sterling Bank</option>
                                         @endif
                                         <option value="058" {{ old('bank') == '058' ? 'selected' : ''}}>Guaranty Trust Bank</option> 
                                     </select>
