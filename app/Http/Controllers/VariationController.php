@@ -13,36 +13,40 @@ class VariationController extends Controller
     public function pullVariations($merchant, $product)
     {
         $product = Product::where('id', $product)->first();
+        $storedVariations = Variation::where('product_id', $product->id)->where('api_id', $product->api_id)->get();
         
         $variations = app("App\Http\Controllers\Providers\KingsVtuController")->getVariations($product->slug);
         
         if (isset($variations['status']) && $variations['status'] == 'success') {
             $variations = $variations['data']['variations'] ?? [];
             if (!empty($variations)) {
+                $allVariations = $storedVariations->pluck('slug')->toArray();
                 
                 foreach ($variations as $key => $variation) {
-                    $variation = Variation::updateOrCreate([
-                        'product_id' => $product->id,
-                        'category_id' => $product->category_id,
-                        'api_id' => $product->api_id,
-                        'slug' => $variation['variation_slug'],
-                    ], [
-                        'product_id' => $product->id,
-                        'category_id' => $product->category_id,
-                        'api_id' => $product->api_id,
-                        'api_name' =>  $variation['name'] ?? null,
-                        'slug' => $variation['variation_slug'] ?? null,
-                        'system_name' =>  $variation['name'],
-                        'fixed_price' => $variation['fixed_price'],
-                        'api_price' => $variation['price'],
-                        'system_price' => $variation['price'],
-                        'min' => $variation['min'] ?? null,
-                        'max' => $variation['max'] ?? null,
-                        'verifiable' => $variation['verifiable'] ?? null,
-                        'unique_element' => $variation['unique_element'] ?? null,
-                        'status' => 'active',
-                        'merchant_id' => request()->merchant_id
-                    ]);
+                    if (!in_array($variation['variation_slug'], $allVariations)) {
+                        $variation = Variation::updateOrCreate([
+                            'product_id' => $product->id,
+                            'category_id' => $product->category_id,
+                            'api_id' => $product->api_id,
+                            'slug' => $variation['variation_slug'],
+                        ], [
+                            'product_id' => $product->id,
+                            'category_id' => $product->category_id,
+                            'api_id' => $product->api_id,
+                            'api_name' =>  $variation['name'] ?? null,
+                            'slug' => $variation['variation_slug'] ?? null,
+                            'system_name' =>  $variation['name'],
+                            'fixed_price' => $variation['fixed_price'],
+                            'api_price' => $variation['price'],
+                            'system_price' => $variation['price'],
+                            'min' => $variation['min'] ?? null,
+                            'max' => $variation['max'] ?? null,
+                            'verifiable' => $variation['verifiable'] ?? null,
+                            'unique_element' => $variation['unique_element'] ?? null,
+                            'status' => 'active',
+                            'merchant_id' => request()->merchant_id
+                        ]);
+                    }
                 }
 
                 return back()->with('message', 'Variations successfully pulled, please proceed to update variations');

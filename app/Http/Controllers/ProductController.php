@@ -25,7 +25,7 @@ class ProductController extends Controller
         
         foreach ($categories as $category) {
             $products = app("App\Http\Controllers\Providers\KingsVtuController")->getProducts($category->slug);
-
+            dd($products);
             if (isset($products['status']) && $products['status'] == 'success') {
                 $products = $products['data']['products'] ?? [];
                 if (!empty($products)) {
@@ -67,6 +67,58 @@ class ProductController extends Controller
         return back()->with('message', 'Products successfully pulled, please proceed to update products');
     }
 
+    
+    public function rePullProducts()
+    {
+        $categories = Category::all();
+        $api = API::first();
+        $storeProducts = Product::all();
+
+        foreach ($categories as $category) {
+            $products = app("App\Http\Controllers\Providers\KingsVtuController")->getProducts($category->slug);
+            
+            if (isset($products['status']) && $products['status'] == 'success') {
+                $products = $products['data']['products'] ?? [];
+                if (!empty($products)) {
+                    $allProducts = $storeProducts->pluck('slug')->toArray();
+                    
+                    foreach ($products as $key => $product) {
+                        if(!in_array($product['slug'], $allProducts)){
+                            Product::updateOrcreate(
+                                [
+                                    "category_id" => $category->id,
+                                    "slug" => $product['slug'],
+                                    "merchant_id" => request()->merchant_id,
+                                    'api_id' => $api->id,
+                                    'status' => 'active'
+                                ],
+                                [
+                                    "category_id" => $category->id,
+                                    'api_id' => $api->id,
+                                    'status' => 'active',
+                                    "name" => $product['display_name'],
+                                    "display_name" => $product['display_name'],
+                                    "slug" => $product['slug'],
+                                    "status" => 'active',
+                                    "description" => $product['description'] ?? null,
+                                    "min" => $product['min'] ?? null,
+                                    "max" => $product['max'] ?? null,
+                                    "allow_quantity" => $product['allow_quantity'] ?? null,
+                                    "fixed_price" => $product['fixed_price'] ?? null,
+                                    "allow_subscription_type" => $product['allow_subscription_type'] ?? null,
+                                    "has_variations" => $product['has_variations'] ?? null,
+                                    "image" => $product['image'] ?? null,
+                                    "merchant_id" => request()->merchant_id
+                                ]
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        return back()->with('message', 'Products successfully pulled, please proceed to update products');
+    }
     public function create()
     {
         $categories = Category::where('status', 'active')->where('type', 'general')->get();

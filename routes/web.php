@@ -148,7 +148,7 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
             // Admin
             Route::middleware(['admin', 'adminRoute'])->prefix('admin')->group(function () {
                 Route::get('pull-product', [ProductController::class, 'pullProducts'])->name('product.pull');
-                Route::get('repull-product', [ProductController::class, 'pullProducts'])->name('product.repull');
+                Route::get('repull-product', [ProductController::class, 'rePullProducts'])->name('product.repull');
                 Route::get('duplicate-product/{product}', [ProductController::class, 'duplicateProduct'])->name('duplicate.product');
                 Route::get('api-balance/{api}', [APIController::class, 'getBalance'])->name('api.balance');
                 

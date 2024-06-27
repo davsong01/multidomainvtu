@@ -67,7 +67,7 @@
                                                 <tbody>
                                                     @foreach ( $products as $product )
                                                     <tr>
-                                                        <td><img src="{!! $product->image !!}" alt="{{$product->name}}" style="width: 50px;float:left">{{ $product->name }}</td>
+                                                        <td><img src="{!! $product->image !!}" alt="{{$product->name}}" style="width: 50px;float:left">{{ $product->name }} <br> <strong>Slug: </strong>{{ $product->slug }}</td>
                                                         <td>{{ $product->category->name }} <br>
                                                         </td>
                                                     
