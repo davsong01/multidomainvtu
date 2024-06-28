@@ -151,7 +151,7 @@ class DefaultController extends Controller
             'status' => 'active',
             'role_type' => 'superadmin',
             'merchant_id' => $merchant->id,
-            'is-admin' => 1
+            'is_admin' => 1
         ]);
 
         $admin->update(['permissions' => $role->id]);
