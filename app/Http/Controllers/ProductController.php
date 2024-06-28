@@ -25,7 +25,7 @@ class ProductController extends Controller
         
         foreach ($categories as $category) {
             $products = app("App\Http\Controllers\Providers\KingsVtuController")->getProducts($category->slug);
-            dd($products);
+            
             if (isset($products['status']) && $products['status'] == 'success') {
                 $products = $products['data']['products'] ?? [];
                 if (!empty($products)) {
