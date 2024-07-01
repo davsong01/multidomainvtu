@@ -242,17 +242,18 @@ class DashboardController extends Controller
         $hashedToken = base64_encode(base64_encode($token));
         $expiry = Carbon::now()->addMinute(15);
 
-        TransactionPinResetToken::updateOrCreate(['user_id' => $user->id, 'status' => 'pending'], [
+        $resetRow = TransactionPinResetToken::updateOrCreate(['user_id' => $user->id, 'status' => 'pending'], [
             'user_id' => $user->id,
             'token' => $token,
             'expiry' => $expiry,
             'merchant_id' => request()->merchant_id,
         ]);
-
+       
         // Send email
         $subject = "You requested a Transaction PIN Reset Link";
         $body = '<p>Hello! ' . $user->firstname . '</p>';
         $reset_link = url('/') .'/'. request()->store_slug."/confirm_reset_pin?token=" . $hashedToken;
+        
         $body .= '<p style="line-height: 2.0;">Please <strong>login</strong> to your account on ' . request()->store_name . ' and click the button below to reset your transaction pin. <br> <a class="btn btn-info" target="_blank" href="' . $reset_link . '" style="position: margin:5px; relative;margin-bottom:50px;color: #fff;font-weight: 500;padding: 8px 20px;font-size: 13px;line-height: 24px;letter-spacing: 0.01em;border-radius: 4px;border: 1px solid;transition: all .4s ease;background:#950eb3;text-align: center;white-space: nowrap;vertical-align: middle;text-decoration:none">RESET PIN</a><br/><br><strong>Please note that this link expires after ' . $expiry->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_number . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
         
         // Switch to send
@@ -263,19 +264,19 @@ class DashboardController extends Controller
     {
         $decode = base64_decode(base64_decode($request->token));
         $row = TransactionPinResetToken::where(['user_id' => auth()->user()->id, 'status' => 'pending'])->first();
-
+        
         if (!$row) {
-            return redirect(route('customer.reset.pin'))->with('warning', 'Transaction PIN reset link invalid. Please try to reset Transaction PIN again!!!');
+            return redirect(route('customer.reset.pin', request()->array))->with('warning', 'Transaction PIN reset link invalid. Please try to reset Transaction PIN again!!!');
         }
 
         if ($row->expiry < Carbon::now()) {
             $row->status = 'completed';
             $row->save();
-            return redirect(route('customer.reset.pin'))->with('error', 'PIN reset link has expired, please try to reset PIN again!!!');
+            return redirect(route('customer.reset.pin', request()->array))->with('error', 'PIN reset link has expired, please try to reset PIN again!!!');
         }
 
         if ($decode !== $row->token) {
-            return redirect(route('customer.reset.pin'))->with('error', 'Invalid token link, please check your email and click the Transaction PIN reset link we sent you or resend a new reset link!!!');
+            return redirect(route('customer.reset.pin', request()->array))->with('error', 'Invalid token link, please check your email and click the Transaction PIN reset link we sent you or resend a new reset link!!!');
         }
 
         $row->status = 'completed';
@@ -286,8 +287,8 @@ class DashboardController extends Controller
 
     public function finalProcessPin(Request $request)
     {
-        $settings = $this->settings();
-
+        $settings = getSettings();
+        
         $validator = Validator::make($request->all(), [
             'new_transaction_pin' => 'required',
         ]);
@@ -304,11 +305,11 @@ class DashboardController extends Controller
         // Send email
         $subject = "New Transaction Pin";
         $body = '<p>Hello! ' . auth()->user()->firstname . '</p>';
-        $body .= '<p style="line-height: 2.0;">You have successfully changed your Transaction PIN on ' . request()->store_name . ' on ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
+        $body .= '<p style="line-height: 2.0;">You have successfully changed your Transaction PIN on ' . request()->store_name . ' on ' . Carbon::now()->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_number . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
 
-        logEmails(auth()->user()->email, $subject, $body);
+        logEmails(auth()->user()->email, $subject, $body, 'urgent');
 
-        return redirect(route('dashboard'))->with('message', 'Transaction PIN changed successfully');
+        return redirect(route('dashboard', request()->array))->with('message', 'Transaction PIN changed successfully');
     }
 
     public function updateKycInfo()

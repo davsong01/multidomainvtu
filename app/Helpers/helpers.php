@@ -198,7 +198,7 @@ if (!function_exists("logEmails")) {
         } catch (\Exception $e) {}
 
         if(!empty($urgency) && $urgency == 'urgent'){
-            sendEmails($email->email_to, $email->subject, $email->body, request()->merchant_id);
+            sendEmails($email->recipient, $email->subject, $email->content, request()->merchant_id);
         }
 
         return true;
@@ -220,38 +220,45 @@ if (!function_exists("sendEmails")) {
                     'store_slug' => $settings->merchant->store_slug,
                     'store_name' => $settings->merchant->store_name,
                 ];
+
+                if(empty($provider)){
+                    $provider = EmailApiSetting::first();
+                }
             }else{
                 $provider = EmailApiSetting::first();
                 $email_settings = $request['merchant_settings'] ?? [];
             }
             
-            config([
-                'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
-                'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
-                'mail.port' => $provider->MAIL_PORT ?? env('MAIL_PORT'),
-                'mail.encryption' => $provider->MAIL_ENCRYPTION ?? env('MAIL_ENCRYPTION'),
-                'mail.username' => $provider->MAIL_USERNAME ?? env('MAIL_USERNAME'),
-                'mail.password' => $provider->MAIL_PASSWORD ?? env('MAIL_PASSWORD'),
-                'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME ?? env('MAIL_REPLY_TO_NAME'),
-                'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS ?? env('MAIL_REPLY_TO_ADDRESS'),
-                'mail.from' => [
-                    'address' => $provider->MAIL_FROM_ADDRESS ?? env('MAIL_FROM_ADDRESS'),
-                    'name' => $provider->MAIL_FROM_NAME ?? env('MAIL_FROM_NAME'),
-                ],
-            ]);
+            if(!empty($provider)){
+                config([
+                    'mail.driver' => $provider->MAIL_DRIVER ?? env('MAIL_DRIVER'),
+                    'mail.host' => $provider->MAIL_HOST ?? env('MAIL_HOST'),
+                    'mail.port' => $provider->MAIL_PORT ?? env('MAIL_PORT'),
+                    'mail.encryption' => $provider->MAIL_ENCRYPTION ?? env('MAIL_ENCRYPTION'),
+                    'mail.username' => $provider->MAIL_USERNAME ?? env('MAIL_USERNAME'),
+                    'mail.password' => $provider->MAIL_PASSWORD ?? env('MAIL_PASSWORD'),
+                    'mail.replyToName' => $provider->MAIL_REPLY_TO_NAME ?? env('MAIL_REPLY_TO_NAME'),
+                    'mail.replyToAddress' => $provider->MAIL_REPLY_TO_ADDRESS ?? env('MAIL_REPLY_TO_ADDRESS'),
+                    'mail.from' => [
+                        'address' => $provider->MAIL_FROM_ADDRESS ?? env('MAIL_FROM_ADDRESS'),
+                        'name' => $provider->MAIL_FROM_NAME ?? env('MAIL_FROM_NAME'),
+                    ],
+                ]);
+            }
 
             $data = [
                 'subject' => $subject,
                 'body' => $body,
                 'email_settings' => $email_settings ?? []
             ];
-
+            
             Mail::to($email_to)->send(new EmailMessages($data));
             
             return [
                 'message' => 'success',
             ];
         } catch (\Exception $e) {
+           
             \Log::info($e->getMessage());
             return [
                 'message' => 'error',

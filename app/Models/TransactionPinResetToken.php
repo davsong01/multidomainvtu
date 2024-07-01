@@ -10,5 +10,5 @@ class TransactionPinResetToken extends Model
 {
     use HasFactory, MerchantIdTrait;
 
-    protected $fillable = ['user_id', 'token', 'expiry'];
+    protected $fillable = ['user_id', 'token', 'expiry','merchant_id'];
 }
