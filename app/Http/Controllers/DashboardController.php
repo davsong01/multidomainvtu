@@ -253,8 +253,8 @@ class DashboardController extends Controller
         $subject = "You requested a Transaction PIN Reset Link";
         $body = '<p>Hello! ' . $user->firstname . '</p>';
         $reset_link = url('/') . "/confirm_reset_pin?token=" . $hashedToken;
-        $body .= '<p style="line-height: 2.0;">Please <strong>login</strong> to your account on ' . request()->store_name . ' and click the button below to reset your transaction pin. <br> <a class="btn btn-info" target="_blank" href="' . $reset_link . '" style="position: margin:5px; relative;margin-bottom:50px;color: #fff;font-weight: 500;padding: 8px 20px;font-size: 13px;line-height: 24px;letter-spacing: 0.01em;border-radius: 4px;border: 1px solid;transition: all .4s ease;background:#950eb3;text-align: center;white-space: nowrap;vertical-align: middle;text-decoration:none">RESET PIN</a><br/><br><strong>Please note that this link expires after ' . $expiry->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_no . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
-    
+        $body .= '<p style="line-height: 2.0;">Please <strong>login</strong> to your account on ' . request()->store_name . ' and click the button below to reset your transaction pin. <br> <a class="btn btn-info" target="_blank" href="' . $reset_link . '" style="position: margin:5px; relative;margin-bottom:50px;color: #fff;font-weight: 500;padding: 8px 20px;font-size: 13px;line-height: 24px;letter-spacing: 0.01em;border-radius: 4px;border: 1px solid;transition: all .4s ease;background:#950eb3;text-align: center;white-space: nowrap;vertical-align: middle;text-decoration:none">RESET PIN</a><br/><br><strong>Please note that this link expires after ' . $expiry->format('jS F, Y, h:iA') . '.</strong><br><br>If you did not request a Transaction PIN change, Kindly notify us via WhatsApp us via whatsapp( ' . $settings->whatsapp_number . ') immediately.<b><hr/><br>Warm Regards. (' . request()->store_name . ')<br/></p>';
+        
         logEmails($user->email, $subject, $body);
     }
 
