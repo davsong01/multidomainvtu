@@ -185,18 +185,23 @@ if (!function_exists("createReservedAccount")) {
 }
 
 if (!function_exists("logEmails")) {
-    function logEmails($email_to, $subject, $body)
+    function logEmails($email_to, $subject, $body, $urgency=null)
     {
         try {
-            EmailLog::create([
+            $email = EmailLog::create([
                 'status' => 'pending',
                 'subject' => $subject,
                 'recipient' => $email_to,
                 'content' => $body,
                 'merchant_id' => request()->merchant_id
             ]);
-           
         } catch (\Exception $e) {}
+
+        if(!empty($urgency) && $urgency == 'urgent'){
+            sendEmails($email->email_to, $email->subject, $email->body, request()->merchant_id);
+        }
+
+        return true;
     }
 }
 
