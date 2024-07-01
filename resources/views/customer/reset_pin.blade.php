@@ -35,7 +35,7 @@
                                                 </div>
                                                 <div class="card-content">
                                                     <div class="card-body">
-                                                        <form action="{{route('process.transaction.pin.reset')}}" method="POST" autocomplete="off">
+                                                        <form action="{{route('process.transaction.pin.reset', array_merge(request()->array))}}" method="POST" autocomplete="off">
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-md-12">   
