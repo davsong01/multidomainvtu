@@ -119,14 +119,26 @@ if (!function_exists("getPaymentGateways")) {
 }
 
 if (!function_exists("getPaymentGatewayReservedAccountCharge")) {
-    function getPaymentGatewayReservedAccountCharge($provider = null)
+    function getPaymentGatewayReservedAccountCharge($provider = null, $bypassStatus=null)
     {
         if(!empty($provider)){
-            $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('status', 'active')->where('id', $provider)->first();
+            if(!empty($bypassStatus) && $bypassStatus == 'yes'){
+                $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('id', $provider)->first();
+            }else{
+                $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('status', 'active')->where('id', $provider)->first();
+            }
         }else{
             $gateway = PaymentGateway::withoutGlobalScope(new MerchantIdScope())->where('status', 'active')->first();
         }
-        
+
+        if(!$gateway){
+            return [
+                'type' => '',
+                'value' => 0,
+                'display_value' => ''
+            ];
+        }
+
         if($gateway->reserved_account_payment_charge_type == 'flat'){
             $charge = $gateway->reserved_account_payment_charge;
             $display_value = isset(getSettings()->currency) ? getSettings()->currency . number_format($charge, 1) : number_format($charge, 1);

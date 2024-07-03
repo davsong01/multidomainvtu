@@ -162,7 +162,7 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                 Route::resource('permission', RolePermissionController::class);
                 Route::resource('paymentgateway', PaymentGatewayController::class);
                 Route::resource('product', ProductController::class);
-
+                
                 Route::get('pull-categories', [CategoryController::class, 'pullCategories'])->name('category.pull');
                 Route::get('repull-categories', [CategoryController::class, 'pullCategories'])->name('category.repull');
                 Route::get('emails/send/{count?}', [EmailLogController::class, 'sendMail'])->name('emails.send');
