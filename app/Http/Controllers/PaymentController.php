@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ReservedAccountNumber;
 use App\Models\ReservedAccountCallback;
 use App\Http\Controllers\PaymentProcessors\SquadController;
-use App\Http\Controllers\PaymentProccessors\MonnifyController;
+use App\Http\Controllers\PaymentProcessors\MonnifyController;
 
 class PaymentController extends Controller
 {
@@ -273,6 +273,7 @@ class PaymentController extends Controller
                 return response()->json([], 200);
             }
         } catch (\Throwable $th) {
+            \Log::info(['Analyze callback error' => $th->getMessage(), $th->getFile(), $th->getLine()]);
             DB::rollBack();
             dd($th->getMessage(), $th->getFile(), $th->getLine());
         }
