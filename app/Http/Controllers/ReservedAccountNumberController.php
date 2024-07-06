@@ -23,7 +23,8 @@ class ReservedAccountNumberController extends Controller
     public function delete($merchant, $account)
     {
         $account = ReservedAccountNumber::where('id',$account)->first();
-        $slug = $account->payment_gateway->slug ?? null;
+        
+        $slug = $account->gateway->slug ?? null;
         $provider = $account->payment_gateway;
         
         if(!empty($slug)){

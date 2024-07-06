@@ -142,9 +142,8 @@ class MonnifyController extends Controller
                 'getAllAvailableBanks' => $getAllAvailableBanks,
                 "preferredBanks" => $data["preferredBanks"],
             ]);
-
             $response = $this->basicApiCall($url, $payload, $headers, 'POST');
-           
+            
             if (
                 $response && $response['responseCode'] == 0 &&
                 $response['responseMessage'] == 'success'

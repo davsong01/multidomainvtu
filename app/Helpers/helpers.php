@@ -172,13 +172,14 @@ if (!function_exists("calculatePaymentGatewayReservedAccountCharge")) {
 if (!function_exists("createReservedAccount")) {
     function createReservedAccount($data = null,$admin_id=null, $provider_id = null)
     {
+
         if (!empty($provider_id)) {
             $provider = PaymentGateway::where('id', $provider_id)->first();
         } else {
             $paymentGateway = request()->merchant_settings['payment_gateway'];
             $provider = PaymentGateway::where('slug', $paymentGateway)->first();
         }
-        
+
         $reserved = null;
         if (!empty($paymentGateway)) {
             if ($paymentGateway == 'monnify') {
@@ -191,7 +192,7 @@ if (!function_exists("createReservedAccount")) {
                 $reserved = $squad->createReservedAccount($data, $admin_id);
             }
         }
-        
+
         return $reserved;
     }
 }
