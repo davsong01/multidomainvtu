@@ -82,7 +82,7 @@ class VerifyEmailController extends Controller
 
         }else{
             $message = 'Please login';
-            return redirect()->route('login', $merchant)->with('error', $message);
+            return redirect()->route('login', $merchant)->with('message', $message);
         }
 
     }
