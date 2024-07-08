@@ -81,7 +81,7 @@ class VerifyEmailController extends Controller
             return redirect()->route('login', $merchant)->with('message', $message);
 
         }else{
-            $message = 'Verification Token not found, Please login';
+            $message = 'Please login';
             return redirect()->route('login', $merchant)->with('error', $message);
         }
 
