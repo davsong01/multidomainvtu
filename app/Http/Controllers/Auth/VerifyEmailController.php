@@ -76,9 +76,9 @@ class VerifyEmailController extends Controller
             } else {
                 $message = "Your e-mail is already verified. Please login.";
             }
-            // $verifyUser->delete();
-            Auth::login($user);
-            return redirect()->route('login', $merchant)->with('message', $message);
+            $verifyUser->delete();
+
+            return redirect()->route('dashboard', $merchant)->with('message', $message);
 
         }else{
             $message = 'Please login';
