@@ -68,10 +68,10 @@ class VerifyEmailController extends Controller
         
         if (!empty($verifyUser)) {
             $user = $verifyUser->user;
-
+            
             if (empty($user->email_verified_at)) {
-                $verifyUser->user->email_verified_at = now();
-                $verifyUser->user->save();
+                $user->email_verified_at = now();
+                $user->save();
                 $message = "Your e-mail is verified. You can now login.";
             } else {
                 $message = "Your e-mail is already verified. Please login.";
@@ -81,7 +81,7 @@ class VerifyEmailController extends Controller
             return redirect()->route('login', $merchant)->with('message', $message);
 
         }else{
-            $message = 'Invalid Verification Token entered, Please login';
+            $message = 'Verification Token not found, Please login';
             return redirect()->route('login', $merchant)->with('error', $message);
         }
 

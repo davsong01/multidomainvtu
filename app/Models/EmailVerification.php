@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class EmailVerification extends Model
 {
-    use HasFactory;
+    use HasFactory, MerchantIdTrait;
     protected $guarded = [];
 
     public function user(){
