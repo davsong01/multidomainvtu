@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\EmailVerification;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Providers\RouteServiceProvider;
 
@@ -25,7 +26,6 @@ class VerifyEmailController extends Controller
         if(!empty($request->type) && $request->type == 'resend'){
             $message = 'Email Verification link has been resent!';
             return redirect(route('verification.notice', request()->array))->with('message', $message);
-
         }else{
             $message = '';
         }
@@ -76,8 +76,8 @@ class VerifyEmailController extends Controller
             } else {
                 $message = "Your e-mail is already verified. Please login.";
             }
-            $verifyUser->delete();
-            
+            // $verifyUser->delete();
+            Auth::login($user);
             return redirect()->route('login', $merchant)->with('message', $message);
 
         }else{
