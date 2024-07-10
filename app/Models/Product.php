@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\API;
 use App\Models\Category;
 use App\Models\Variation;
+use App\Models\TransactionLog;
 use App\Traits\MerchantIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +28,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function transactions()
+    {
+        return $this->belongsTo(TransactionLog::class);
     }
 
     public function customer_level_price($level)
