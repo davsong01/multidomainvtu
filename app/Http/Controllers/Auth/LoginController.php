@@ -37,7 +37,7 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+        // dd(Hash::make('12345678'));
         // $this->ensureIsNotRateLimited();
         if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password'], 'merchant_id' => $request->merchant_id))) {
             $user = auth()->user();

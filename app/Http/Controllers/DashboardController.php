@@ -82,7 +82,7 @@ class DashboardController extends Controller
 
     public function showUpgradeForm()
     {
-        $levels = CustomerLevel::orderBy('order', 'ASC')->where('id', '>', auth()->user()->customer->level->id)->get();
+        $levels = CustomerLevel::orderBy('order', 'ASC')->where('id', '>', auth()->user()->customer->level->id)->get();   
         return view('customer.upgrade_level', compact('levels'));
     }
 

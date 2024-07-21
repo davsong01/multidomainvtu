@@ -34,7 +34,7 @@
                                                 </div>
                                                 <div class="card-content">
                                                     <div class="card-body">
-                                                        <form action="{{route('customer.level.upgrade.process')}}" method="POST" autocomplete="off">
+                                                        <form action="{{route('customer.level.upgrade.process',request()->array )}}" method="POST" autocomplete="off">
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-md-12">   
