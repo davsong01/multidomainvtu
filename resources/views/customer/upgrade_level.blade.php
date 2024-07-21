@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Upgrade Level')
+@section('title', 'Upgrade Account')
 
 @section('page-css')
 <style>
@@ -28,7 +28,7 @@
                                             <div class="card">
                                                 <div class="col-md-12"> 
                                                     <div class="card-header" style="padding:1.4rem 0.7rem">
-                                                        <h4 class="card-title">Upgrade Level</h4>
+                                                        <h4 class="card-title">Upgrade Account</h4>
                                                         @include('layouts.alerts')
                                                     </div>
                                                 </div>

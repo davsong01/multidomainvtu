@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Upgrade Level')
+@section('title', 'Load Wallet')
 
 @section('page-css')
 <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/pages/dashboard-analytics.css')}}">
