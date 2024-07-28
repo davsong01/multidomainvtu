@@ -65,6 +65,7 @@ class DefaultController extends Controller
                 'store_slug' => $request->store_slug,
             ],[
                 'store_slug' => $request->store_slug,
+                'custom_domain' => $request->custom_domain,
                 'merchant_name' => $request->merchant_name,
                 'store_name' => $request->store_name,
                 'location' => $request->location,
@@ -231,9 +232,9 @@ class DefaultController extends Controller
             'store_name' => $request['store_name'] ?: $merchant->store_name,
             'subscription_start' => !empty($request['subscription_start']) ? Carbon::parse($request['subscription_start']) : $merchant->subscription_start,
             'subscription_end' => !empty($request['subscription_end']) ? Carbon::parse($request['subscription_end']) : $merchant->subscription_end,
-            // 'custom_domain' => !empty($request['custom_domain']) ? $request['custom_domain'] : $merchant->custom_domain
+            'custom_domain' => !empty($request['custom_domain']) ? $request['custom_domain'] : $merchant->custom_domain
         ];
-        
+        \Log::info($data['custom_domain']);
         if (!empty($merchant)) {
             $merchant->update($data);
             // Settings::withoutGlobalScope(new MerchantIdScope())->where('merchant_id', $id)->update();

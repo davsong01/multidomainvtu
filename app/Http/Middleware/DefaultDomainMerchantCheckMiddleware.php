@@ -14,6 +14,7 @@ class DefaultDomainMerchantCheckMiddleware
     {
         $merchantPrefix = new MerchantPrefixService($request);
         $merchant = $merchantPrefix->getMerchantCustomerInfo($request);
+        
         if (empty($merchant)) {
             return redirect(route('landing.main'));
         }

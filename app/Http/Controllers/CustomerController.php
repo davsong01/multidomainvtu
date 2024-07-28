@@ -137,10 +137,8 @@ class CustomerController extends Controller
         ]);
 
         $user = User::where('id', $id)->first();
-        $except = $request->except(['_token', 'ip', 'customerlevel', 'merchant_settings', 'merchant_id', 'store_slug', 'store_name', 'array']);
+        $user->update($request->except(['_token', 'ip', 'customerlevel', 'kyc_status']));
         
-        $user->update($except);
-
         if(!empty($request->customerlevel)){
             $level = CustomerLevel::where('id', $request->customerlevel)->first();
             $user->customer->customer_level = $level->id;
@@ -150,8 +148,11 @@ class CustomerController extends Controller
                     'status' => 'success',
                     'descr' => 'Level Upgrade from ' . $user->customer->level->name . ' to ' . $level->name . ' was successful',
                 ]);
-                $user->customer->api_access = 'active';
             }
+
+            $user->customer->api_access = 'active';
+            $user->customer->kyc_status = $request->kyc_status;
+            
             $user->customer->save();
         }
         return back()->with('message', 'Update successful!');

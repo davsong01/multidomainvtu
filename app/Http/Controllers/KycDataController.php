@@ -22,11 +22,10 @@ class KycDataController extends Controller
         return $verify;
     }
 
-    public function getLgaByStateName($state)
+    public function getLgaByStateName($merchant, $state)
     {
         $lgas = getLgas($state);
         $res = '';
-
         if (!empty($lgas)) {
             foreach ($lgas as $lga) {
                 $res .= '<option value="' . $lga . '">' . $lga . '</option>';

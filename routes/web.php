@@ -138,7 +138,7 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                 });
                 Route::get('customer-update-kyc-info', [DashboardController::class, 'updateKycInfo'])->name('update.kyc.details');
                 Route::post('customer-update-kyc-info', [DashboardController::class, 'processUpdateKycInfo'])->name('update.kyc.details.process');
-                Route::get('get-lga-by-statename/{state}', [KycDataController::class, 'getLgaByStateName'])->name('kyc-get-lga-by-state');
+                Route::get('get-lga-by-statename/{state}/{value?}', [KycDataController::class, 'getLgaByStateName'])->name('kyc-get-lga-by-state');
                 Route::post('customer-get-discount', [TransactionController::class, 'getCustomerDiscount'])->name('get.customer.discount');
             
                 // Route::post('transaction-confirm/{provider}/{reference?}', [PaymentController::class, 'logPaymentResponse'])->name('log.payment.response');

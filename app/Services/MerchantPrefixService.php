@@ -11,15 +11,14 @@ class MerchantPrefixService
 {
     public function getMerchantCustomerInfo(Request $request){
         $prefix = $request->segment(1);
-        
         $details = [];
-
+        
         if (!empty($prefix)) {
             $merchantDetails = Merchant::with('setting', 'default_customer_level')->where('store_slug', $prefix)->first();
-        
+            
             if (!empty($merchantDetails)) {
                 if($merchantDetails->status == 'inactive'){
-
+                    
                 }
 
                 if ($merchantDetails->subscription_end < Carbon::now()) {

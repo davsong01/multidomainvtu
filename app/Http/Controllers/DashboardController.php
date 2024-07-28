@@ -315,7 +315,13 @@ class DashboardController extends Controller
     public function updateKycInfo()
     {
         $kyc = $this->getKycStatus(auth()->user());
-        return view('customer.edit_kyc_details', compact('kyc'));
+        $kycStatuses = multipleKycStatuses(['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME', 'PHONE_NUMBER', 'COUNTRY', 'STATE', 'LGA', 'DOB', 'IDCARDTYPE', 'IDCARD', 'BVN'], auth()->user()->customer->id);
+
+        $old_state = $kycStatuses->WHERE('key', 'STATE')->first();
+        $old_state = !empty($old_state->value) ? $old_state->value : null;
+        $oldlgas = getLgas($old_state);
+        // dd($kycStatuses);
+        return view('customer.edit_kyc_details', compact('kyc', 'oldlgas', 'kycStatuses'));
     }
 
     public function apiSettings(){
@@ -325,17 +331,19 @@ class DashboardController extends Controller
     public function processUpdateKycInfo(Request $request)
     {
         $input = $this->validate($request, [
-            "FIRST_NAME" => "required",
-            "MIDDLE_NAME" => "required",
-            "LAST_NAME" => "required",
-            "PHONE_NUMBER" => "required",
-            "BVN" => "required|string|min:11|max:11",
-            "IDCARD" => "required|image|max:1024",
-            "IDCARDTYPE" => "required",
-            "ADDRESS" => "required",
-            "DOB" => "required",
+            "FIRST_NAME" => "nullable",
+            "MIDDLE_NAME" => "nullable",
+            "LAST_NAME" => "nullable",
+            "PHONE_NUMBER" => "nullable",
+            "COUNTRY" => "nullable",
+            "STATE" => "nullable",
+            "LGA" => "nullable",
+            "DOB" => "nullable",
+            "BVN" => "nullable|string|min:11|max:11",
+            "IDCARD" => "sometimes|image|max:1024",
+            "IDCARDTYPE" => "nullable"
         ]);
-        
+       
         if (!empty($request->IDCARD)) {
             $input['IDCARD'] = $this->uploadFile($request->IDCARD, 'kyc');
         }

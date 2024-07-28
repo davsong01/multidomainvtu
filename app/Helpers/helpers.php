@@ -1490,6 +1490,14 @@ if (!function_exists("kycStatus")) {
     }
 }
 
+if (!function_exists("multipleKycStatuses")) {
+    function multipleKycStatuses($keys, $customer_id)
+    {
+        $data = KycData::select('key', 'value', 'status')->where(['customer_id' => $customer_id])->whereIn('key', $keys)->get();
+
+        return $data;
+    }
+}
 
 if (!function_exists("getFinalKycStatus")) {
     function getFinalKycStatus($customer_id)
