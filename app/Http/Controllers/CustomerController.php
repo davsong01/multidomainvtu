@@ -137,7 +137,7 @@ class CustomerController extends Controller
         ]);
 
         $user = User::where('id', $id)->first();
-        $user->update($request->except(['_token', 'ip', 'customerlevel', 'kyc_status']));
+        $user->update($request->except(['_token', 'ip', 'customerlevel', 'kyc_status', 'merchant_settings']));
         
         if(!empty($request->customerlevel)){
             $level = CustomerLevel::where('id', $request->customerlevel)->first();
@@ -152,7 +152,7 @@ class CustomerController extends Controller
 
             $user->customer->api_access = 'active';
             $user->customer->kyc_status = $request->kyc_status;
-            
+
             $user->customer->save();
         }
         return back()->with('message', 'Update successful!');
