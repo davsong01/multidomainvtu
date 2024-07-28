@@ -186,7 +186,14 @@ use App\Models\BlackList;
                                                         <option value="delete" @selected($user->status == 'delete')>Delete</option>
                                                     </select>
                                                 </fieldset>
-                                                
+                                                <fieldset class="form-group">
+                                                    <label for="kyc_status">KYC Verification Status</label>
+                                                    <select name="kyc_status" class="form-control" id="status">
+                                                        <option value="verified" @selected(getFinalKycStatus($user->customer->id) == 'verified')>Verified</option>
+                                                        <option value="unverified" @selected(getFinalKycStatus($user->customer->id) == 'unverified')>Unverified
+                                                        </option>
+                                                    </select>
+                                                </fieldset>
                                                 <fieldset class="form-group">
                                                     <label for="customerlevel">Customer Level</label>
                                                     <select name="customerlevel" class="form-control" id="customerlevel">
