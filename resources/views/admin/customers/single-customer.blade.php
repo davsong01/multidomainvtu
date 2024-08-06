@@ -492,12 +492,12 @@ use App\Models\BlackList;
                                                                     </td>
                                                                     <td>
                                                                         {{ ucfirst($account->bank_name) }} <br>
-                                                                        <button class="btn btn-info btn-sm">{{ $account->gateway->name }}</button>
+                                                                        <button class="btn btn-info btn-sm">{{ $account?->gateway?->name }}</button>
                                                                     </td>
                                                                     <td>{{ ucfirst($account->account_number) }} <br>
                                                                     <small style="color:black"><strong>Created on: {{$account->created_at}} </strong>
                                                                         @if(!empty($account->admin_id)) <br>
-                                                                        By: <strong>{{ $account->admin->user->firstname . ' '. $account->admin->user->lastname}}</strong>
+                                                                        By: <strong>{{ $account?->admin->user->firstname . ' '. $account?->admin->user->lastname}}</strong>
                                                                         @else   <br>
                                                                         By: <strong>SYSTEM</strong>
                                                                         @endif

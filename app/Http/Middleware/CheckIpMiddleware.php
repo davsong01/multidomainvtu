@@ -41,7 +41,7 @@ class CheckIpMiddleware
         }
 
         Session::put('ip_address', $ip);
-        Session::put('app_version', '1.0');
+        Session::put('app_version', '2.0');
         Session::put('domain_name', $domain);
 
         return $next($request);

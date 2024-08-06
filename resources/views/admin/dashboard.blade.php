@@ -72,34 +72,31 @@
                                 <div class="card-content">
                                     <div class="card-body py-1">
                                         <div class="text-muted line-ellipsis"><strong>All Transactions</strong></div>
-                                        <span style="margin-top:50px"></span>
-                                        <p>
-                                            <span style="color:black">All:  {!! getSettings()->currency !!}{{ number_format($credit + $debit )}}({{ $debit_count +  $credit_count}}) </span><br>
-                                            <span style="color:green">Credit: {!! getSettings()->currency !!}{{ number_format($credit) }}<small>({{ $credit_count }})</small></span> <br>
-                                            <span style="color:red">Debit: {!! getSettings()->currency !!}{{ number_format($debit) }} <small>({{ $debit_count }})</small></span><br>
-                                        </p>
+                                        <div style="margin-top: 4px;" id="transaction-response"></div>
                                         
+                                        <p>
+                                            <div style="margin-top:22px" onclick="viewTransactions()" id="view-transactions" class="btn btn-info">View <i style="display:none" id="transaction-spinner" class="fa fa-spinner fa-spin"></i></div>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-xl-3 col-12 dashboard-users">
                             <div class="card text-center">
                                 <div class="card-content">
                                     <div class="card-body py-1">
                                         <div class="text-muted line-ellipsis"><strong>Referral Earnings</strong></div>
                                         <span style="margin-top:50px"></span>
+                                        <div style="margin-top: 10px;" id="referral-response"></div>
+
                                         <p>
-                                            <span style="color:black">All:  {!! getSettings()->currency !!}{{ number_format( $referral_credit + $referral_debit)}}({{$referral_debit_count + $referral_credit_count}}) </span><br>
-                                            <span style="color:green">Credit: {!! getSettings()->currency !!}{{ number_format($referral_credit) }}<small>({{ $referral_credit_count }})</small></span> <br>
-                                            <span style="color:red">Debit: {!! getSettings()->currency !!}{{ number_format($referral_debit) }} <small>({{ $referral_debit_count }})</small></span><br>
+                                            <div style="margin-top:20px" onclick="viewReferral()" id="view-referrals" class="btn btn-info">View <i style="display:none" id="referral-spinner" class="fa fa-spinner fa-spin"></i></div>
                                         </p>
-                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
                         
                         <div class="col-xl-3 col-12 dashboard-users">
                             <div class="card text-center">
@@ -207,4 +204,41 @@
 @endsection
 @section('page-script')
     <script src="{{ asset('app-assets/js/scripts/pages/dashboard-analytics.js') }}"></script>
+    <script>
+        function viewReferral(){
+            $.ajax({
+                type: "GET",
+                url: "{{url('/') .'/'.request()->store_slug }}/admin/dashboard-widgets/referrals",
+                beforeSend: function () {
+                    $('#referral-spinner').show();
+                },
+                success: function(data, textStatus, jQxhr) {
+                    $('#referral-response').html(data.data);
+                    $('#view-referrals').hide();
+                    $('#referral-spinner').hide();
+                },
+                error: function(jQxhr, textStatus, errorThrown) {
+                    $('#referral-spinner').hide();
+                }
+            });
+        }
+
+        function viewTransactions() {
+            $.ajax({
+                type: "GET",
+                url: "{{url('/') .'/'.request()->store_slug }}/admin/dashboard-widgets/transactions",
+                beforeSend: function () {
+                    $('#transaction-spinner').show();
+                },
+                success: function(data, textStatus, jQxhr) {
+                    $('#transaction-response').html(data.data);
+                    $('#view-transactions').hide();
+                    $('#transaction-spinner').hide();
+                },
+                error: function(jQxhr, textStatus, errorThrown) {
+                    $('#transaction-spinner').hide();
+                }
+            });
+        }
+    </script>
 @endsection

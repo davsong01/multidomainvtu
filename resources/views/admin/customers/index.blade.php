@@ -21,6 +21,70 @@
                     </div>
 
                     <div class="card-body">
+                        <div class="col-md-12">
+                            <form action="{{ route('customers', request()->array) }}" method="GET">
+                                {{-- @csrf --}}
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="email" class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address" value="{{ \Request::get('email')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="phone" class="form-label">Phone Number</label>
+                                            <input type="phone" class="form-control" id="phone" name="phone" placeholder="Enter phone number" value="{{ \Request::get('phone')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="status" class="form-label">Status</label>
+                                            <select class="form-control" name="status" id="status">
+                                                <option value="">Select</option>
+                                                <option value="active" {{ \Request::get('status') == 'active' ? 'selected' : ''}}>Active</option>
+                                                <option value="inactive" {{ \Request::get('status') == 'inactive' ? 'selected' : ''}}>Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="customer_level" class="form-label">Customer Level</label>
+                                            <select class="form-control" name="customer_level" id="customer_level">
+                                                <option value="">Select</option>
+                                                @foreach($customer_levels as $customer_level)
+                                                <option value="{{ $customer_level->id }}" {{ \Request::get('customer_level') == $customer_level->id ? 'selected' : ''}}>{{ $customer_level->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="username" class="form-label">Username</label>
+                                            <input type="username" class="form-control" id="username" name="username" placeholder="Enter Username" value="{{ \Request::get('username')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="form-label" for="from">Joined From</label>
+                                            <input type="date" class="form-control" value="{{ \Request::get('from')}}" name="from">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="form-label" for="to">To</label>
+                                            <input type="date" class="form-control" value="{{ \Request::get('to')}}" name="to">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="" class="form-label"></label>
+                                        <input type="submit" class="form-control btn btn-primary mt-1" value="Search">
+                                    </div>
+                                </div>
+                            </form>
+                            <hr>
+                        </div>
                         <div class="table-responsive">
                             <table id="table-extended-success" class="table table-striped dataex-html5-selectors">
                                 <thead>
