@@ -12,7 +12,7 @@
 @endsection
 @section('content')
 <!-- Content wrapper -->
- <div class="app-content content">
+<div class="app-content content">
         <div class="content-overlay"></div>
         <div class="content-wrapper">
             <div class="content-header row">
@@ -23,7 +23,6 @@
                                 <ol class="breadcrumb p-0 mb-0">
                                     <li class="breadcrumb-item"><a href="{{ route('dashboard', request()->array)}}"><i class="bx bx-home-alt"></i></a>
                                     </li>
-                                   
                                     <li class="breadcrumb-item active">All Reserved Accounts
                                     </li>
                                 </ol>
@@ -70,6 +69,7 @@
                                                             {{$number->account_name}}<br>
                                                             {{$number->account_number}}<br>
                                                             {{$number->bank_name}}<br>
+                                                            <small><strong>Attached BVN: </strong>{{mask($number->bvn)}}</small> <br>
                                                             <button class="btn btn-{{$number->gateway->slug == 'monnify' ? 'info' : 'primary'}} btn-sm">{{ $number->gateway->name }}</button>
                                                             </p>
                                                         </td>
