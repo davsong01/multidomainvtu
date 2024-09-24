@@ -345,6 +345,23 @@ class CustomerController extends Controller
         logEmails($customer->user->email, $subject, $body);
 
         return back()->with('message', 'Operation successful');
+    }
 
+    public function verifyEmail($merchant, $customer){
+        $customer = Customer::find($customer);
+        if($customer){
+            $user = $customer->user;
+
+            if (empty($user->email_verified_at)) {
+                $user->update([
+                    'email_verified_at' => now()
+                ]);
+            }
+        }else{
+            return back()->with('error', 'Customer not found');
+        }
+        
+
+        return back()->with('message', 'Email Verified Successfully');
     }
 }

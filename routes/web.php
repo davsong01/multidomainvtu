@@ -243,6 +243,8 @@ Route::group(['prefix' => '{merchant}'], function ($merchant) {
                 Route::get('customer-decline-kyc/{customer}', [CustomerController::class, 'declineCustomerKyc'])->name('admin.customer.decline.kyc');
                 Route::get('/dashboard-widgets/{type}', [DashboardController::class, 'dashboardWidgets'])->name('admin.dashboaard.widgets');
 
+                Route::get('verify-email/{customer}', [CustomerController::class, 'verifyEmail'])->name('verify.email');
+
             });
         });
     });

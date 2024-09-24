@@ -637,6 +637,20 @@ use App\Models\BlackList;
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @if(empty($user->email_verified_at))
+                                                <div class="col-md-6 col-sm-6">
+                                                    <div class="card p-0 bg-dark">
+                                                        <div class="card-body">
+                                                            <div class="card-content">
+                                                                <h5 class="card-title white">
+                                                                    Verify Email
+                                                                </h5>
+                                                                <a class="btn btn-success" href="{{ route('verify.email',  array_merge(request()->array, ['customer' => $user->customer->id])) }}">Verify Email</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
                                                 @endif
                                             </div>
                                         </div>
