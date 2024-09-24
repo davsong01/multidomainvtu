@@ -368,7 +368,7 @@ use App\Models\BlackList;
                                                         </div>
                                                         <div class="col-md-6">   
                                                             <fieldset class="form-group">
-                                                                <label for="email">Email Address</label><span class="verified"><i class="fa fa-check"></i> Verified</span>
+                                                                <label for="email">Email Address</label><span class="{{ !empty($user->email_verified_at) ? 'verified' : 'unverified'}}"><i class="fa fa-check"></i>{{ !empty($user->email_verified_at) ? 'Verified' : 'Not Verified'}}</span>
                                                                 <input autocomplete="false" class="form-control" disabled value="{{ $user->email }}">
                                                             </fieldset>
                                                         </div>

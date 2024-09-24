@@ -41,7 +41,7 @@ class RolePermissionController extends Controller
     {
         $permission->delete();
 
-        return redirect(route('permission.index'))->with('message', 'Delete succesful');
+        return redirect(route('permission.index'))->with('message', 'Delete successful');
     }
 
     function create()

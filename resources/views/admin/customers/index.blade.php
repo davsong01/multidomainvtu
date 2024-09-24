@@ -120,8 +120,12 @@
                                                 Referral:  {!! getSettings()->currency !!}{{ number_format(referralBalance($customer)) }} <br>
                                             </td>
                                             <td>
-                                                Registerd: {{ $customer->created_at }} <br>
-                                                Verified: {{ $customer->email_verified_at }}
+                                                
+                                                <small><b>Registerd:</b>{{ $customer->created_at }} </small>
+                                                @if(!empty($customer->email_verified_at))
+                                                <br>
+                                                <small><b>Email Verified:</b> {{ $customer->email_verified_at }}</small>
+                                                @endif
                                             </td>
                                             @if(hasAccess('customers.edit'))
                                             <td>
