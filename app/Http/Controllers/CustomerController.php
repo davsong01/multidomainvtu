@@ -82,6 +82,7 @@ class CustomerController extends Controller
 
     function unverifiedCustomers(Request $request, $merchant, $status = null)
     {
+        set_time_limit(120);
         $customers = User::whereNull('email_verified_at')->get();
         return view('admin.customers.unverified', ['customers' => $customers]);
     }
@@ -181,7 +182,7 @@ class CustomerController extends Controller
                 ]);
             }
 
-            $user->customer->api_access = 'active';
+            // $user->customer->api_access = 'active';
             $user->customer->kyc_status = $request->kyc_status;
 
             $user->customer->save();
