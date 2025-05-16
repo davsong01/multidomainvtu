@@ -14,7 +14,11 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['api', 'variations','transactions'])->where('type','general')->orderBy('created_at', 'DESC')->get();
+        $products = Product::with(['api', 'variations','transactions'])->where('type','general')
+        ->orderByRaw("CASE WHEN status = 'active' THEN 0 ELSE 1 END")
+        ->orderBy('created_at', 'DESC')
+        ->get();
+
         return view('admin.product.index', compact('products'));
     }
 

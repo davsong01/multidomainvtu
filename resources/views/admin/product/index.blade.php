@@ -51,7 +51,7 @@
                                 <div class="card-content">
                                     <div class="card-body card-dashboard">
                                         <div class="table-responsive">
-                                            <table class="table table-striped dataex-html5-selectors">
+                                            <table class="table table-striped" id="dtable">
                                                 <thead>
                                                     <tr>
                                                         <th>Name</th>
@@ -113,4 +113,11 @@
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/pdfmake.min.js') }}"></script>
     <script src="{{ asset('app-assets/vendors/js/tables/datatable/vfs_fonts.js') }}"></script>
     <script src="{{ asset('app-assets/js/scripts/datatables/datatable.js') }}"></script>
+
+    <script>
+        $('#dtable').DataTable({
+            "ordering": false,
+        });
+
+    </script>
 @endsection
